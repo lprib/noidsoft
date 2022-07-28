@@ -1,0 +1,15 @@
+ColumnLimit: 100
+
+BreakBeforeBraces: Allman
+
+BinPackArguments: false
+BinPackParameters: false
+
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+
+AllowShortFunctionsOnASingleLine: false
+AlignAfterOpenBracket: BlockIndent
+PointerAlignment: Left
+QualifierAlignment: Right
+AlignEscapedNewlines: DontAlign
