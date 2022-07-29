@@ -1,5 +1,6 @@
 #include "bitmap.h"
 #include "render.h"
+#include "util.h"
 
 #include <assert.h>
 #include <string.h>
@@ -54,7 +55,7 @@ void bmp_clear(r_bmp_t* bmp)
   memset(bmp->buffer, 0, bmp->width_bytes * bmp->height);
 }
 
-void bmp_blitclear(r_bmp_t* bmp, bmp_blit_op_t mode)
+void bmp_blit_clear(r_bmp_t* bmp, bmp_blit_op_t mode)
 {
   static uint8_t const filled_byte = 0xFF;
 
@@ -87,4 +88,23 @@ void bmp_rect(r_bmp_t* bmp, int x, int y, int w, int h, bmp_blit_op_t op)
   bmp_hline(bmp, x, x + w - 1, y + h - 1, op);
   bmp_vline(bmp, y, y + h - 1, x, op);
   bmp_vline(bmp, y, y + h - 1, x + w - 1, op);
+}
+
+#define N_TOP_BITS(n) (((1 << (n)) - 1) << (8 - (n)))
+
+void bmp_fill_rect(r_bmp_t* bmp, int x, int y, int w, int h, bmp_blit_op_t op)
+{
+  int first_inside_byte_boundary = utl_divide_round_up(x, 8);
+  int last_byte_boundary_exclusive  = (x + w) / 8;
+  for(int y_iter = y; y_iter < y + h; y_iter++)
+  {
+    // blit full bytes first
+    for(int x_byte_iter = first_inside_byte_boundary; x_byte_iter < last_byte_boundary_exclusive; x_byte_iter++)
+    {
+      blit_to_dest_byte(&bmp->buffer[y_iter * bmp->width_bytes + x_byte_iter], 0xFF, op);
+    }
+
+    // blit start and end stragglers
+    // TODO
+  }
 }

@@ -1,7 +1,11 @@
+// provided interfaces
+#include "render.h"
 #include "sdl2_render_driver.h"
+
+// dependencies
 #include "SDL_render.h"
 #include "SDL_video.h"
-#include "render.h"
+#include "util.h"
 
 #include <SDL.h>
 #include <stdio.h>
@@ -15,7 +19,6 @@ typedef struct
 
 static void create_virtual_render_texture(void);
 static void resize_bitmap(rect_size_t new_size);
-static int divide_with_round_up(int numerator, int denominator);
 static rect_size_t get_bitmap_size_for_window(int window_width, int window_height);
 
 r_event_handler_t event_handler = NULL;
@@ -75,7 +78,7 @@ void sdl2render_init(void)
   // set up virtual bitmap
   bitmap.width = INITIAL_PIX_WIDTH;
   bitmap.height = INITIAL_PIX_HEIGHT;
-  bitmap.width_bytes = divide_with_round_up(INITIAL_PIX_WIDTH, 8);
+  bitmap.width_bytes = utl_divide_round_up(INITIAL_PIX_WIDTH, 8);
   bitmap.buffer = malloc((bitmap.width_bytes * bitmap.height) * sizeof(*bitmap.buffer));
 
   // Set previous so event loop knows when to resize
@@ -209,13 +212,9 @@ static void resize_bitmap(rect_size_t new_size)
   bitmap.width = new_size.w;
   bitmap.height = new_size.h;
 
-  bitmap.width_bytes = divide_with_round_up(bitmap.width, 8);
+  bitmap.width_bytes = utl_divide_round_up(bitmap.width, 8);
 
   bitmap.buffer =
       realloc(bitmap.buffer, (bitmap.width_bytes * bitmap.height) * sizeof(*bitmap.buffer));
 }
 
-static int divide_with_round_up(int numerator, int denominator)
-{
-  return (numerator - 1) / denominator + 1;
-}
