@@ -18,9 +18,9 @@ static void resize_bitmap(rect_size_t new_size);
 static int divide_with_round_up(int numerator, int denominator);
 static rect_size_t get_bitmap_size_for_window(int window_width, int window_height);
 
-render_event_handler_t event_handler = NULL;
+r_event_handler_t event_handler = NULL;
 
-render_bitmap_t bitmap;
+r_bmp_t bitmap;
 
 static int const INITIAL_PIX_WIDTH = 128;
 static int const INITIAL_PIX_HEIGHT = 64;
@@ -133,7 +133,7 @@ void sdl2render_run_loop(void)
             SDL_DestroyTexture(virtual_tex);
             create_virtual_render_texture();
 
-            render_event_t ev = {.type = RENDER_EVENT_RESHAPE};
+            r_event_t ev = {.type = RENDER_EVENT_RESHAPE};
             TRY_EVENT_HANDLER(ev);
 
             previous_tex_size = new_size;
@@ -143,7 +143,7 @@ void sdl2render_run_loop(void)
       }
     }
 
-    TRY_EVENT_HANDLER((render_event_t){.type = RENDER_EVENT_FRAME});
+    TRY_EVENT_HANDLER((r_event_t){.type = RENDER_EVENT_FRAME});
 
     SDL_SetRenderTarget(renderer, NULL);
 
@@ -162,12 +162,12 @@ void sdl2render_cleanup(void)
   SDL_DestroyWindow(window);
 }
 
-render_bitmap_t* render_get_buffer(void)
+r_bmp_t* r_get_buffer(void)
 {
   return &bitmap;
 }
 
-void render_request_refresh(void)
+void r_request_refresh(void)
 {
   SDL_SetRenderTarget(renderer, virtual_tex);
   SDL_SetRenderDrawColor(renderer, BACK_COLOR);
@@ -192,7 +192,7 @@ void render_request_refresh(void)
   }
 }
 
-void render_register_event_handler(render_event_handler_t handler)
+void r_register_event_handler(r_event_handler_t handler)
 {
   event_handler = handler;
 }

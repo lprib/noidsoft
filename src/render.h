@@ -24,18 +24,18 @@ typedef struct
   /* buffer */
   uint8_t* buffer;
 
-} render_bitmap_t;
+} r_bmp_t;
 
 typedef enum
 {
   RENDER_EVENT_RESHAPE,
   RENDER_EVENT_KEYPRESS,
   RENDER_EVENT_FRAME
-} render_event_type_t;
+} r_event_type_t;
 
 typedef struct
 {
-  render_event_type_t type;
+  r_event_type_t type;
   union
   {
     struct
@@ -44,16 +44,16 @@ typedef struct
       char key;
     } keypress;
   };
-} render_event_t;
+} r_event_t;
 
-typedef void (*render_event_handler_t)(render_event_t event);
+typedef void (*r_event_handler_t)(r_event_t event);
 
 /** Get render buffer. */
-render_bitmap_t* render_get_buffer(void);
+r_bmp_t* r_get_buffer(void);
 
 /** Make renderer push updates to screen */
-void render_request_refresh(void);
+void r_request_refresh(void);
 
-void render_register_event_handler(render_event_handler_t handler);
+void r_register_event_handler(r_event_handler_t handler);
 
 #endif
