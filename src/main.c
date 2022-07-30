@@ -17,14 +17,33 @@ int main(int argc, char* argv[])
   return 0;
 }
 
+static bmp_elem_t smile_sprite[] = {
+    (bmp_elem_t)0b00111100,
+    (bmp_elem_t)0b01000010,
+    (bmp_elem_t)0b10100101,
+    (bmp_elem_t)0b10000001,
+    (bmp_elem_t)0b10100101,
+    (bmp_elem_t)0b10011001,
+    (bmp_elem_t)0b01000010,
+    (bmp_elem_t)0b00111100};
+
+static bmp_t smile = {.width = 8, .height = 8, .width_elems = 1, .buffer = smile_sprite};
+
 static void draw(void)
 {
   bmp_t* pix = r_get_buffer();
   bmp_clear(pix);
+  for (int i = 0; i < pix->width; i++)
+  {
+    if (!(i % BMP_PIX_PER_ELEM))
+    {
+      bmp_point(pix, i, 0, BLIT_SET);
+    }
+  }
   // bmp_point(pix, 0, 0, POINT_SET);
   // bmp_hline(pix, 0, pix->width - 1, 0, POINT_SET);
-  bmp_fill_rect(pix, 2, 2, pix->width - 4, pix->height - 4, BLIT_SET);
-  bmp_fill_rect(pix, pix->width - 10, pix->height - 10, 9, 9, BLIT_INVERT);
+  bmp_fill_rect(pix, 8, 8, pix->width - 9, pix->height - 9, BLIT_SET);
+  /* bmp_fill_rect(pix, pix->width - 10, pix->height - 10, 9, 9, BLIT_INVERT); */
 
   // for (int i = 0; i < 4; i++)
   // {

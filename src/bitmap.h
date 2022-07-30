@@ -32,6 +32,14 @@ typedef struct
 
 } bmp_t;
 
+typedef struct
+{
+  int x;
+  int y;
+  int w;
+  int h;
+} bmp_rect_t;
+
 /** bits (pixels) in each element of bmp_t.buffer */
 #define BMP_PIX_PER_ELEM 8
 
@@ -52,5 +60,8 @@ void bmp_hline(bmp_t* bitmap, int x1, int x2, int y, bmp_blit_op_t op);
 void bmp_vline(bmp_t* bitmap, int y1, int y2, int x, bmp_blit_op_t op);
 void bmp_rect(bmp_t* bitmap, int x, int y, int w, int h, bmp_blit_op_t op);
 void bmp_fill_rect(bmp_t* bitmap, int x, int y, int w, int h, bmp_blit_op_t op);
+
+// TODO impl dest rect
+void bmp_sprite(bmp_t* dest, bmp_t* src, bmp_rect_t* src_rect, int x, int y);
 
 #endif

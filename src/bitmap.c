@@ -2,6 +2,7 @@
 #include "util.h"
 
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -24,6 +25,12 @@ static inline void blit_to_dest_elem(bmp_elem_t* dest, bmp_elem_t pattern, bmp_b
     *dest ^= pattern;
     break;
   }
+}
+
+static inline void blit_to_dest_elem_masked(bmp_elem_t* dest, bmp_elem_t pattern, bmp_elem_t mask)
+{
+  *dest &= ~mask;
+  *dest |= pattern & mask;
 }
 
 void bmp_point(bmp_t* bmp, int x, int y, bmp_blit_op_t mode)
@@ -117,52 +124,57 @@ void bmp_fill_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_blit_op_t op)
   assert(x + w <= bmp->width);
   assert(y + h <= bmp->height);
 #endif
+  // large rect case
 
-  if (w > BMP_PIX_PER_ELEM)
+  // last x coord that is inside rectangle
+  int x2_incl = x + w - 1;
+
+  // full byte portion
+  int first_inside_elem_boundary = utl_divide_round_up(x, BMP_PIX_PER_ELEM);
+  int last_elem_boundary_exclusive = (x + w) / BMP_PIX_PER_ELEM;
+
+  // start overhang bits
+  int num_start_overhang_bits = first_inside_elem_boundary * BMP_PIX_PER_ELEM - x;
+  bmp_elem_t start_overhang_blit = N_TOP_BITS(num_start_overhang_bits);
+
+  // end overhand bits
+  int num_end_overhang_bits = (x + w) - last_elem_boundary_exclusive * BMP_PIX_PER_ELEM;
+  bmp_elem_t end_overhang_blit = N_BOTTOM_BITS(num_end_overhang_bits);
+
+  // Handle the case where there is only a single elem stride of width.
+  // start_overhang_blit will always go to the end of the elem boundary. We
+  // need to erase the outside bits.
+  bool is_single_stride_blit = first_inside_elem_boundary > last_elem_boundary_exclusive;
+  if (is_single_stride_blit)
   {
-    // large rect case
-
-    // last x coord that is inside rectangle
-    int x2_incl = x + w - 1;
-
-    // full byte portion
-    int first_inside_elem_boundary = utl_divide_round_up(x, BMP_PIX_PER_ELEM);
-    int last_elem_boundary_exclusive = (x + w) / BMP_PIX_PER_ELEM;
-
-    // start overhang bits
-    int num_start_overhang_bits = first_inside_elem_boundary * BMP_PIX_PER_ELEM - x;
-    bmp_elem_t start_overhang_blit = N_TOP_BITS(num_start_overhang_bits);
-
-    // end overhand bits
-    int num_end_overhang_bits = (x + w) - last_elem_boundary_exclusive * BMP_PIX_PER_ELEM;
-    bmp_elem_t end_overhang_blit = N_BOTTOM_BITS(num_end_overhang_bits);
+    int num_to_erase = BMP_PIX_PER_ELEM - (x + w);
+    start_overhang_blit &= ~N_TOP_BITS(num_to_erase);
+  }
 
 #if PARANOID
-    assert(num_start_overhang_bits >= 0);
-    assert(num_start_overhang_bits < BMP_PIX_PER_ELEM);
-    assert(num_end_overhang_bits >= 0);
-    assert(num_end_overhang_bits < BMP_PIX_PER_ELEM);
+  assert(num_start_overhang_bits >= 0);
+  assert(num_start_overhang_bits < BMP_PIX_PER_ELEM);
+  assert(num_end_overhang_bits >= 0);
+  assert(num_end_overhang_bits < BMP_PIX_PER_ELEM);
 #endif
 
-    for (int y_iter = y; y_iter < y + h; y_iter++)
+  for (int y_iter = y; y_iter < y + h; y_iter++)
+  {
+    // blit full bytes first
+    for (int x_byte_iter = first_inside_elem_boundary; x_byte_iter < last_elem_boundary_exclusive;
+         x_byte_iter++)
     {
-      // blit full bytes first
-      for (int x_byte_iter = first_inside_elem_boundary; x_byte_iter < last_elem_boundary_exclusive;
-           x_byte_iter++)
-      {
-        blit_to_dest_elem(
-            &bmp->buffer[y_iter * bmp->width_elems + x_byte_iter],
-            BMP_FILLED_ELEM,
-            op
-        );
-      }
+      blit_to_dest_elem(&bmp->buffer[y_iter * bmp->width_elems + x_byte_iter], BMP_FILLED_ELEM, op);
+    }
 
-      blit_to_dest_elem(
-          &bmp->buffer[y_iter * bmp->width_elems + first_inside_elem_boundary - 1],
-          start_overhang_blit,
-          op
-      );
+    blit_to_dest_elem(
+        &bmp->buffer[y_iter * bmp->width_elems + first_inside_elem_boundary - 1],
+        start_overhang_blit,
+        op
+    );
 
+    if (!is_single_stride_blit)
+    {
       blit_to_dest_elem(
           &bmp->buffer[y_iter * bmp->width_elems + last_elem_boundary_exclusive],
           end_overhang_blit,
@@ -170,18 +182,9 @@ void bmp_fill_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_blit_op_t op)
       );
     }
   }
-  else
-  {
-    // small rect case
+}
 
-    // Dumb algorithm for now to deal with the edge case of a small rect that
-    // may be contained in a single elem stride or two incomplete elem strides
-    for (int y_iter = y; y_iter < y + h; y_iter++)
-    {
-      for (int x_iter = x; x_iter < x + w; x_iter++)
-      {
-        bmp_point(bmp, x_iter, y_iter, op);
-      }
-    }
-  }
+void bmp_sprite(bmp_t* dest, bmp_t* src, bmp_rect_t* src_rect, int x, int y)
+{
+  // TODO
 }

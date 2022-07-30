@@ -128,7 +128,7 @@ void sdl_main_loop(void)
           // Eg. if the window was only resized a couple of screen-pixels, the
           // appropriate bitmap size may stay the same. In this case we do not
           // need to send a resize event to client.
-          if (new_size.w != previous_tex_size.w && new_size.h != previous_tex_size.h)
+          // if (new_size.w != previous_tex_size.w && new_size.h != previous_tex_size.h)
           {
             resize_bitmap(new_size);
 
