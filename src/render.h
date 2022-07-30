@@ -5,26 +5,8 @@
  * Generic platform-agnostic rendering functions
  */
 
+#include "bitmap.h"
 #include <stdint.h>
-
-typedef struct
-{
-  /** width in pixels */
-  int width;
-
-  /** height in pixels */
-  int height;
-
-  /** width of buffer in bytes. Total buffer size is width_bytes*height. Buffer
-   * width is the minimum amount of bytes to hold `width` pixels. Ie. there may
-   * be padding.
-   */
-  int width_bytes;
-
-  /* buffer */
-  uint8_t* buffer;
-
-} r_bmp_t;
 
 typedef enum
 {
@@ -49,7 +31,7 @@ typedef struct
 typedef void (*r_event_handler_t)(r_event_t event);
 
 /** Get render buffer. */
-r_bmp_t* r_get_buffer(void);
+bmp_t* r_get_buffer(void);
 
 /** Make renderer push updates to screen */
 void r_request_refresh(void);

@@ -5,8 +5,8 @@
  * SDL2-specifc rendering control
  */
 
-void sdl2render_init(void);
-void sdl2render_run_loop(void);
-void sdl2render_cleanup(void);
+void sdl_init(void);
+void sdl_main_loop(void);
+void sdl_cleanup(void);
 
 #endif

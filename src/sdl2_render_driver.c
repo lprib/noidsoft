@@ -1,6 +1,6 @@
 // provided interfaces
-#include "render.h"
 #include "sdl2_render_driver.h"
+#include "render.h"
 
 // dependencies
 #include "SDL_render.h"
@@ -23,7 +23,7 @@ static rect_size_t get_bitmap_size_for_window(int window_width, int window_heigh
 
 r_event_handler_t event_handler = NULL;
 
-r_bmp_t bitmap;
+bmp_t bitmap;
 
 static int const INITIAL_PIX_WIDTH = 128;
 static int const INITIAL_PIX_HEIGHT = 64;
@@ -52,7 +52,7 @@ SDL_Texture* virtual_tex;
       event_handler(event); \
   } while (0);
 
-void sdl2render_init(void)
+void sdl_init(void)
 {
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
   {
@@ -78,8 +78,8 @@ void sdl2render_init(void)
   // set up virtual bitmap
   bitmap.width = INITIAL_PIX_WIDTH;
   bitmap.height = INITIAL_PIX_HEIGHT;
-  bitmap.width_bytes = utl_divide_round_up(INITIAL_PIX_WIDTH, 8);
-  bitmap.buffer = malloc((bitmap.width_bytes * bitmap.height) * sizeof(*bitmap.buffer));
+  bitmap.width_elems = utl_divide_round_up(INITIAL_PIX_WIDTH, BMP_PIX_PER_ELEM);
+  bitmap.buffer = malloc((bitmap.width_elems * bitmap.height) * sizeof(*bitmap.buffer));
 
   // Set previous so event loop knows when to resize
   previous_tex_size.w = INITIAL_PIX_WIDTH;
@@ -102,7 +102,7 @@ static void create_virtual_render_texture(void)
   virtual_tex_screen_size.h = bitmap.height * SCREEN_PIX_PER_VIRTUAL_PIX;
 }
 
-void sdl2render_run_loop(void)
+void sdl_main_loop(void)
 {
   SDL_ShowWindow(window);
   while (1)
@@ -158,14 +158,14 @@ void sdl2render_run_loop(void)
   }
 }
 
-void sdl2render_cleanup(void)
+void sdl_cleanup(void)
 {
   SDL_DestroyTexture(virtual_tex);
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
 }
 
-r_bmp_t* r_get_buffer(void)
+bmp_t* r_get_buffer(void)
 {
   return &bitmap;
 }
@@ -183,10 +183,10 @@ void r_request_refresh(void)
     for (int x = 0; x < bitmap.width; x++)
     {
       // TODO need to check if out of bounds?
-      uint8_t byte = bitmap.buffer[y * bitmap.width_bytes + x / 8];
+      bmp_elem_t byte = bitmap.buffer[y * bitmap.width_elems + x / BMP_PIX_PER_ELEM];
 
       // TODO reverse?
-      int bit_idx = x % 8;
+      int bit_idx = x % BMP_PIX_PER_ELEM;
       if (BIT(byte, bit_idx))
       {
         SDL_RenderDrawPoint(renderer, x, y);
@@ -212,9 +212,8 @@ static void resize_bitmap(rect_size_t new_size)
   bitmap.width = new_size.w;
   bitmap.height = new_size.h;
 
-  bitmap.width_bytes = utl_divide_round_up(bitmap.width, 8);
+  bitmap.width_elems = utl_divide_round_up(bitmap.width, BMP_PIX_PER_ELEM);
 
   bitmap.buffer =
-      realloc(bitmap.buffer, (bitmap.width_bytes * bitmap.height) * sizeof(*bitmap.buffer));
+      realloc(bitmap.buffer, (bitmap.width_elems * bitmap.height) * sizeof(*bitmap.buffer));
 }
-
