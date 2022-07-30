@@ -8,8 +8,8 @@
 
 #define PARANOID 1
 
-#define N_TOP_BITS(n) (((1 << (n)) - 1) << (BMP_PIX_PER_ELEM - (n)))
-#define N_BOTTOM_BITS(n) ((1 << (n)) - 1)
+#define N_START_BITS(n) ((1 << (n)) - 1)
+#define N_END_BITS(n) (((1 << (n)) - 1) << (BMP_PIX_PER_ELEM - (n)))
 
 static inline void blit_to_dest_elem(bmp_elem_t* dest, bmp_elem_t pattern, bmp_blit_op_t op)
 {
@@ -135,11 +135,11 @@ void bmp_fill_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_blit_op_t op)
 
   // start overhang bits
   int num_start_overhang_bits = first_inside_elem_boundary * BMP_PIX_PER_ELEM - x;
-  bmp_elem_t start_overhang_blit = N_TOP_BITS(num_start_overhang_bits);
+  bmp_elem_t start_overhang_blit = N_END_BITS(num_start_overhang_bits);
 
   // end overhand bits
   int num_end_overhang_bits = (x + w) - last_elem_boundary_exclusive * BMP_PIX_PER_ELEM;
-  bmp_elem_t end_overhang_blit = N_BOTTOM_BITS(num_end_overhang_bits);
+  bmp_elem_t end_overhang_blit = N_START_BITS(num_end_overhang_bits);
 
   // Handle the case where there is only a single elem stride of width.
   // start_overhang_blit will always go to the end of the elem boundary. We
@@ -148,7 +148,7 @@ void bmp_fill_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_blit_op_t op)
   if (is_single_stride_blit)
   {
     int num_to_erase = BMP_PIX_PER_ELEM - (x + w);
-    start_overhang_blit &= ~N_TOP_BITS(num_to_erase);
+    start_overhang_blit &= ~N_END_BITS(num_to_erase);
   }
 
 #if PARANOID
@@ -184,7 +184,37 @@ void bmp_fill_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_blit_op_t op)
   }
 }
 
+/**
+ * Limitations:
+ * src_rect.w must always be less <= BMP_PIX_PER_ELEM
+ * src_rect.x must be bmp_elem_t aligned
+ */
 void bmp_sprite(bmp_t* dest, bmp_t* src, bmp_rect_t* src_rect, int x, int y)
 {
-  // TODO
+#if PARANOID
+  assert(src_rect->w <= BMP_PIX_PER_ELEM);
+  assert(src_rect->x % BMP_PIX_PER_ELEM == 0);
+
+  assert(x < dest->width);
+  assert(y < dest->height);
+#endif
+
+  int dest_end_x = x + src_rect->w;
+
+  int blit1_shift = x % BMP_PIX_PER_ELEM;
+  int blit1_start_mask = ~N_START_BITS(blit1_shift);
+
+  int blit1_end_bits = BMP_PIX_PER_ELEM - (blit1_shift + src_rect->w);
+  int blit1_end_mask;
+  if (blit1_end_bits > 0)
+  {
+    blit1_end_mask = ~N_END_BITS(blit1_end_bits);
+  }
+  else
+  {
+    // no mask (all 1s)
+    blit1_end_mask = BMP_FILLED_ELEM;
+  }
+
+  // int blit2_shift =
 }

@@ -61,7 +61,6 @@ void bmp_vline(bmp_t* bitmap, int y1, int y2, int x, bmp_blit_op_t op);
 void bmp_rect(bmp_t* bitmap, int x, int y, int w, int h, bmp_blit_op_t op);
 void bmp_fill_rect(bmp_t* bitmap, int x, int y, int w, int h, bmp_blit_op_t op);
 
-// TODO impl dest rect
 void bmp_sprite(bmp_t* dest, bmp_t* src, bmp_rect_t* src_rect, int x, int y);
 
 #endif
