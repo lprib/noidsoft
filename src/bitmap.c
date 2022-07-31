@@ -15,6 +15,11 @@ bmp_elem_t const BMP_FILLED_ELEM = ((bmp_elem_t)(~(bmp_elem_t)0));
 #define N_START_BITS(n) ((1 << (n)) - 1)
 #define N_END_BITS(n) (((1 << (n)) - 1) << (BMP_PIX_PER_ELEM - (n)))
 
+static inline bmp_elem_t* get_elem(bmp_t* bmp, int x_elem_index, int y_index)
+{
+  return &bmp->buffer[y_index * bmp->width_elems + x_elem_index];
+}
+
 static inline void blit_elem(bmp_elem_t* dest, bmp_elem_t pattern, bmp_op_t op)
 {
   switch (op)
@@ -59,7 +64,7 @@ void bmp_point(bmp_t* bmp, int x, int y, bmp_op_t mode)
   ASSERT(y < bmp->height);
 
   bmp_elem_t bitmask = 1 << (x % BMP_PIX_PER_ELEM);
-  bmp_elem_t* dest = &bmp->buffer[y * bmp->width_elems + x / BMP_PIX_PER_ELEM];
+  bmp_elem_t* dest = get_elem(bmp, x / BMP_PIX_PER_ELEM, y);
 
   switch (mode)
   {
@@ -171,20 +176,15 @@ void bmp_fill_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_op_t op)
   for (int y_iter = y; y_iter < y + h; y_iter++)
   {
     // blit full bytes first
-    for (int x_byte_iter = first_inside_elem_boundary;
-         x_byte_iter < last_elem_boundary_exclusive;
-         x_byte_iter++)
+    for (int x_elem_iter = first_inside_elem_boundary;
+         x_elem_iter < last_elem_boundary_exclusive;
+         x_elem_iter++)
     {
-      blit_elem(
-          &bmp->buffer[y_iter * bmp->width_elems + x_byte_iter],
-          BMP_FILLED_ELEM,
-          op
-      );
+      blit_elem(get_elem(bmp, x_elem_iter, y_iter), BMP_FILLED_ELEM, op);
     }
 
     blit_elem(
-        &bmp->buffer
-             [y_iter * bmp->width_elems + first_inside_elem_boundary - 1],
+        get_elem(bmp, first_inside_elem_boundary - 1, y_iter),
         start_overhang_blit,
         op
     );
@@ -192,8 +192,7 @@ void bmp_fill_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_op_t op)
     if (!is_single_stride_blit)
     {
       blit_elem(
-          &bmp->buffer
-               [y_iter * bmp->width_elems + last_elem_boundary_exclusive],
+          get_elem(bmp, last_elem_boundary_exclusive, y_iter),
           end_overhang_blit,
           op
       );
@@ -241,14 +240,12 @@ void bmp_sprite(bmp_t* dest, bmp_t* src, bmp_rect_t* src_rect, int x, int y)
     ASSERT(src_y < src->height);
     ASSERT(dest_y < dest->height);
 
-    bmp_elem_t* target_elem =
-        &dest->buffer[(dest_y * dest->width_elems) + (x / BMP_PIX_PER_ELEM)];
+    bmp_elem_t* target_elem = get_elem(dest, x / BMP_PIX_PER_ELEM, dest_y);
     bmp_elem_t src_1;
     bmp_elem_t src_2;
     // assumption: src_rect->x is always on a byte boundary
     shift_with_overflow(
-        src->buffer
-            [(src_y * src->width_elems) + (src_rect->x / BMP_PIX_PER_ELEM)],
+        *get_elem(src, src_rect->x / BMP_PIX_PER_ELEM, src_y),
         shift_amount,
         &src_1,
         &src_2
