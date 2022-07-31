@@ -6,11 +6,15 @@
 // dependencies
 #include "SDL_render.h"
 #include "SDL_video.h"
+#include "diagnostics.h"
 #include "util.h"
 
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+char const* FONT_PATH = "firacode.ttf";
 
 typedef struct
 {
@@ -22,6 +26,7 @@ static void create_virtual_render_texture(void);
 static void resize_bitmap(rect_size_t new_size);
 static rect_size_t
 get_bitmap_size_for_window(int window_width, int window_height);
+static void render_diagnostic_text(void);
 
 r_event_handler_t event_handler = NULL;
 
@@ -44,6 +49,9 @@ SDL_Rect virtual_tex_screen_size = {0, 0, 0, 0};
 SDL_Window* window;
 SDL_Renderer* renderer;
 SDL_Texture* virtual_tex;
+
+TTF_Font* font;
+SDL_Texture* diag_tex;
 
 #define GET_BIT(integer, n) ((integer) >> (n)) & 0b1
 
@@ -80,6 +88,15 @@ void sdl_init(void)
       -1,
       SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
   );
+
+  // set up diag text
+  TTF_Init();
+  font = TTF_OpenFont(FONT_PATH, 12);
+  if (font == NULL)
+  {
+    fprintf(stderr, "font not found\n");
+    exit(101);
+  }
 
   // set up virtual bitmap
   back_buffer.width = INITIAL_PIX_WIDTH;
@@ -153,10 +170,19 @@ void sdl_main_loop(void)
           }
         }
         break;
+      case SDL_MOUSEMOTION:
+        diag_text(
+            DIAG_TEXT_cursor_pos,
+            "%d %d\n",
+            event.motion.x,
+            event.motion.y
+        );
+        break;
       }
     }
-
     TRY_EVENT_HANDLER((r_event_t){.type = RENDER_EVENT_FRAME});
+
+    render_diagnostic_text();
 
     SDL_SetRenderTarget(renderer, NULL);
 
@@ -232,4 +258,17 @@ static void resize_bitmap(rect_size_t new_size)
       back_buffer.buffer,
       (back_buffer.width_elems * back_buffer.height) * sizeof(bmp_elem_t)
   );
+}
+
+static void render_diagnostic_text(void)
+{
+  static const SDL_Color fg = {255, 0, 0, 255};
+  static const SDL_Color bg = {0, 0, 0, 80};
+
+  SDL_Surface* surface =
+      TTF_RenderText_Shaded(font, diag_text_get(0)->buffer, fg, bg);
+
+  // TODO
+  // cannot create new textures each time. So store a buffer of them, and only
+  // update them when the diagnostic text updates.
 }
