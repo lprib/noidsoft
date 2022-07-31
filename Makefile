@@ -15,6 +15,9 @@ test:
 clean:
 	rm -rf $(OUT_DIR)
 
+format:
+	clang-format -i $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/*.h)
+
 $(OUT_DIR):
 	mkdir -p $@
 
@@ -22,8 +25,8 @@ $(OUT_DIR):
 $(OUT_DIR)/firacode.ttf: assets/firacode.ttf
 	ln -s $(realpath $<) $@
 
-$(OUT_DIR)/$(TARGET): $(SRC_DIR)/main.c $(OTHER_SRC_FILES) | $(OUT_DIR) $(OUT_DIR)/firacode.ttf
+$(OUT_DIR)/$(TARGET): $(SRC_DIR)/main.c $(OTHER_SRC_FILES) | $(OUT_DIR)
 	gcc -o $@ $^ `sdl2-config --cflags --libs` $(CFLAGS) 
 
-.PHONY: test clean
+.PHONY: test clean format
 

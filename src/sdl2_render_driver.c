@@ -1,20 +1,19 @@
 // provided interfaces
-#include "sdl2_render_driver.h"
-#include "bitmap.h"
 #include "render.h"
+#include "sdl2_render_driver.h"
 
 // dependencies
-#include "SDL_render.h"
-#include "SDL_video.h"
+#include "bitmap.h"
 #include "diagnostics.h"
 #include "util.h"
 
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-char const* FONT_PATH = "firacode.ttf";
+char const* FONT_PATH = "assets/firacode.ttf";
 
 typedef struct
 {
@@ -22,10 +21,19 @@ typedef struct
   int h;
 } rect_size_t;
 
+typedef struct
+{
+  TTF_Font* font;
+  SDL_Texture* diag_tex[DIAG_NUM_TEXTS];
+  bool do_render;
+} diag_text_render_data_t;
+
+static void send_to_client(r_event_t event);
 static void create_virtual_render_texture(void);
 static void resize_bitmap(rect_size_t new_size);
 static rect_size_t
 get_bitmap_size_for_window(int window_width, int window_height);
+static void update_diagnostic_text(bool first_time);
 static void render_diagnostic_text(void);
 
 r_event_handler_t event_handler = NULL;
@@ -40,6 +48,9 @@ static int const SCREEN_PIX_PER_VIRTUAL_PIX = 8;
 #define BACK_COLOR 36, 27, 23, 255
 #define FORE_COLOR 219, 200, 175, 255
 
+static const SDL_Color diag_text_fg = {255, 126, 94, 255};
+static const SDL_Color diag_text_bg = {0, 0, 0, 128};
+
 // used to track if we really need to send a resize event to the client
 rect_size_t previous_tex_size = {0, 0};
 
@@ -50,17 +61,10 @@ SDL_Window* window;
 SDL_Renderer* renderer;
 SDL_Texture* virtual_tex;
 
-TTF_Font* font;
-SDL_Texture* diag_tex;
+diag_text_render_data_t diag_render_data;
 
 #define GET_BIT(integer, n) ((integer) >> (n)) & 0b1
 
-#define TRY_EVENT_HANDLER(event) \
-  do \
-  { \
-    if (event_handler) \
-      event_handler(event); \
-  } while (0);
 
 void sdl_init(void)
 {
@@ -91,12 +95,15 @@ void sdl_init(void)
 
   // set up diag text
   TTF_Init();
-  font = TTF_OpenFont(FONT_PATH, 12);
-  if (font == NULL)
+  diag_render_data.font = TTF_OpenFont(FONT_PATH, 12);
+  if (diag_render_data.font == NULL)
   {
     fprintf(stderr, "font not found\n");
     exit(101);
   }
+
+  update_diagnostic_text(true);
+  diag_render_data.do_render = true;
 
   // set up virtual bitmap
   back_buffer.width = INITIAL_PIX_WIDTH;
@@ -148,23 +155,31 @@ void sdl_main_loop(void)
           int window_w = event.window.data1;
           int window_h = event.window.data2;
 
+          diag_text(DIAG_TEXT_window_true_size, "%d %d", window_w, window_h);
+
           rect_size_t new_size = get_bitmap_size_for_window(window_w, window_h);
 
           // Only fire resize events if the size of the virtual bitmap actually
           // changed. Eg. if the window was only resized a couple of
           // screen-pixels, the appropriate bitmap size may stay the same. In
-          // this case we do not need to send a resize event to client. if
-          // (new_size.w != previous_tex_size.w && new_size.h !=
-          // previous_tex_size.h)
+          // this case we do not need to send a resize event to client.
+          if (new_size.w != previous_tex_size.w && new_size.h != previous_tex_size.h)
           {
             resize_bitmap(new_size);
+            diag_text(DIAG_TEXT_window_pix_size, "%d %d", new_size.w, new_size.h);
+            diag_text(
+                DIAG_TEXT_window_pix_size_x,
+                "%d %d",
+                new_size.w * SCREEN_PIX_PER_VIRTUAL_PIX,
+                new_size.h * SCREEN_PIX_PER_VIRTUAL_PIX
+            );
 
             // re-create texture object
             SDL_DestroyTexture(virtual_tex);
             create_virtual_render_texture();
 
             r_event_t ev = {.type = RENDER_EVENT_RESHAPE};
-            TRY_EVENT_HANDLER(ev);
+            send_to_client(ev);
 
             previous_tex_size = new_size;
           }
@@ -172,24 +187,37 @@ void sdl_main_loop(void)
         break;
       case SDL_MOUSEMOTION:
         diag_text(
-            DIAG_TEXT_cursor_pos,
-            "%d %d\n",
-            event.motion.x,
-            event.motion.y
+            DIAG_TEXT_cursor_virt_pix_coord,
+            "%d %d",
+            event.motion.x / SCREEN_PIX_PER_VIRTUAL_PIX,
+            event.motion.y / SCREEN_PIX_PER_VIRTUAL_PIX
         );
         break;
+      case SDL_MOUSEBUTTONDOWN:
+        if(event.button.button == SDL_BUTTON_LEFT)
+        {
+          diag_render_data.do_render = !diag_render_data.do_render;
+        }
+      break;
       }
     }
-    TRY_EVENT_HANDLER((r_event_t){.type = RENDER_EVENT_FRAME});
+    send_to_client((r_event_t){.type = RENDER_EVENT_FRAME});
 
-    render_diagnostic_text();
 
     SDL_SetRenderTarget(renderer, NULL);
+
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
 
     SDL_RenderCopy(renderer, virtual_tex, NULL, &virtual_tex_screen_size);
+
+    update_diagnostic_text(false);
+    if(diag_render_data.do_render)
+    {
+      render_diagnostic_text();
+    }
+
     SDL_RenderPresent(renderer);
   }
 }
@@ -238,6 +266,14 @@ void r_register_event_handler(r_event_handler_t handler)
   event_handler = handler;
 }
 
+static void send_to_client(r_event_t event)
+{
+  if(event_handler != NULL)
+  {
+    event_handler(event);
+  }
+}
+
 static rect_size_t
 get_bitmap_size_for_window(int window_width, int window_height)
 {
@@ -260,15 +296,38 @@ static void resize_bitmap(rect_size_t new_size)
   );
 }
 
+static void update_diagnostic_text(bool first_time)
+{
+  for(int i = 0; i < DIAG_NUM_TEXTS; i++)
+  {
+    SDL_Surface* surface = TTF_RenderUTF8_Shaded(
+        diag_render_data.font,
+        diag_text_get(i)->buffer,
+        diag_text_fg,
+        diag_text_bg
+    );
+
+    if(!first_time)
+    {
+      SDL_DestroyTexture(diag_render_data.diag_tex[i]);
+    }
+    diag_render_data.diag_tex[i] = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+  }
+}
+
 static void render_diagnostic_text(void)
 {
-  static const SDL_Color fg = {255, 0, 0, 255};
-  static const SDL_Color bg = {0, 0, 0, 80};
+  int y = 0;
 
-  SDL_Surface* surface =
-      TTF_RenderText_Shaded(font, diag_text_get(0)->buffer, fg, bg);
-
-  // TODO
-  // cannot create new textures each time. So store a buffer of them, and only
-  // update them when the diagnostic text updates.
+  for(int i = 0; i < DIAG_NUM_TEXTS; i++)
+  {
+    SDL_Texture* tex = diag_render_data.diag_tex[i];
+    int w, h;
+    SDL_QueryTexture(tex, NULL, NULL, &w, &h);
+    SDL_Rect dest_rect = {0, y, w, h};
+    SDL_RenderCopy(renderer, tex, NULL, &dest_rect);
+    y += h;
+  }
 }
+

@@ -8,7 +8,11 @@ typedef struct
   char buffer[DIAG_MAX_TEXT_LEN];
 } diag_text_t;
 
-#define DIAG_TEXT_LIST(selector) selector(cursor_pos)
+#define DIAG_TEXT_LIST(selector) \
+  selector(cursor_virt_pix_coord) \
+  selector(window_true_size) \
+  selector(window_pix_size) \
+  selector(window_pix_size_x) \
 
 #define DIAG_TEXT_ENUM_VARIANT(name) DIAG_TEXT_##name,
 
