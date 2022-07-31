@@ -1,5 +1,6 @@
 // provided interfaces
 #include "sdl2_render_driver.h"
+#include "bitmap.h"
 #include "render.h"
 
 // dependencies
@@ -19,11 +20,12 @@ typedef struct
 
 static void create_virtual_render_texture(void);
 static void resize_bitmap(rect_size_t new_size);
-static rect_size_t get_bitmap_size_for_window(int window_width, int window_height);
+static rect_size_t
+get_bitmap_size_for_window(int window_width, int window_height);
 
 r_event_handler_t event_handler = NULL;
 
-bmp_t bitmap;
+bmp_t back_buffer;
 
 static int const INITIAL_PIX_WIDTH = 128;
 static int const INITIAL_PIX_HEIGHT = 64;
@@ -43,7 +45,7 @@ SDL_Window* window;
 SDL_Renderer* renderer;
 SDL_Texture* virtual_tex;
 
-#define BIT(byte, n) ((byte) >> (n)) & 0b1
+#define GET_BIT(integer, n) ((integer) >> (n)) & 0b1
 
 #define TRY_EVENT_HANDLER(event) \
   do \
@@ -73,13 +75,20 @@ void sdl_init(void)
       INITIAL_PIX_HEIGHT * SCREEN_PIX_PER_VIRTUAL_PIX
   );
 
-  renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  renderer = SDL_CreateRenderer(
+      window,
+      -1,
+      SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+  );
 
   // set up virtual bitmap
-  bitmap.width = INITIAL_PIX_WIDTH;
-  bitmap.height = INITIAL_PIX_HEIGHT;
-  bitmap.width_elems = utl_divide_round_up(INITIAL_PIX_WIDTH, BMP_PIX_PER_ELEM);
-  bitmap.buffer = malloc((bitmap.width_elems * bitmap.height) * sizeof(*bitmap.buffer));
+  back_buffer.width = INITIAL_PIX_WIDTH;
+  back_buffer.height = INITIAL_PIX_HEIGHT;
+  back_buffer.width_elems =
+      utl_divide_round_up(INITIAL_PIX_WIDTH, BMP_PIX_PER_ELEM);
+  back_buffer.buffer = malloc(
+      (back_buffer.width_elems * back_buffer.height) * sizeof(bmp_elem_t)
+  );
 
   // Set previous so event loop knows when to resize
   previous_tex_size.w = INITIAL_PIX_WIDTH;
@@ -95,11 +104,11 @@ static void create_virtual_render_texture(void)
       renderer,
       SDL_PIXELFORMAT_RGB888,
       SDL_TEXTUREACCESS_TARGET,
-      bitmap.width,
-      bitmap.height
+      back_buffer.width,
+      back_buffer.height
   );
-  virtual_tex_screen_size.w = bitmap.width * SCREEN_PIX_PER_VIRTUAL_PIX;
-  virtual_tex_screen_size.h = bitmap.height * SCREEN_PIX_PER_VIRTUAL_PIX;
+  virtual_tex_screen_size.w = back_buffer.width * SCREEN_PIX_PER_VIRTUAL_PIX;
+  virtual_tex_screen_size.h = back_buffer.height * SCREEN_PIX_PER_VIRTUAL_PIX;
 }
 
 void sdl_main_loop(void)
@@ -124,11 +133,12 @@ void sdl_main_loop(void)
 
           rect_size_t new_size = get_bitmap_size_for_window(window_w, window_h);
 
-          // Only fire resize events if the size of the virtual bitmap actually changed.
-          // Eg. if the window was only resized a couple of screen-pixels, the
-          // appropriate bitmap size may stay the same. In this case we do not
-          // need to send a resize event to client.
-          // if (new_size.w != previous_tex_size.w && new_size.h != previous_tex_size.h)
+          // Only fire resize events if the size of the virtual bitmap actually
+          // changed. Eg. if the window was only resized a couple of
+          // screen-pixels, the appropriate bitmap size may stay the same. In
+          // this case we do not need to send a resize event to client. if
+          // (new_size.w != previous_tex_size.w && new_size.h !=
+          // previous_tex_size.h)
           {
             resize_bitmap(new_size);
 
@@ -167,7 +177,7 @@ void sdl_cleanup(void)
 
 bmp_t* r_get_buffer(void)
 {
-  return &bitmap;
+  return &back_buffer;
 }
 
 void r_request_refresh(void)
@@ -178,16 +188,18 @@ void r_request_refresh(void)
 
   SDL_SetRenderDrawColor(renderer, FORE_COLOR);
 
-  for (int y = 0; y < bitmap.height; y++)
+  for (int y = 0; y < back_buffer.height; y++)
   {
-    for (int x = 0; x < bitmap.width; x++)
+    for (int x = 0; x < back_buffer.width; x++)
     {
       // TODO need to check if out of bounds?
-      bmp_elem_t byte = bitmap.buffer[y * bitmap.width_elems + x / BMP_PIX_PER_ELEM];
+      bmp_elem_t elem =
+          back_buffer
+              .buffer[y * back_buffer.width_elems + x / BMP_PIX_PER_ELEM];
 
       // TODO reverse?
       int bit_idx = x % BMP_PIX_PER_ELEM;
-      if (BIT(byte, bit_idx))
+      if (GET_BIT(elem, bit_idx))
       {
         SDL_RenderDrawPoint(renderer, x, y);
       }
@@ -200,7 +212,8 @@ void r_register_event_handler(r_event_handler_t handler)
   event_handler = handler;
 }
 
-static rect_size_t get_bitmap_size_for_window(int window_width, int window_height)
+static rect_size_t
+get_bitmap_size_for_window(int window_width, int window_height)
 {
   return (rect_size_t
   ){.w = window_width / SCREEN_PIX_PER_VIRTUAL_PIX,
@@ -209,11 +222,14 @@ static rect_size_t get_bitmap_size_for_window(int window_width, int window_heigh
 
 static void resize_bitmap(rect_size_t new_size)
 {
-  bitmap.width = new_size.w;
-  bitmap.height = new_size.h;
+  back_buffer.width = new_size.w;
+  back_buffer.height = new_size.h;
 
-  bitmap.width_elems = utl_divide_round_up(bitmap.width, BMP_PIX_PER_ELEM);
+  back_buffer.width_elems =
+      utl_divide_round_up(back_buffer.width, BMP_PIX_PER_ELEM);
 
-  bitmap.buffer =
-      realloc(bitmap.buffer, (bitmap.width_elems * bitmap.height) * sizeof(*bitmap.buffer));
+  back_buffer.buffer = realloc(
+      back_buffer.buffer,
+      (back_buffer.width_elems * back_buffer.height) * sizeof(bmp_elem_t)
+  );
 }

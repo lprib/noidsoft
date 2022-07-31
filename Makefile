@@ -4,7 +4,7 @@ TARGET = main
 
 OTHER_SRC_FILES = $(filter-out $(SRC_DIR)/$(TARGET).c, $(wildcard $(SRC_DIR)/*.c))
 
-CFLAGS=-Isrc -O3
+CFLAGS=-Isrc -O3 -Wall
 
 
 all: $(OUT_DIR)/$(TARGET)

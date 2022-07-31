@@ -27,7 +27,8 @@ static bmp_elem_t smile_sprite[] = {
     (bmp_elem_t)0b01000010,
     (bmp_elem_t)0b00111100};
 
-static bmp_t smile = {.width = 8, .height = 8, .width_elems = 1, .buffer = smile_sprite};
+static bmp_t smile =
+    {.width = 8, .height = 8, .width_elems = 1, .buffer = smile_sprite};
 
 static void draw(void)
 {
@@ -37,17 +38,20 @@ static void draw(void)
   {
     if (!(i % BMP_PIX_PER_ELEM))
     {
-      bmp_point(pix, i, 0, BLIT_SET);
+      bmp_point(pix, i, 0, BMP_PXL_SET);
     }
   }
   // bmp_point(pix, 0, 0, POINT_SET);
   // bmp_hline(pix, 0, pix->width - 1, 0, POINT_SET);
-  bmp_fill_rect(pix, 8, 8, pix->width - 9, pix->height - 9, BLIT_SET);
-  /* bmp_fill_rect(pix, pix->width - 10, pix->height - 10, 9, 9, BLIT_INVERT); */
+  bmp_fill_rect(pix, 8, 8, pix->width - 9, pix->height - 9, BMP_PXL_SET);
+  bmp_fill_rect(pix, pix->width - 9, pix->height - 9, 9, 9, BMP_PXL_INVERT);
 
+  bmp_rect_t sprite_rect = {0, 0, 4, 8};
+  bmp_sprite(pix, &smile, &sprite_rect, pix->width - 20, pix->height - 20);
   // for (int i = 0; i < 4; i++)
   // {
-  // bmp_rect(pix, i * 2, i * 2, pix->width - i * 4, pix->height - i * 4, BLIT_SET);
+  // bmp_rect(pix, i * 2, i * 2, pix->width - i * 4, pix->height - i * 4,
+  // BMP_PXL_SET);
   // }
 }
 
