@@ -155,7 +155,7 @@ void sdl_main_loop(void)
           int window_w = event.window.data1;
           int window_h = event.window.data2;
 
-          diag_text(DIAG_TEXT_window_true_size, "%d %d", window_w, window_h);
+          diag_text(DIAG_TEXT_WIN_SIZE, "%d %d", window_w, window_h);
 
           rect_size_t new_size = get_bitmap_size_for_window(window_w, window_h);
 
@@ -166,9 +166,9 @@ void sdl_main_loop(void)
           if (new_size.w != previous_tex_size.w && new_size.h != previous_tex_size.h)
           {
             resize_bitmap(new_size);
-            diag_text(DIAG_TEXT_window_pix_size, "%d %d", new_size.w, new_size.h);
+            diag_text(DIAG_TEXT_WIN_SIZE_PX, "%d %d", new_size.w, new_size.h);
             diag_text(
-                DIAG_TEXT_window_pix_size_x,
+                DIAG_TEXT_RENDER_TEX_SIZE,
                 "%d %d",
                 new_size.w * SCREEN_PIX_PER_VIRTUAL_PIX,
                 new_size.h * SCREEN_PIX_PER_VIRTUAL_PIX
@@ -187,7 +187,7 @@ void sdl_main_loop(void)
         break;
       case SDL_MOUSEMOTION:
         diag_text(
-            DIAG_TEXT_cursor_virt_pix_coord,
+            DIAG_TEXT_CURSOR,
             "%d %d",
             event.motion.x / SCREEN_PIX_PER_VIRTUAL_PIX,
             event.motion.y / SCREEN_PIX_PER_VIRTUAL_PIX

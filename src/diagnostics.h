@@ -8,13 +8,14 @@ typedef struct
   char buffer[DIAG_MAX_TEXT_LEN];
 } diag_text_t;
 
+/* Add new diagnositc text here. */
 #define DIAG_TEXT_LIST(selector) \
-  selector(cursor_virt_pix_coord) \
-  selector(window_true_size) \
-  selector(window_pix_size) \
-  selector(window_pix_size_x) \
+  selector(CURSOR, "cursor") \
+  selector(WIN_SIZE, "win size (screen)") \
+  selector(WIN_SIZE_PX, "win size (pix)") \
+  selector(RENDER_TEX_SIZE, "render tex size") \
 
-#define DIAG_TEXT_ENUM_VARIANT(name) DIAG_TEXT_##name,
+#define DIAG_TEXT_ENUM_VARIANT(ident, name) DIAG_TEXT_##ident,
 
 typedef enum
 {
@@ -23,8 +24,15 @@ typedef enum
       DIAG_NUM_TEXTS
 } diag_text_type_t;
 
+/**
+ * Set the diagnostic text for the specified diag text type. Uses printf args
+ * after type.
+ */
 void diag_text(diag_text_type_t type, char* format, ...);
 
+/**
+ * Get the idx'th diagnostic text string.
+ */
 diag_text_t* diag_text_get(int idx);
 
 #endif

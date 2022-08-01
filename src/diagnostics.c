@@ -5,7 +5,7 @@
 
 static diag_text_t texts[DIAG_NUM_TEXTS];
 
-#define TO_STRING_LIST(name) #name,
+#define TO_STRING_LIST(ident, name) name,
 static char const* const diag_names[DIAG_NUM_TEXTS] = {
     DIAG_TEXT_LIST(TO_STRING_LIST)};
 
