@@ -60,7 +60,6 @@ void bmp_hline(bmp_t* bitmap, int x1, int x2, int y, bmp_op_t op);
 void bmp_vline(bmp_t* bitmap, int y1, int y2, int x, bmp_op_t op);
 void bmp_rect(bmp_t* bitmap, int x, int y, int w, int h, bmp_op_t op);
 void bmp_fill_rect(bmp_t* bitmap, int x, int y, int w, int h, bmp_op_t op);
-
 void bmp_sprite(bmp_t* dest, bmp_t* src, bmp_rect_t* src_rect, int x, int y);
 
 #endif
