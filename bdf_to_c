@@ -1,0 +1,246 @@
+#!/usr/bin/python3
+from enum import Enum, auto
+import re
+import math
+import sys
+
+QUOTED_STRING_LINE_REGEX = re.compile(r"""^\w+\s+"(.*)"\s*$""")
+
+ELEM_SIZE_BITS = 16
+ELEM_SIZE_HEX_DIGITS = 4
+
+class Prop(Enum):
+    QUOTED_STRING = auto()
+    IDENT = auto()
+    INT = auto()
+    HEX = auto()
+    NONE = auto()
+
+class ParseError(Exception):
+    def __init__(self, line, msg):
+        self.message = f"Line {line + 1}: " + msg
+        super().__init__(self.message)
+class UnexpectedDecl(ParseError):
+    def __init__(self, line, expected, got):
+        self.message = f"Expected {expected}, got \"{got}\""
+        super().__init__(line, self.message)
+class UnexpectedProperty(ParseError):
+    def __init__(self, line, expected_type, got):
+        self.message = f"Expected property type {expected_type.name}, got \"{got}\""
+        super().__init__(line, self.message)
+class NumberOfProperties(ParseError):
+    def __init__(self, expected_num, got_num):
+        self.message = f"Expected {expected_num} properties, got {got_num}"
+        super().__init__(line, self.message)
+class Eof(ParseError):
+    def __init__(self, line):
+        self.message = "Expected continuation, got EOF"
+        super().__init__(line, self.message)
+
+class IndentPrinter:
+    def __init__(self, file, indent_string="  "):
+        self.file = file
+        self.indent_string = indent_string
+        self.shift = 0
+
+    def writeln(self, string):
+        self.file.write(self.indent_string * self.shift + string + "\n")
+
+    def indent(self):
+        self.shift += 1
+
+    def end_indent(self):
+        self.shift -= 1
+        if self.shift < 0:
+            raise Exception("shifting below 0")
+
+
+class Glyph:
+    def __init__(self, ident, encoding, dwidth, bbx, bitmap):
+        self.ident = ident
+        self.encoding = encoding
+        self.dwidth = dwidth
+        self.bbx = bbx
+        self.bitmap = bitmap
+
+    def print(self):
+        if max(self.bitmap) == 0:
+            width = 0
+        else:
+            width = int(math.log2(max(self.bitmap)) + 1)
+        for row in self.bitmap:
+            for bit in range(width - 1, -1, -1):
+                if (row >> bit & 1):
+                    print("#", end="")
+                else:
+                    print(".", end="")
+            print("")
+
+    def c_print_bmp(self, p):
+        for row in self.bitmap:
+            # bitmaps are stored reversed, with LSB being a lower index
+            row_reversed = int("{:0{bitwidth}b}".format(row, bitwidth=ELEM_SIZE_BITS)[::-1], 2)
+            p.writeln(f"0x{row_reversed:0{ELEM_SIZE_HEX_DIGITS}x},")
+
+
+
+    def c_print(self, font_name, p):
+        p.writeln(f"static bmp_elem_t {font_name}_bitmap_{self.ident}[] = {{")
+        p.indent()
+        self.c_print_bmp(p)
+        p.end_indent()
+        p.writeln(f"}};")
+        p.writeln(f"static font_glyph_t {font_name}_glyph_{self.ident} = {{")
+        p.indent()
+        p.writeln(f".dwx = {self.dwidth[0]},")
+        p.writeln(f".dwy = {self.dwidth[1]},")
+        p.writeln(f".bmp = {{")
+        p.indent()
+        p.writeln(f".width = {self.bbx[0]},")
+        p.writeln(f".height = {self.bbx[1]},")
+        width_elems = -(self.bbx[0] // -ELEM_SIZE_BITS)
+        p.writeln(f".width_elems = {width_elems},")
+        p.writeln(f".bmp = &font_bitmap_{self.ident}")
+        p.end_indent()
+        p.writeln(f"}}")
+        p.end_indent()
+        p.writeln(f"}};")
+
+    
+class Bdf:
+    def __init__(self, lines):
+        self.lines = lines
+        self.line_ptr = 0
+        self.glyphs = {}
+        self.parse()
+
+    def current(self):
+        if self.line_ptr >= len(self.lines):
+            raise Eof(self.line_ptr)
+
+        return self.lines[self.line_ptr]
+    
+    def skip_comments(self):
+        while self.current().startswith("COMMENT"):
+            self.next()
+
+    def next(self):
+        self.line_ptr += 1
+
+    def expect(self, decl, prop_type, num_props=0):
+        self.skip_comments()
+        split = self.current().split()
+        if split[0] != decl:
+            raise UnexpectedDecl(self.line_ptr, decl, split[0])
+
+        if prop_type == Prop.INT:
+            try:
+                ints = tuple(int(x) for x in split[1:])
+            except ValueError:
+                raise UnexpectedProperty(self.line_ptr, Prop.INT, self.current())
+
+            if len(ints) != num_props:
+                raise NumberOfProperties(self.line_ptr, num_props, len(ints))
+            self.next()
+            return ints
+
+        elif prop_type == Prop.IDENT:
+            if len(split) != 2:
+                raise UnexpectedProperty(self.line_ptr, Prop.IDENT, self.curent())
+
+            self.next()
+            return split[1]
+
+        elif prop_type == Prop.NONE:
+            if len(split) != 1:
+                raise UnexpectedProperty(self.line_ptr, Prop.NONE, self.curent())
+
+            self.next()
+            return None
+
+        elif prop_type == Prop.QUOTED_STRING:
+            match = QUOTED_STRING_LINE_REGEX.fullmatch(self.current())
+            if match is not None:
+                self.next()
+                return match.group(1)
+            else:
+                raise UnexpectedProperty(self.line_ptr, Prop.QUOTED_STRING, self.current())
+        else:
+            raise ArgumentError(f"Cannot parse {prop_type.name} directly")
+
+    def skip_expect(self, decl, prop_type, num_props=0):
+        while not self.current().split()[0] == decl:
+            self.next()
+        return self.expect(decl, prop_type, num_props)
+
+    def parse(self):
+        self.expect("STARTFONT", Prop.IDENT)
+        self.ascent = self.skip_expect("FONT_ASCENT", Prop.INT, 1)[0]
+        self.descent = self.skip_expect("FONT_DESCENT", Prop.INT, 1)[0]
+
+        self.skip_expect("CHARS", Prop.INT, 1)
+        while True:
+            try:
+                # Check for ENDFONT
+                self.expect("ENDFONT", Prop.NONE)
+                break
+            except UnexpectedDecl:
+                # Otherwise parse glyph
+                ident = self.expect("STARTCHAR", Prop.IDENT)
+                encoding = self.expect("ENCODING", Prop.INT, 1)[0]
+                self.expect("SWIDTH", Prop.INT, 2)
+                dwidth = self.expect("DWIDTH", Prop.INT, 2)
+                bbx = self.expect("BBX", Prop.INT, 4)
+                self.expect("BITMAP", Prop.NONE)
+                bitmap = []
+                while self.current().strip() != "ENDCHAR":
+                    try:
+                        bitmap.append(int(self.current(), 16))
+                    except ValueError:
+                        raise UnexpectedProperty(self.line_ptr, Prop.HEX, self.current())
+                    self.next()
+                self.expect("ENDCHAR", Prop.NONE)
+                self.glyphs[encoding] = Glyph(ident, encoding, dwidth, bbx, bitmap)
+
+    def c_print(self, font_name, which_chars, p):
+        for char in which_chars:
+            self.glyphs[char].c_print(font_name, p)
+            p.writeln("")
+        p.writeln(f"")
+        p.writeln(f"static font_t {font_name} = {{")
+        p.indent()
+        p.writeln(f".ascent = {self.ascent},")
+        p.writeln(f".descent = {self.descent},")
+        p.writeln(f".glyphs = {{")
+        p.indent()
+        for char in which_chars:
+            p.writeln(f"[{char}] = &{font_name}_glyph_{self.glyphs[char].ident},")
+        p.end_indent()
+        p.writeln(f"}}")
+
+
+def uppercase_alpha_numeric_chars():
+    chars = []
+    chars.append(0)
+    chars.append(ord(' '))
+    chars.extend(range(ord('A'), ord('Z') + 1))
+    chars.extend(range(ord('0'), ord('9') + 1))
+    return chars
+
+def upper_alpha_chars():
+    return list(range(ord('A'), ord('Z') + 1))
+
+
+def main():
+    if len(sys.argv) != 2:
+        print("Expected 1 argument [FILENAME]", file=sys.stderr)
+    bdf = Bdf(open(sys.argv[1]).readlines())
+    printer = IndentPrinter(sys.stdout)
+    #  bdf.c_print(upper_alpha_chars(), printer)
+    bdf.c_print("helv08", uppercase_alpha_numeric_chars(), printer)
+    #  for c in "Bimp Llc.":
+        #  bdf.glyphs[ord(c)].print()
+        #  print()
+
+if __name__ == "__main__": main()
+    

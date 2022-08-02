@@ -9,11 +9,13 @@ typedef struct
 } diag_text_t;
 
 /* Add new diagnositc text here. */
+// clang-format off
 #define DIAG_TEXT_LIST(selector) \
   selector(CURSOR, "cursor") \
   selector(WIN_SIZE, "win size (screen)") \
   selector(WIN_SIZE_PX, "win size (pix)") \
   selector(RENDER_TEX_SIZE, "render tex size") \
+// clang-format on
 
 #define DIAG_TEXT_ENUM_VARIANT(ident, name) DIAG_TEXT_##ident,
 

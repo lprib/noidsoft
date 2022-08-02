@@ -1,1 +1,3 @@
 #include "font.h"
+
+static
