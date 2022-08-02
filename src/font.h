@@ -9,8 +9,10 @@
 typedef struct
 {
   bmp_t bmp;
-  int dwx;
-  int dwy;
+  int bb_off_x;
+  int bb_off_y;
+  int dw_x;
+  int dw_y;
 } font_glyph_t;
 
 typedef struct
@@ -19,5 +21,7 @@ typedef struct
   int descent;
   font_glyph_t* glyphs[FONT_NUM_CHARS];
 } font_t;
+
+void font_char(bmp_t* dest, font_t* font, char c, int x, int y);
 
 #endif

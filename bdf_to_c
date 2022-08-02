@@ -92,15 +92,17 @@ class Glyph:
         p.writeln(f"}};")
         p.writeln(f"static font_glyph_t {font_name}_glyph_{self.ident} = {{")
         p.indent()
-        p.writeln(f".dwx = {self.dwidth[0]},")
-        p.writeln(f".dwy = {self.dwidth[1]},")
+        p.writeln(f".bb_off_x = {self.bbx[2]},")
+        p.writeln(f".bb_off_y = {self.bbx[3]},")
+        p.writeln(f".dw_x = {self.dwidth[0]},")
+        p.writeln(f".dw_y = {self.dwidth[1]},")
         p.writeln(f".bmp = {{")
         p.indent()
         p.writeln(f".width = {self.bbx[0]},")
         p.writeln(f".height = {self.bbx[1]},")
         width_elems = -(self.bbx[0] // -ELEM_SIZE_BITS)
         p.writeln(f".width_elems = {width_elems},")
-        p.writeln(f".bmp = &font_bitmap_{self.ident}")
+        p.writeln(f".buffer = {font_name}_bitmap_{self.ident}")
         p.end_indent()
         p.writeln(f"}}")
         p.end_indent()
@@ -203,11 +205,14 @@ class Bdf:
                 self.glyphs[encoding] = Glyph(ident, encoding, dwidth, bbx, bitmap)
 
     def c_print(self, font_name, which_chars, p):
+        p.writeln("#include \"bitmap.h\"");
+        p.writeln("#include \"font.h\"");
+        p.writeln("/* clang-format off */");
         for char in which_chars:
             self.glyphs[char].c_print(font_name, p)
             p.writeln("")
         p.writeln(f"")
-        p.writeln(f"static font_t {font_name} = {{")
+        p.writeln(f"font_t {font_name} = {{")
         p.indent()
         p.writeln(f".ascent = {self.ascent},")
         p.writeln(f".descent = {self.descent},")
@@ -217,13 +222,17 @@ class Bdf:
             p.writeln(f"[{char}] = &{font_name}_glyph_{self.glyphs[char].ident},")
         p.end_indent()
         p.writeln(f"}}")
+        p.end_indent()
+        p.writeln(f"}};")
+        p.writeln("/* clang-format on */");
 
 
-def uppercase_alpha_numeric_chars():
+def alpha_numeric_space():
     chars = []
     chars.append(0)
     chars.append(ord(' '))
     chars.extend(range(ord('A'), ord('Z') + 1))
+    chars.extend(range(ord('a'), ord('z') + 1))
     chars.extend(range(ord('0'), ord('9') + 1))
     return chars
 
@@ -237,7 +246,7 @@ def main():
     bdf = Bdf(open(sys.argv[1]).readlines())
     printer = IndentPrinter(sys.stdout)
     #  bdf.c_print(upper_alpha_chars(), printer)
-    bdf.c_print("helv08", uppercase_alpha_numeric_chars(), printer)
+    bdf.c_print("helv08", alpha_numeric_space(), printer)
     #  for c in "Bimp Llc.":
         #  bdf.glyphs[ord(c)].print()
         #  print()

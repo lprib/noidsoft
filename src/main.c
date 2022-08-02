@@ -1,4 +1,6 @@
 #include "bitmap.h"
+#include "font.h"
+#include "font_helv8.h"
 #include "render.h"
 #include "sdl2_render_driver.h"
 #include "util.h"
@@ -30,6 +32,27 @@ static bmp_elem_t smile_sprite[] = {
 static bmp_t smile =
     {.width = 8, .height = 8, .width_elems = 1, .buffer = smile_sprite};
 
+static bmp_elem_t helv08_bitmap_A[] = {
+    0x0800,
+    0x0800,
+    0x1400,
+    0x1400,
+    0x2200,
+    0x3e00,
+    0x4100,
+    0x4100,
+};
+static font_glyph_t helv08_glyph_A = {
+    .bb_off_x = 0,
+    .bb_off_y = 0,
+    .dw_x = 7,
+    .dw_y = 0,
+    .bmp = {
+        .width = 16,
+        .height = 8,
+        .width_elems = 1,
+        .buffer = helv08_bitmap_A}};
+
 static void draw(void)
 {
   bmp_t* pix = r_get_buffer();
@@ -41,12 +64,16 @@ static void draw(void)
       bmp_point(pix, i, 0, BMP_PXL_SET);
     }
   }
+  // font_char(pix, &helv08, 'A', 20, 20);
+  bmp_rect_t r = {0, 0, 16, 8};
+  bmp_sprite(pix, &helv08_glyph_A.bmp, &r, 20, 20);
+
   // bmp_point(pix, 0, 0, POINT_SET);
   // bmp_hline(pix, 0, pix->width - 1, 0, POINT_SET);
-  bmp_fill_rect(pix, 8, 8, pix->width - 9, pix->height - 9, BMP_PXL_SET);
-  bmp_fill_rect(pix, pix->width - 9, pix->height - 9, 9, 9, BMP_PXL_INVERT);
+  // bmp_fill_rect(pix, 8, 8, pix->width - 9, pix->height - 9, BMP_PXL_SET);
+  // bmp_fill_rect(pix, pix->width - 9, pix->height - 9, 9, 9, BMP_PXL_INVERT);
 
-  bmp_rect_t sprite_rect = {0, 0, 4, 8};
+  bmp_rect_t sprite_rect = {0, 0, 8, 8};
   bmp_sprite(pix, &smile, &sprite_rect, pix->width - 20, pix->height - 20);
   // for (int i = 0; i < 4; i++)
   // {

@@ -11,7 +11,7 @@
  */
 
 /** A single element of the bitmap buffer. */
-typedef uint32_t bmp_elem_t;
+typedef uint16_t bmp_elem_t;
 
 typedef struct
 {
