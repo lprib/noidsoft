@@ -51,5 +51,5 @@ int font_string_width(font_t* font, char* string)
     string++;
   }
 
-  return width;
+  return width - 1;
 }
