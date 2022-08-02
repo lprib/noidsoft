@@ -3,6 +3,6 @@
 
 #include "font.h"
 
-extern font_t helv08;
+extern font_t helv8;
 
 #endif

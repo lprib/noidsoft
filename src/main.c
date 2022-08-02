@@ -14,6 +14,8 @@ int main(int argc, char* argv[])
 {
   r_register_event_handler(event_handler);
 
+  printf("%d\n", font_string_width(&micro, "Abcdefg"));
+  printf("%d\n", font_string_width(&helv8, "Abcdefg"));
   sdl_init();
   sdl_main_loop();
   sdl_cleanup();
@@ -21,14 +23,14 @@ int main(int argc, char* argv[])
 }
 
 static bmp_elem_t smile_sprite[] = {
-    (bmp_elem_t)0b11111100 << 8,
-    (bmp_elem_t)0b11000010 << 8,
+    (bmp_elem_t)0b00111100 << 8,
+    (bmp_elem_t)0b01000010 << 8,
     (bmp_elem_t)0b10100101 << 8,
     (bmp_elem_t)0b10000001 << 8,
     (bmp_elem_t)0b10100101 << 8,
     (bmp_elem_t)0b10011001 << 8,
-    (bmp_elem_t)0b11000010 << 8,
-    (bmp_elem_t)0b11111100 << 8};
+    (bmp_elem_t)0b01000010 << 8,
+    (bmp_elem_t)0b00111100 << 8};
 
 static bmp_t smile =
     {.width = 8, .height = 8, .width_elems = 1, .buffer = smile_sprite};
@@ -45,8 +47,8 @@ static void draw(void)
     }
   }
   // bmp_fill_rect(pix, 2, 2, pix->width - 4, pix->height - 4, BMP_PXL_SET);
-  font_string(pix, &helv08, "Abcdefg Quick Brown Fox", 10, 10);
-  font_string(pix, &micro, "Abcdefg Quick Brown Fox", 11, 23);
+  font_string(pix, &helv8, "Abcdefg Quick Brown Fox", 0, 10);
+  font_string(pix, &micro, "Abcdefg", 0, 23);
   // bmp_rect_t r = {0, 0, 16, 8};
   // bmp_sprite(pix, &helv08_glyph_A.bmp, &r, 20, 20);
 
