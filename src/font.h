@@ -22,6 +22,6 @@ typedef struct
   font_glyph_t* glyphs[FONT_NUM_CHARS];
 } font_t;
 
-void font_char(bmp_t* dest, font_t* font, char c, int x, int y);
+void font_string(bmp_t* dest, font_t* font, char* string, int x, int y);
 
 #endif

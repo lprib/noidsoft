@@ -1,6 +1,6 @@
 // provided interfaces
-#include "render.h"
 #include "sdl2_render_driver.h"
+#include "render.h"
 
 // dependencies
 #include "bitmap.h"
@@ -43,7 +43,7 @@ bmp_t back_buffer;
 static int const INITIAL_PIX_WIDTH = 128;
 static int const INITIAL_PIX_HEIGHT = 64;
 
-static int const SCREEN_PIX_PER_VIRTUAL_PIX = 8;
+static int const SCREEN_PIX_PER_VIRTUAL_PIX = 4;
 
 #define BACK_COLOR 36, 27, 23, 255
 #define FORE_COLOR 219, 200, 175, 255
@@ -64,7 +64,6 @@ SDL_Texture* virtual_tex;
 diag_text_render_data_t diag_render_data;
 
 #define GET_BIT(integer, n) ((integer) >> (n)) & 0b1
-
 
 void sdl_init(void)
 {
@@ -163,7 +162,8 @@ void sdl_main_loop(void)
           // changed. Eg. if the window was only resized a couple of
           // screen-pixels, the appropriate bitmap size may stay the same. In
           // this case we do not need to send a resize event to client.
-          if (new_size.w != previous_tex_size.w && new_size.h != previous_tex_size.h)
+          if (new_size.w != previous_tex_size.w &&
+              new_size.h != previous_tex_size.h)
           {
             resize_bitmap(new_size);
             diag_text(DIAG_TEXT_WIN_SIZE_PX, "%d %d", new_size.w, new_size.h);
@@ -194,18 +194,16 @@ void sdl_main_loop(void)
         );
         break;
       case SDL_MOUSEBUTTONDOWN:
-        if(event.button.button == SDL_BUTTON_LEFT)
+        if (event.button.button == SDL_BUTTON_LEFT)
         {
           diag_render_data.do_render = !diag_render_data.do_render;
         }
-      break;
+        break;
       }
     }
     send_to_client((r_event_t){.type = RENDER_EVENT_FRAME});
 
-
     SDL_SetRenderTarget(renderer, NULL);
-
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
@@ -213,7 +211,7 @@ void sdl_main_loop(void)
     SDL_RenderCopy(renderer, virtual_tex, NULL, &virtual_tex_screen_size);
 
     update_diagnostic_text(false);
-    if(diag_render_data.do_render)
+    if (diag_render_data.do_render)
     {
       render_diagnostic_text();
     }
@@ -251,8 +249,7 @@ void r_request_refresh(void)
           back_buffer
               .buffer[y * back_buffer.width_elems + x / BMP_PIX_PER_ELEM];
 
-      // TODO reverse?
-      int bit_idx = x % BMP_PIX_PER_ELEM;
+      int bit_idx = BMP_PIX_PER_ELEM - x % BMP_PIX_PER_ELEM - 1;
       if (GET_BIT(elem, bit_idx))
       {
         SDL_RenderDrawPoint(renderer, x, y);
@@ -268,7 +265,7 @@ void r_register_event_handler(r_event_handler_t handler)
 
 static void send_to_client(r_event_t event)
 {
-  if(event_handler != NULL)
+  if (event_handler != NULL)
   {
     event_handler(event);
   }
@@ -298,7 +295,7 @@ static void resize_bitmap(rect_size_t new_size)
 
 static void update_diagnostic_text(bool first_time)
 {
-  for(int i = 0; i < DIAG_NUM_TEXTS; i++)
+  for (int i = 0; i < DIAG_NUM_TEXTS; i++)
   {
     SDL_Surface* surface = TTF_RenderUTF8_Shaded(
         diag_render_data.font,
@@ -307,11 +304,12 @@ static void update_diagnostic_text(bool first_time)
         diag_text_bg
     );
 
-    if(!first_time)
+    if (!first_time)
     {
       SDL_DestroyTexture(diag_render_data.diag_tex[i]);
     }
-    diag_render_data.diag_tex[i] = SDL_CreateTextureFromSurface(renderer, surface);
+    diag_render_data.diag_tex[i] =
+        SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
   }
 }
@@ -320,7 +318,7 @@ static void render_diagnostic_text(void)
 {
   int y = 0;
 
-  for(int i = 0; i < DIAG_NUM_TEXTS; i++)
+  for (int i = 0; i < DIAG_NUM_TEXTS; i++)
   {
     SDL_Texture* tex = diag_render_data.diag_tex[i];
     int w, h;
@@ -330,4 +328,3 @@ static void render_diagnostic_text(void)
     y += h;
   }
 }
-

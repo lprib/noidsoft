@@ -2,13 +2,13 @@
 #include "font.h"
 /* clang-format off */
 static bmp_elem_t helv08_bitmap_char0[] = {
-  0x1500,
+  0xa800,
   0x0000,
-  0x1100,
+  0x8800,
   0x0000,
-  0x1100,
+  0x8800,
   0x0000,
-  0x1500,
+  0xa800,
 };
 static font_glyph_t helv08_glyph_char0 = {
   .bb_off_x = 1,
@@ -40,14 +40,14 @@ static font_glyph_t helv08_glyph_space = {
 };
 
 static bmp_elem_t helv08_bitmap_A[] = {
-  0x0800,
-  0x0800,
-  0x1400,
-  0x1400,
-  0x2200,
-  0x3e00,
-  0x4100,
-  0x4100,
+  0x1000,
+  0x1000,
+  0x2800,
+  0x2800,
+  0x4400,
+  0x7c00,
+  0x8200,
+  0x8200,
 };
 static font_glyph_t helv08_glyph_A = {
   .bb_off_x = 0,
@@ -63,14 +63,14 @@ static font_glyph_t helv08_glyph_A = {
 };
 
 static bmp_elem_t helv08_bitmap_B[] = {
-  0x0f00,
-  0x1100,
-  0x1100,
-  0x0f00,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x0f00,
+  0xf000,
+  0x8800,
+  0x8800,
+  0xf000,
+  0x8800,
+  0x8800,
+  0x8800,
+  0xf000,
 };
 static font_glyph_t helv08_glyph_B = {
   .bb_off_x = 1,
@@ -86,14 +86,14 @@ static font_glyph_t helv08_glyph_B = {
 };
 
 static bmp_elem_t helv08_bitmap_C[] = {
-  0x1e00,
-  0x2100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x2100,
-  0x1e00,
+  0x7800,
+  0x8400,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8400,
+  0x7800,
 };
 static font_glyph_t helv08_glyph_C = {
   .bb_off_x = 1,
@@ -109,14 +109,14 @@ static font_glyph_t helv08_glyph_C = {
 };
 
 static bmp_elem_t helv08_bitmap_D[] = {
-  0x0f00,
-  0x1100,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x1100,
-  0x0f00,
+  0xf000,
+  0x8800,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x8800,
+  0xf000,
 };
 static font_glyph_t helv08_glyph_D = {
   .bb_off_x = 1,
@@ -132,14 +132,14 @@ static font_glyph_t helv08_glyph_D = {
 };
 
 static bmp_elem_t helv08_bitmap_E[] = {
-  0x1f00,
-  0x0100,
-  0x0100,
-  0x1f00,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x1f00,
+  0xf800,
+  0x8000,
+  0x8000,
+  0xf800,
+  0x8000,
+  0x8000,
+  0x8000,
+  0xf800,
 };
 static font_glyph_t helv08_glyph_E = {
   .bb_off_x = 1,
@@ -155,14 +155,14 @@ static font_glyph_t helv08_glyph_E = {
 };
 
 static bmp_elem_t helv08_bitmap_F[] = {
-  0x1f00,
-  0x0100,
-  0x0100,
-  0x0f00,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
+  0xf800,
+  0x8000,
+  0x8000,
+  0xf000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
 };
 static font_glyph_t helv08_glyph_F = {
   .bb_off_x = 1,
@@ -178,14 +178,14 @@ static font_glyph_t helv08_glyph_F = {
 };
 
 static bmp_elem_t helv08_bitmap_G[] = {
-  0x1e00,
-  0x2100,
-  0x0100,
-  0x0100,
-  0x3100,
-  0x2100,
-  0x2100,
-  0x3e00,
+  0x7800,
+  0x8400,
+  0x8000,
+  0x8000,
+  0x8c00,
+  0x8400,
+  0x8400,
+  0x7c00,
 };
 static font_glyph_t helv08_glyph_G = {
   .bb_off_x = 1,
@@ -201,14 +201,14 @@ static font_glyph_t helv08_glyph_G = {
 };
 
 static bmp_elem_t helv08_bitmap_H[] = {
-  0x2100,
-  0x2100,
-  0x2100,
-  0x3f00,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x2100,
+  0x8400,
+  0x8400,
+  0x8400,
+  0xfc00,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x8400,
 };
 static font_glyph_t helv08_glyph_H = {
   .bb_off_x = 1,
@@ -224,14 +224,14 @@ static font_glyph_t helv08_glyph_H = {
 };
 
 static bmp_elem_t helv08_bitmap_I[] = {
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
 };
 static font_glyph_t helv08_glyph_I = {
   .bb_off_x = 1,
@@ -247,14 +247,14 @@ static font_glyph_t helv08_glyph_I = {
 };
 
 static bmp_elem_t helv08_bitmap_J[] = {
-  0x0800,
-  0x0800,
-  0x0800,
-  0x0800,
-  0x0800,
-  0x0800,
-  0x0900,
-  0x0600,
+  0x1000,
+  0x1000,
+  0x1000,
+  0x1000,
+  0x1000,
+  0x1000,
+  0x9000,
+  0x6000,
 };
 static font_glyph_t helv08_glyph_J = {
   .bb_off_x = 0,
@@ -270,14 +270,14 @@ static font_glyph_t helv08_glyph_J = {
 };
 
 static bmp_elem_t helv08_bitmap_K[] = {
-  0x1100,
-  0x0900,
-  0x0500,
-  0x0700,
-  0x0900,
-  0x0900,
-  0x1100,
-  0x1100,
+  0x8800,
+  0x9000,
+  0xa000,
+  0xe000,
+  0x9000,
+  0x9000,
+  0x8800,
+  0x8800,
 };
 static font_glyph_t helv08_glyph_K = {
   .bb_off_x = 1,
@@ -293,14 +293,14 @@ static font_glyph_t helv08_glyph_K = {
 };
 
 static bmp_elem_t helv08_bitmap_L[] = {
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0f00,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0xf000,
 };
 static font_glyph_t helv08_glyph_L = {
   .bb_off_x = 1,
@@ -316,14 +316,14 @@ static font_glyph_t helv08_glyph_L = {
 };
 
 static bmp_elem_t helv08_bitmap_M[] = {
-  0x4100,
-  0x6300,
-  0x6300,
-  0x5500,
-  0x5500,
-  0x4900,
-  0x4900,
-  0x4900,
+  0x8200,
+  0xc600,
+  0xc600,
+  0xaa00,
+  0xaa00,
+  0x9200,
+  0x9200,
+  0x9200,
 };
 static font_glyph_t helv08_glyph_M = {
   .bb_off_x = 1,
@@ -339,14 +339,14 @@ static font_glyph_t helv08_glyph_M = {
 };
 
 static bmp_elem_t helv08_bitmap_N[] = {
-  0x2300,
-  0x2300,
-  0x2500,
-  0x2500,
-  0x2900,
-  0x2900,
-  0x3100,
-  0x3100,
+  0xc400,
+  0xc400,
+  0xa400,
+  0xa400,
+  0x9400,
+  0x9400,
+  0x8c00,
+  0x8c00,
 };
 static font_glyph_t helv08_glyph_N = {
   .bb_off_x = 1,
@@ -362,14 +362,14 @@ static font_glyph_t helv08_glyph_N = {
 };
 
 static bmp_elem_t helv08_bitmap_O[] = {
-  0x1e00,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x1e00,
+  0x7800,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x7800,
 };
 static font_glyph_t helv08_glyph_O = {
   .bb_off_x = 1,
@@ -385,14 +385,14 @@ static font_glyph_t helv08_glyph_O = {
 };
 
 static bmp_elem_t helv08_bitmap_P[] = {
-  0x0f00,
-  0x1100,
-  0x1100,
-  0x0f00,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
+  0xf000,
+  0x8800,
+  0x8800,
+  0xf000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
 };
 static font_glyph_t helv08_glyph_P = {
   .bb_off_x = 1,
@@ -408,15 +408,15 @@ static font_glyph_t helv08_glyph_P = {
 };
 
 static bmp_elem_t helv08_bitmap_Q[] = {
-  0x1e00,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x2900,
-  0x3100,
-  0x3e00,
-  0x4000,
+  0x7800,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x9400,
+  0x8c00,
+  0x7c00,
+  0x0200,
 };
 static font_glyph_t helv08_glyph_Q = {
   .bb_off_x = 1,
@@ -432,14 +432,14 @@ static font_glyph_t helv08_glyph_Q = {
 };
 
 static bmp_elem_t helv08_bitmap_R[] = {
-  0x0f00,
-  0x1100,
-  0x1100,
-  0x0f00,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x1100,
+  0xf000,
+  0x8800,
+  0x8800,
+  0xf000,
+  0x8800,
+  0x8800,
+  0x8800,
+  0x8800,
 };
 static font_glyph_t helv08_glyph_R = {
   .bb_off_x = 1,
@@ -455,14 +455,14 @@ static font_glyph_t helv08_glyph_R = {
 };
 
 static bmp_elem_t helv08_bitmap_S[] = {
-  0x0e00,
-  0x1100,
-  0x0100,
-  0x0e00,
-  0x1000,
-  0x1100,
-  0x1100,
-  0x0e00,
+  0x7000,
+  0x8800,
+  0x8000,
+  0x7000,
+  0x0800,
+  0x8800,
+  0x8800,
+  0x7000,
 };
 static font_glyph_t helv08_glyph_S = {
   .bb_off_x = 1,
@@ -478,14 +478,14 @@ static font_glyph_t helv08_glyph_S = {
 };
 
 static bmp_elem_t helv08_bitmap_T[] = {
-  0x1f00,
-  0x0400,
-  0x0400,
-  0x0400,
-  0x0400,
-  0x0400,
-  0x0400,
-  0x0400,
+  0xf800,
+  0x2000,
+  0x2000,
+  0x2000,
+  0x2000,
+  0x2000,
+  0x2000,
+  0x2000,
 };
 static font_glyph_t helv08_glyph_T = {
   .bb_off_x = 0,
@@ -501,14 +501,14 @@ static font_glyph_t helv08_glyph_T = {
 };
 
 static bmp_elem_t helv08_bitmap_U[] = {
-  0x2100,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x2100,
-  0x1e00,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x8400,
+  0x7800,
 };
 static font_glyph_t helv08_glyph_U = {
   .bb_off_x = 1,
@@ -524,14 +524,14 @@ static font_glyph_t helv08_glyph_U = {
 };
 
 static bmp_elem_t helv08_bitmap_V[] = {
-  0x4100,
-  0x4100,
-  0x2200,
-  0x2200,
-  0x2200,
-  0x1400,
-  0x1400,
-  0x0800,
+  0x8200,
+  0x8200,
+  0x4400,
+  0x4400,
+  0x4400,
+  0x2800,
+  0x2800,
+  0x1000,
 };
 static font_glyph_t helv08_glyph_V = {
   .bb_off_x = 0,
@@ -547,14 +547,14 @@ static font_glyph_t helv08_glyph_V = {
 };
 
 static bmp_elem_t helv08_bitmap_W[] = {
-  0x0111,
-  0x0111,
-  0x0092,
-  0x0092,
-  0x00aa,
-  0x0044,
-  0x0044,
-  0x0044,
+  0x8880,
+  0x8880,
+  0x4900,
+  0x4900,
+  0x5500,
+  0x2200,
+  0x2200,
+  0x2200,
 };
 static font_glyph_t helv08_glyph_W = {
   .bb_off_x = 0,
@@ -570,14 +570,14 @@ static font_glyph_t helv08_glyph_W = {
 };
 
 static bmp_elem_t helv08_bitmap_X[] = {
-  0x1100,
-  0x1100,
-  0x0a00,
-  0x0400,
-  0x0a00,
-  0x0a00,
-  0x1100,
-  0x1100,
+  0x8800,
+  0x8800,
+  0x5000,
+  0x2000,
+  0x5000,
+  0x5000,
+  0x8800,
+  0x8800,
 };
 static font_glyph_t helv08_glyph_X = {
   .bb_off_x = 1,
@@ -593,14 +593,14 @@ static font_glyph_t helv08_glyph_X = {
 };
 
 static bmp_elem_t helv08_bitmap_Y[] = {
-  0x4100,
-  0x2200,
-  0x2200,
-  0x1400,
-  0x1400,
-  0x0800,
-  0x0800,
-  0x0800,
+  0x8200,
+  0x4400,
+  0x4400,
+  0x2800,
+  0x2800,
+  0x1000,
+  0x1000,
+  0x1000,
 };
 static font_glyph_t helv08_glyph_Y = {
   .bb_off_x = 0,
@@ -616,14 +616,14 @@ static font_glyph_t helv08_glyph_Y = {
 };
 
 static bmp_elem_t helv08_bitmap_Z[] = {
-  0x1f00,
-  0x1000,
+  0xf800,
   0x0800,
-  0x0400,
-  0x0400,
-  0x0200,
-  0x0100,
-  0x1f00,
+  0x1000,
+  0x2000,
+  0x2000,
+  0x4000,
+  0x8000,
+  0xf800,
 };
 static font_glyph_t helv08_glyph_Z = {
   .bb_off_x = 1,
@@ -639,12 +639,12 @@ static font_glyph_t helv08_glyph_Z = {
 };
 
 static bmp_elem_t helv08_bitmap_a[] = {
-  0x0700,
-  0x0800,
-  0x0e00,
-  0x0900,
-  0x0900,
-  0x1600,
+  0xe000,
+  0x1000,
+  0x7000,
+  0x9000,
+  0x9000,
+  0x6800,
 };
 static font_glyph_t helv08_glyph_a = {
   .bb_off_x = 0,
@@ -660,14 +660,14 @@ static font_glyph_t helv08_glyph_a = {
 };
 
 static bmp_elem_t helv08_bitmap_b[] = {
-  0x0100,
-  0x0100,
-  0x0d00,
-  0x1300,
-  0x1100,
-  0x1100,
-  0x1300,
-  0x0d00,
+  0x8000,
+  0x8000,
+  0xb000,
+  0xc800,
+  0x8800,
+  0x8800,
+  0xc800,
+  0xb000,
 };
 static font_glyph_t helv08_glyph_b = {
   .bb_off_x = 0,
@@ -683,12 +683,12 @@ static font_glyph_t helv08_glyph_b = {
 };
 
 static bmp_elem_t helv08_bitmap_c[] = {
-  0x0600,
-  0x0900,
-  0x0100,
-  0x0100,
-  0x0900,
-  0x0600,
+  0x6000,
+  0x9000,
+  0x8000,
+  0x8000,
+  0x9000,
+  0x6000,
 };
 static font_glyph_t helv08_glyph_c = {
   .bb_off_x = 0,
@@ -704,14 +704,14 @@ static font_glyph_t helv08_glyph_c = {
 };
 
 static bmp_elem_t helv08_bitmap_d[] = {
-  0x1000,
-  0x1000,
-  0x1600,
-  0x1900,
-  0x1100,
-  0x1100,
-  0x1900,
-  0x1600,
+  0x0800,
+  0x0800,
+  0x6800,
+  0x9800,
+  0x8800,
+  0x8800,
+  0x9800,
+  0x6800,
 };
 static font_glyph_t helv08_glyph_d = {
   .bb_off_x = 0,
@@ -727,12 +727,12 @@ static font_glyph_t helv08_glyph_d = {
 };
 
 static bmp_elem_t helv08_bitmap_e[] = {
-  0x0600,
-  0x0900,
-  0x0f00,
-  0x0100,
-  0x0900,
-  0x0600,
+  0x6000,
+  0x9000,
+  0xf000,
+  0x8000,
+  0x9000,
+  0x6000,
 };
 static font_glyph_t helv08_glyph_e = {
   .bb_off_x = 0,
@@ -748,14 +748,14 @@ static font_glyph_t helv08_glyph_e = {
 };
 
 static bmp_elem_t helv08_bitmap_f[] = {
-  0x0c00,
-  0x0200,
-  0x0700,
-  0x0200,
-  0x0200,
-  0x0200,
-  0x0200,
-  0x0200,
+  0x3000,
+  0x4000,
+  0xe000,
+  0x4000,
+  0x4000,
+  0x4000,
+  0x4000,
+  0x4000,
 };
 static font_glyph_t helv08_glyph_f = {
   .bb_off_x = 0,
@@ -771,14 +771,14 @@ static font_glyph_t helv08_glyph_f = {
 };
 
 static bmp_elem_t helv08_bitmap_g[] = {
-  0x1600,
-  0x1900,
-  0x1100,
-  0x1100,
-  0x1900,
-  0x1600,
-  0x1000,
-  0x0e00,
+  0x6800,
+  0x9800,
+  0x8800,
+  0x8800,
+  0x9800,
+  0x6800,
+  0x0800,
+  0x7000,
 };
 static font_glyph_t helv08_glyph_g = {
   .bb_off_x = 0,
@@ -794,14 +794,14 @@ static font_glyph_t helv08_glyph_g = {
 };
 
 static bmp_elem_t helv08_bitmap_h[] = {
-  0x0100,
-  0x0100,
-  0x0d00,
-  0x1300,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x1100,
+  0x8000,
+  0x8000,
+  0xb000,
+  0xc800,
+  0x8800,
+  0x8800,
+  0x8800,
+  0x8800,
 };
 static font_glyph_t helv08_glyph_h = {
   .bb_off_x = 0,
@@ -817,14 +817,14 @@ static font_glyph_t helv08_glyph_h = {
 };
 
 static bmp_elem_t helv08_bitmap_i[] = {
-  0x0100,
+  0x8000,
   0x0000,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
 };
 static font_glyph_t helv08_glyph_i = {
   .bb_off_x = 0,
@@ -840,16 +840,16 @@ static font_glyph_t helv08_glyph_i = {
 };
 
 static bmp_elem_t helv08_bitmap_j[] = {
-  0x0200,
+  0x4000,
   0x0000,
-  0x0200,
-  0x0200,
-  0x0200,
-  0x0200,
-  0x0200,
-  0x0200,
-  0x0200,
-  0x0100,
+  0x4000,
+  0x4000,
+  0x4000,
+  0x4000,
+  0x4000,
+  0x4000,
+  0x4000,
+  0x8000,
 };
 static font_glyph_t helv08_glyph_j = {
   .bb_off_x = -1,
@@ -865,14 +865,14 @@ static font_glyph_t helv08_glyph_j = {
 };
 
 static bmp_elem_t helv08_bitmap_k[] = {
-  0x0100,
-  0x0100,
-  0x0900,
-  0x0500,
-  0x0300,
-  0x0500,
-  0x0900,
-  0x0900,
+  0x8000,
+  0x8000,
+  0x9000,
+  0xa000,
+  0xc000,
+  0xa000,
+  0x9000,
+  0x9000,
 };
 static font_glyph_t helv08_glyph_k = {
   .bb_off_x = 0,
@@ -888,14 +888,14 @@ static font_glyph_t helv08_glyph_k = {
 };
 
 static bmp_elem_t helv08_bitmap_l[] = {
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
 };
 static font_glyph_t helv08_glyph_l = {
   .bb_off_x = 0,
@@ -911,12 +911,12 @@ static font_glyph_t helv08_glyph_l = {
 };
 
 static bmp_elem_t helv08_bitmap_m[] = {
-  0x3700,
-  0x4900,
-  0x4900,
-  0x4900,
-  0x4900,
-  0x4900,
+  0xec00,
+  0x9200,
+  0x9200,
+  0x9200,
+  0x9200,
+  0x9200,
 };
 static font_glyph_t helv08_glyph_m = {
   .bb_off_x = 0,
@@ -932,12 +932,12 @@ static font_glyph_t helv08_glyph_m = {
 };
 
 static bmp_elem_t helv08_bitmap_n[] = {
-  0x0d00,
-  0x1300,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x1100,
+  0xb000,
+  0xc800,
+  0x8800,
+  0x8800,
+  0x8800,
+  0x8800,
 };
 static font_glyph_t helv08_glyph_n = {
   .bb_off_x = 0,
@@ -953,12 +953,12 @@ static font_glyph_t helv08_glyph_n = {
 };
 
 static bmp_elem_t helv08_bitmap_o[] = {
-  0x0e00,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x0e00,
+  0x7000,
+  0x8800,
+  0x8800,
+  0x8800,
+  0x8800,
+  0x7000,
 };
 static font_glyph_t helv08_glyph_o = {
   .bb_off_x = 0,
@@ -974,14 +974,14 @@ static font_glyph_t helv08_glyph_o = {
 };
 
 static bmp_elem_t helv08_bitmap_p[] = {
-  0x0d00,
-  0x1300,
-  0x1100,
-  0x1100,
-  0x1300,
-  0x0d00,
-  0x0100,
-  0x0100,
+  0xb000,
+  0xc800,
+  0x8800,
+  0x8800,
+  0xc800,
+  0xb000,
+  0x8000,
+  0x8000,
 };
 static font_glyph_t helv08_glyph_p = {
   .bb_off_x = 0,
@@ -997,14 +997,14 @@ static font_glyph_t helv08_glyph_p = {
 };
 
 static bmp_elem_t helv08_bitmap_q[] = {
-  0x1600,
-  0x1900,
-  0x1100,
-  0x1100,
-  0x1900,
-  0x1600,
-  0x1000,
-  0x1000,
+  0x6800,
+  0x9800,
+  0x8800,
+  0x8800,
+  0x9800,
+  0x6800,
+  0x0800,
+  0x0800,
 };
 static font_glyph_t helv08_glyph_q = {
   .bb_off_x = 0,
@@ -1020,12 +1020,12 @@ static font_glyph_t helv08_glyph_q = {
 };
 
 static bmp_elem_t helv08_bitmap_r[] = {
-  0x0500,
-  0x0300,
-  0x0100,
-  0x0100,
-  0x0100,
-  0x0100,
+  0xa000,
+  0xc000,
+  0x8000,
+  0x8000,
+  0x8000,
+  0x8000,
 };
 static font_glyph_t helv08_glyph_r = {
   .bb_off_x = 0,
@@ -1041,12 +1041,12 @@ static font_glyph_t helv08_glyph_r = {
 };
 
 static bmp_elem_t helv08_bitmap_s[] = {
-  0x0600,
-  0x0900,
-  0x0600,
-  0x0800,
-  0x0900,
-  0x0600,
+  0x6000,
+  0x9000,
+  0x6000,
+  0x1000,
+  0x9000,
+  0x6000,
 };
 static font_glyph_t helv08_glyph_s = {
   .bb_off_x = 0,
@@ -1062,14 +1062,14 @@ static font_glyph_t helv08_glyph_s = {
 };
 
 static bmp_elem_t helv08_bitmap_t[] = {
-  0x0200,
-  0x0200,
-  0x0700,
-  0x0200,
-  0x0200,
-  0x0200,
-  0x0200,
-  0x0600,
+  0x4000,
+  0x4000,
+  0xe000,
+  0x4000,
+  0x4000,
+  0x4000,
+  0x4000,
+  0x6000,
 };
 static font_glyph_t helv08_glyph_t = {
   .bb_off_x = 0,
@@ -1085,12 +1085,12 @@ static font_glyph_t helv08_glyph_t = {
 };
 
 static bmp_elem_t helv08_bitmap_u[] = {
-  0x0900,
-  0x0900,
-  0x0900,
-  0x0900,
-  0x0900,
-  0x0e00,
+  0x9000,
+  0x9000,
+  0x9000,
+  0x9000,
+  0x9000,
+  0x7000,
 };
 static font_glyph_t helv08_glyph_u = {
   .bb_off_x = 0,
@@ -1106,12 +1106,12 @@ static font_glyph_t helv08_glyph_u = {
 };
 
 static bmp_elem_t helv08_bitmap_v[] = {
-  0x1100,
-  0x1100,
-  0x0a00,
-  0x0a00,
-  0x0400,
-  0x0400,
+  0x8800,
+  0x8800,
+  0x5000,
+  0x5000,
+  0x2000,
+  0x2000,
 };
 static font_glyph_t helv08_glyph_v = {
   .bb_off_x = 0,
@@ -1127,12 +1127,12 @@ static font_glyph_t helv08_glyph_v = {
 };
 
 static bmp_elem_t helv08_bitmap_w[] = {
-  0x4900,
-  0x4900,
-  0x2a00,
-  0x2a00,
-  0x1400,
-  0x1400,
+  0x9200,
+  0x9200,
+  0x5400,
+  0x5400,
+  0x2800,
+  0x2800,
 };
 static font_glyph_t helv08_glyph_w = {
   .bb_off_x = 0,
@@ -1148,12 +1148,12 @@ static font_glyph_t helv08_glyph_w = {
 };
 
 static bmp_elem_t helv08_bitmap_x[] = {
-  0x1100,
-  0x0a00,
-  0x0400,
-  0x0a00,
-  0x1100,
-  0x1100,
+  0x8800,
+  0x5000,
+  0x2000,
+  0x5000,
+  0x8800,
+  0x8800,
 };
 static font_glyph_t helv08_glyph_x = {
   .bb_off_x = 0,
@@ -1169,14 +1169,14 @@ static font_glyph_t helv08_glyph_x = {
 };
 
 static bmp_elem_t helv08_bitmap_y[] = {
-  0x1200,
-  0x1200,
-  0x0a00,
-  0x0a00,
-  0x0c00,
-  0x0400,
-  0x0400,
-  0x0300,
+  0x4800,
+  0x4800,
+  0x5000,
+  0x5000,
+  0x3000,
+  0x2000,
+  0x2000,
+  0xc000,
 };
 static font_glyph_t helv08_glyph_y = {
   .bb_off_x = -1,
@@ -1192,12 +1192,12 @@ static font_glyph_t helv08_glyph_y = {
 };
 
 static bmp_elem_t helv08_bitmap_z[] = {
-  0x0f00,
-  0x0800,
-  0x0400,
-  0x0200,
-  0x0100,
-  0x0f00,
+  0xf000,
+  0x1000,
+  0x2000,
+  0x4000,
+  0x8000,
+  0xf000,
 };
 static font_glyph_t helv08_glyph_z = {
   .bb_off_x = 0,
@@ -1213,14 +1213,14 @@ static font_glyph_t helv08_glyph_z = {
 };
 
 static bmp_elem_t helv08_bitmap_zero[] = {
-  0x0e00,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x0e00,
+  0x7000,
+  0x8800,
+  0x8800,
+  0x8800,
+  0x8800,
+  0x8800,
+  0x8800,
+  0x7000,
 };
 static font_glyph_t helv08_glyph_zero = {
   .bb_off_x = 0,
@@ -1236,14 +1236,14 @@ static font_glyph_t helv08_glyph_zero = {
 };
 
 static bmp_elem_t helv08_bitmap_one[] = {
-  0x0200,
-  0x0300,
-  0x0200,
-  0x0200,
-  0x0200,
-  0x0200,
-  0x0200,
-  0x0200,
+  0x4000,
+  0xc000,
+  0x4000,
+  0x4000,
+  0x4000,
+  0x4000,
+  0x4000,
+  0x4000,
 };
 static font_glyph_t helv08_glyph_one = {
   .bb_off_x = 1,
@@ -1259,14 +1259,14 @@ static font_glyph_t helv08_glyph_one = {
 };
 
 static bmp_elem_t helv08_bitmap_two[] = {
-  0x0e00,
-  0x1100,
-  0x1000,
-  0x1000,
-  0x0c00,
-  0x0200,
-  0x0100,
-  0x1f00,
+  0x7000,
+  0x8800,
+  0x0800,
+  0x0800,
+  0x3000,
+  0x4000,
+  0x8000,
+  0xf800,
 };
 static font_glyph_t helv08_glyph_two = {
   .bb_off_x = 0,
@@ -1282,14 +1282,14 @@ static font_glyph_t helv08_glyph_two = {
 };
 
 static bmp_elem_t helv08_bitmap_three[] = {
-  0x0e00,
-  0x1100,
-  0x1000,
-  0x0c00,
-  0x1000,
-  0x1000,
-  0x1100,
-  0x0e00,
+  0x7000,
+  0x8800,
+  0x0800,
+  0x3000,
+  0x0800,
+  0x0800,
+  0x8800,
+  0x7000,
 };
 static font_glyph_t helv08_glyph_three = {
   .bb_off_x = 0,
@@ -1305,14 +1305,14 @@ static font_glyph_t helv08_glyph_three = {
 };
 
 static bmp_elem_t helv08_bitmap_four[] = {
-  0x0800,
-  0x0c00,
-  0x0a00,
-  0x0a00,
-  0x0900,
-  0x1f00,
-  0x0800,
-  0x0800,
+  0x1000,
+  0x3000,
+  0x5000,
+  0x5000,
+  0x9000,
+  0xf800,
+  0x1000,
+  0x1000,
 };
 static font_glyph_t helv08_glyph_four = {
   .bb_off_x = 0,
@@ -1328,14 +1328,14 @@ static font_glyph_t helv08_glyph_four = {
 };
 
 static bmp_elem_t helv08_bitmap_five[] = {
-  0x1e00,
-  0x0200,
-  0x0200,
-  0x0e00,
-  0x1000,
-  0x1000,
-  0x1100,
-  0x0e00,
+  0x7800,
+  0x4000,
+  0x4000,
+  0x7000,
+  0x0800,
+  0x0800,
+  0x8800,
+  0x7000,
 };
 static font_glyph_t helv08_glyph_five = {
   .bb_off_x = 0,
@@ -1351,14 +1351,14 @@ static font_glyph_t helv08_glyph_five = {
 };
 
 static bmp_elem_t helv08_bitmap_six[] = {
-  0x0e00,
-  0x1100,
-  0x0100,
-  0x0f00,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x0e00,
+  0x7000,
+  0x8800,
+  0x8000,
+  0xf000,
+  0x8800,
+  0x8800,
+  0x8800,
+  0x7000,
 };
 static font_glyph_t helv08_glyph_six = {
   .bb_off_x = 0,
@@ -1374,14 +1374,14 @@ static font_glyph_t helv08_glyph_six = {
 };
 
 static bmp_elem_t helv08_bitmap_seven[] = {
-  0x1f00,
-  0x1000,
+  0xf800,
   0x0800,
-  0x0400,
-  0x0400,
-  0x0200,
-  0x0200,
-  0x0200,
+  0x1000,
+  0x2000,
+  0x2000,
+  0x4000,
+  0x4000,
+  0x4000,
 };
 static font_glyph_t helv08_glyph_seven = {
   .bb_off_x = 0,
@@ -1397,14 +1397,14 @@ static font_glyph_t helv08_glyph_seven = {
 };
 
 static bmp_elem_t helv08_bitmap_eight[] = {
-  0x0e00,
-  0x1100,
-  0x1100,
-  0x0e00,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x0e00,
+  0x7000,
+  0x8800,
+  0x8800,
+  0x7000,
+  0x8800,
+  0x8800,
+  0x8800,
+  0x7000,
 };
 static font_glyph_t helv08_glyph_eight = {
   .bb_off_x = 0,
@@ -1420,14 +1420,14 @@ static font_glyph_t helv08_glyph_eight = {
 };
 
 static bmp_elem_t helv08_bitmap_nine[] = {
-  0x0e00,
-  0x1100,
-  0x1100,
-  0x1100,
-  0x1e00,
-  0x1000,
-  0x1100,
-  0x0e00,
+  0x7000,
+  0x8800,
+  0x8800,
+  0x8800,
+  0x7800,
+  0x0800,
+  0x8800,
+  0x7000,
 };
 static font_glyph_t helv08_glyph_nine = {
   .bb_off_x = 0,

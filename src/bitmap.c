@@ -10,10 +10,11 @@
 
 // constant defs from header
 int const BMP_PIX_PER_ELEM = sizeof(bmp_elem_t) * CHAR_BIT;
-bmp_elem_t const BMP_FILLED_ELEM = ((bmp_elem_t)(~(bmp_elem_t)0));
+bmp_elem_t const BMP_FILLED_ELEM = (bmp_elem_t)(~(bmp_elem_t)0);
+bmp_elem_t const BMP_ONE_ELEM = (bmp_elem_t)(1 << (BMP_PIX_PER_ELEM - 1));
 
-#define N_START_BITS(n) ((1 << (n)) - 1)
-#define N_END_BITS(n) (((1 << (n)) - 1) << (BMP_PIX_PER_ELEM - (n)))
+#define N_END_BITS(n) ((1 << (n)) - 1)
+#define N_START_BITS(n) (((1 << (n)) - 1) << (BMP_PIX_PER_ELEM - (n)))
 
 static inline bmp_elem_t* get_elem(bmp_t* bmp, int x_elem_index, int y_index)
 {
@@ -52,8 +53,8 @@ static inline void shift_with_overflow(
 {
   ASSERT(amount <= BMP_PIX_PER_ELEM);
 
-  *out1 = in << amount;
-  *out2 = in >> (BMP_PIX_PER_ELEM - amount);
+  *out1 = in >> amount;
+  *out2 = in << (BMP_PIX_PER_ELEM - amount);
 }
 
 void bmp_point(bmp_t* bmp, int x, int y, bmp_op_t mode)
@@ -63,7 +64,7 @@ void bmp_point(bmp_t* bmp, int x, int y, bmp_op_t mode)
   ASSERT(y >= 0);
   ASSERT(y < bmp->height);
 
-  bmp_elem_t bitmask = 1 << (x % BMP_PIX_PER_ELEM);
+  bmp_elem_t bitmask = BMP_ONE_ELEM >> (x % BMP_PIX_PER_ELEM);
   bmp_elem_t* dest = get_elem(bmp, x / BMP_PIX_PER_ELEM, y);
 
   switch (mode)

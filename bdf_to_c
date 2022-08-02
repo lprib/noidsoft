@@ -56,12 +56,13 @@ class IndentPrinter:
 
 
 class Glyph:
-    def __init__(self, ident, encoding, dwidth, bbx, bitmap):
+    def __init__(self, ident, encoding, dwidth, bbx, bitmap, num_hex_digits):
         self.ident = ident
         self.encoding = encoding
         self.dwidth = dwidth
         self.bbx = bbx
         self.bitmap = bitmap
+        self.num_hex_digits = num_hex_digits
 
     def print(self):
         if max(self.bitmap) == 0:
@@ -77,10 +78,11 @@ class Glyph:
             print("")
 
     def c_print_bmp(self, p):
+        # 4 bits per hex digit
+        shift_amount = (ELEM_SIZE_HEX_DIGITS - self.num_hex_digits) * 4
         for row in self.bitmap:
-            # bitmaps are stored reversed, with LSB being a lower index
-            row_reversed = int("{:0{bitwidth}b}".format(row, bitwidth=ELEM_SIZE_BITS)[::-1], 2)
-            p.writeln(f"0x{row_reversed:0{ELEM_SIZE_HEX_DIGITS}x},")
+            shifted = row << shift_amount
+            p.writeln(f"0x{shifted:0{ELEM_SIZE_HEX_DIGITS}x},")
 
 
 
@@ -123,7 +125,7 @@ class Bdf:
         return self.lines[self.line_ptr]
     
     def skip_comments(self):
-        while self.current().startswith("COMMENT"):
+        while self.current().startswith("COMMENT") or self.current().strip() == "":
             self.next()
 
     def next(self):
@@ -171,8 +173,10 @@ class Bdf:
             raise ArgumentError(f"Cannot parse {prop_type.name} directly")
 
     def skip_expect(self, decl, prop_type, num_props=0):
+        self.skip_comments()
         while not self.current().split()[0] == decl:
             self.next()
+            self.skip_comments()
         return self.expect(decl, prop_type, num_props)
 
     def parse(self):
@@ -195,6 +199,7 @@ class Bdf:
                 bbx = self.expect("BBX", Prop.INT, 4)
                 self.expect("BITMAP", Prop.NONE)
                 bitmap = []
+                num_hex_digits = len(self.current().strip())
                 while self.current().strip() != "ENDCHAR":
                     try:
                         bitmap.append(int(self.current(), 16))
@@ -202,7 +207,7 @@ class Bdf:
                         raise UnexpectedProperty(self.line_ptr, Prop.HEX, self.current())
                     self.next()
                 self.expect("ENDCHAR", Prop.NONE)
-                self.glyphs[encoding] = Glyph(ident, encoding, dwidth, bbx, bitmap)
+                self.glyphs[encoding] = Glyph(ident, encoding, dwidth, bbx, bitmap, num_hex_digits)
 
     def c_print(self, font_name, which_chars, p):
         p.writeln("#include \"bitmap.h\"");
@@ -241,12 +246,12 @@ def upper_alpha_chars():
 
 
 def main():
-    if len(sys.argv) != 2:
-        print("Expected 1 argument [FILENAME]", file=sys.stderr)
+    if len(sys.argv) != 3:
+        print("Expected 1 arguments [FILENAME] [FONTNAME]", file=sys.stderr)
     bdf = Bdf(open(sys.argv[1]).readlines())
     printer = IndentPrinter(sys.stdout)
     #  bdf.c_print(upper_alpha_chars(), printer)
-    bdf.c_print("helv08", alpha_numeric_space(), printer)
+    bdf.c_print(sys.argv[2], alpha_numeric_space(), printer)
     #  for c in "Bimp Llc.":
         #  bdf.glyphs[ord(c)].print()
         #  print()
