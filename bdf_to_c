@@ -1,8 +1,14 @@
 #!/usr/bin/python3
+
+"""
+Parses BDF files, and outputs project-compatible .c files the define the font_t object.
+"""
+
 from enum import Enum, auto
 import re
 import math
 import sys
+
 
 QUOTED_STRING_LINE_REGEX = re.compile(r"""^\w+\s+"(.*)"\s*$""")
 
@@ -10,12 +16,20 @@ ELEM_SIZE_BITS = 16
 ELEM_SIZE_HEX_DIGITS = 4
 
 class Prop(Enum):
+    # Eg: DECLARATION "argument text"
     QUOTED_STRING = auto()
+    # Eg: DECLARATION identifier
     IDENT = auto()
+    # Eg: DECLARATION 12
+    # Eg: DECLARATION 1 2 3 4
     INT = auto()
+    # Not used with declarations
+    # Eg: A800
     HEX = auto()
+    # Eg: DECLARATION
     NONE = auto()
 
+# Parsing Errors
 class ParseError(Exception):
     def __init__(self, line, msg):
         self.message = f"Line {line + 1}: " + msg
@@ -38,6 +52,11 @@ class Eof(ParseError):
         super().__init__(line, self.message)
 
 class IndentPrinter:
+    """
+    Prints to self.file with the current indent amount. use indent() and
+    end_indent() to shift left/right by oneindent amount
+    """
+
     def __init__(self, file, indent_string="  "):
         self.file = file
         self.indent_string = indent_string
@@ -56,6 +75,8 @@ class IndentPrinter:
 
 
 class Glyph:
+    """ Glyph datastructure as defined by BDF standard. fields are same as ones in the standard """
+
     def __init__(self, ident, encoding, dwidth, bbx, bitmap, num_hex_digits):
         self.ident = ident
         self.encoding = encoding
@@ -112,6 +133,8 @@ class Glyph:
 
     
 class Bdf:
+    """ Parser and C pretty-printer for converting BDF font to C """
+
     def __init__(self, lines):
         self.lines = lines
         self.line_ptr = 0
@@ -132,6 +155,10 @@ class Bdf:
         self.line_ptr += 1
 
     def expect(self, decl, prop_type, num_props=0):
+        """
+        Expect and parse a given declaration and property type. Will skip
+        comments.
+        """
         self.skip_comments()
         split = self.current().split()
         if split[0] != decl:
@@ -173,6 +200,10 @@ class Bdf:
             raise ArgumentError(f"Cannot parse {prop_type.name} directly")
 
     def skip_expect(self, decl, prop_type, num_props=0):
+        """
+        Find and parse the next matching declaration. Will skip comments and
+        other declarations.
+        """
         self.skip_comments()
         while not self.current().split()[0] == decl:
             self.next()
@@ -247,14 +278,10 @@ def upper_alpha_chars():
 
 def main():
     if len(sys.argv) != 3:
-        print("Expected 1 arguments [FILENAME] [FONTNAME]", file=sys.stderr)
+        print("Expected 2 arguments [FILENAME] [FONTNAME]", file=sys.stderr)
     bdf = Bdf(open(sys.argv[1]).readlines())
     printer = IndentPrinter(sys.stdout)
-    #  bdf.c_print(upper_alpha_chars(), printer)
     bdf.c_print(sys.argv[2], alpha_numeric_space(), printer)
-    #  for c in "Bimp Llc.":
-        #  bdf.glyphs[ord(c)].print()
-        #  print()
 
 if __name__ == "__main__": main()
     

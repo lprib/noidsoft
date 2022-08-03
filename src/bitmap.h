@@ -60,6 +60,15 @@ void bmp_hline(bmp_t* bitmap, int x1, int x2, int y, bmp_op_t op);
 void bmp_vline(bmp_t* bitmap, int y1, int y2, int x, bmp_op_t op);
 void bmp_rect(bmp_t* bitmap, int x, int y, int w, int h, bmp_op_t op);
 void bmp_fill_rect(bmp_t* bitmap, int x, int y, int w, int h, bmp_op_t op);
+
+/**
+ * Draws a sprite bitmap `src` onto `dest` at specified x, y top left coords.
+ * `src_rect` defines the sub-texture that will be drawn from the src bitmap.
+ *
+ * Limitations:
+ * src_rect.x must lie on a bitmap element boundary.
+ * src_rect.w must be <= BMP_PIX_PER_ELEM
+ */
 void bmp_sprite(bmp_t* dest, bmp_t* src, bmp_rect_t* src_rect, int x, int y);
 
 #endif
