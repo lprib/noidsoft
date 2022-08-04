@@ -32,8 +32,22 @@ typedef struct win_s
   struct win_s* prev_sibling;
 } win_t;
 
+/**
+ * If enabled, draw the window and children recursively.
+ */
 void win_draw_recursive(win_t* self, bmp_t* dest);
+
+/**
+ * Resize the window, and reshape docked children if specified
+ */
 void win_reshape(win_t* self, rect_t new_size, bool reshape_children);
+
 void win_add_child(win_t* parent, win_t* child);
+
+/**
+ * Returns whether the child was found (and removed) in the parent
+ * TODO untested
+ */
+bool win_remove_child(win_t* parent, win_t* child);
 
 #endif

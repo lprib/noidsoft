@@ -49,7 +49,7 @@ typedef enum
 
 void bmp_point(bmp_t* bitmap, int x, int y, bmp_op_t op);
 void bmp_clear(bmp_t* bitmap);
-void bmp_blit_clear(bmp_t* bitmap, bmp_op_t op);
+void bmp_clear_op(bmp_t* bitmap, bmp_op_t op);
 void bmp_hline(bmp_t* bitmap, int x1, int x2, int y, bmp_op_t op);
 void bmp_vline(bmp_t* bitmap, int y1, int y2, int x, bmp_op_t op);
 void bmp_rect(bmp_t* bitmap, rect_t rect, bmp_op_t op);

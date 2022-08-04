@@ -86,11 +86,11 @@ void bmp_clear(bmp_t* bmp)
   memset(bmp->buffer, 0, bmp->width_elems * bmp->height * sizeof(bmp_elem_t));
 }
 
-void bmp_blit_clear(bmp_t* bmp, bmp_op_t mode)
+void bmp_clear_op(bmp_t* bmp, bmp_op_t op)
 {
   for (int i = 0; i < (bmp->width_elems * bmp->height); i++)
   {
-    blit_elem(&bmp->buffer[i], BMP_FILLED_ELEM, mode);
+    blit_elem(&bmp->buffer[i], BMP_FILLED_ELEM, op);
   }
 }
 

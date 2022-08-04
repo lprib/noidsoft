@@ -59,23 +59,29 @@ resize_child(win_t* child, rect_t parent_old_size, rect_t parent_new_size)
 
 void win_draw_recursive(win_t* self, bmp_t* dest)
 {
-  self->draw_fn(self, dest);
-
-  win_t* child = self->children;
-  while (child)
+  if (self->enabled)
   {
-    win_draw_recursive(child, dest);
-    child = child->next_sibling;
+    self->draw_fn(self, dest);
+
+    win_t* child = self->children;
+    while (child)
+    {
+      win_draw_recursive(child, dest);
+      child = child->next_sibling;
+    }
   }
 }
 
 void win_reshape(win_t* self, rect_t new_size, bool reshape_children)
 {
-  win_t* child = self->children;
-  while (child)
+  if (reshape_children)
   {
-    resize_child(child, self->rect, new_size);
-    child = child->next_sibling;
+    win_t* child = self->children;
+    while (child)
+    {
+      resize_child(child, self->rect, new_size);
+      child = child->next_sibling;
+    }
   }
   self->rect = new_size;
 }
@@ -100,4 +106,33 @@ void win_add_child(win_t* parent, win_t* child)
   {
     parent->children = child;
   }
+}
+
+bool wim_remove_child(win_t* parent, win_t* child)
+{
+  win_t* cur_child = parent->children;
+  while (cur_child)
+  {
+    if (cur_child == child)
+    {
+      if (cur_child->next_sibling)
+      {
+        // cur_child->prev_sibling may be NULL
+        cur_child->next_sibling->prev_sibling = cur_child->prev_sibling;
+      }
+
+      if (cur_child->prev_sibling)
+      {
+        // cur_child->next_sibling may be NULL
+        cur_child->prev_sibling->next_sibling = cur_child->next_sibling;
+      }
+
+      child->next_sibling = NULL;
+      child->prev_sibling = NULL;
+      return true;
+    }
+
+    cur_child = child->next_sibling;
+  }
+  return false;
 }
