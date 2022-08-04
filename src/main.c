@@ -26,7 +26,18 @@ static bmp_t smile =
 
 static void draw_outline(win_t* self, bmp_t* target)
 {
-  win_rect(self, target, (rect_t){0, 0, self->rect.w, self->rect.h}, BMP_PXL_SET);
+  win_rect(
+      self,
+      target,
+      (rect_t){0, 0, self->rect.w, self->rect.h},
+      BMP_PXL_SET
+  );
+}
+
+static void draw_outline_text(win_t* self, bmp_t* target)
+{
+  draw_outline(self, target);
+  win_string(self, target, &micro, "Some Text Here", 2, 2);
 }
 
 static win_t main_win = {
@@ -51,10 +62,10 @@ static win_t child2 = {
     .next_sibling = NULL};
 
 static win_t child3 = {
-    .rect = {8, 40, 112, 5},
+    .rect = {8, 38, 112, 9},
     .dock = WIN_DOCK_LEFT | WIN_DOCK_BOTTOM | WIN_DOCK_RIGHT,
     .enabled = true,
-    .draw_fn = &draw_outline,
+    .draw_fn = &draw_outline_text,
     .next_sibling = NULL};
 
 static win_t child4 = {

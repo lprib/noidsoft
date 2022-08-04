@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #include "bitmap.h"
+#include "font.h"
 #include "util.h"
 
 #define WIN_DOCK_LEFT 1
@@ -65,6 +66,14 @@ void win_sprite(
     bmp_t* target,
     bmp_t* src,
     rect_t* src_rect,
+    int x,
+    int y
+);
+void win_string(
+    win_t* self,
+    bmp_t* target,
+    font_t* font,
+    char* string,
     int x,
     int y
 );

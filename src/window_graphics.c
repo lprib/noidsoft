@@ -1,3 +1,4 @@
+#include "font.h"
 #include "window.h"
 
 void win_point(win_t* self, bmp_t* target, int x, int y, bmp_op_t op)
@@ -53,4 +54,16 @@ void win_sprite(
   ASSERT(y < self->rect.h);
 
   bmp_sprite(target, src, src_rect, self->rect.x + x, self->rect.y + y);
+}
+
+void win_string(
+    win_t* self,
+    bmp_t* target,
+    font_t* font,
+    char* string,
+    int x,
+    int y
+)
+{
+  font_string(target, font, string, self->rect.x + x, self->rect.y + y);
 }
