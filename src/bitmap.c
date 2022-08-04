@@ -1,7 +1,9 @@
 #include "bitmap.h"
 
-#define UTIL_ENABLE_ASSERTS
 #include "util.h"
+
+#define CHECK_ENABLE_ASSERTS
+#include "check.h"
 
 #include <assert.h>
 #include <stdbool.h>

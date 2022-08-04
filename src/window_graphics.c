@@ -1,6 +1,9 @@
 #include "font.h"
 #include "window.h"
 
+#define CHECK_ENABLE_ASSERTS
+#include "check.h"
+
 void win_point(win_t* self, bmp_t* target, int x, int y, bmp_op_t op)
 {
   ASSERT(x >= 0);
@@ -65,5 +68,12 @@ void win_string(
     int y
 )
 {
+  ASSERT(x >= 0);
+  ASSERT(x < self->rect.w);
+  ASSERT(y >= 0);
+  ASSERT(y < self->rect.h);
+  int font_width = font_string_width(font, string);
+  ASSERT(x + font_width < self->rect.w);
+
   font_string(target, font, string, self->rect.x + x, self->rect.y + y);
 }
