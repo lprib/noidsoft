@@ -1,6 +1,11 @@
 #ifndef _DIAGNOSTICS_H_
 #define _DIAGNOSTICS_H_
 
+/**
+ * Diagnostic utilities. First define a diagnostic type in the DIAG_TEXT_LIST x-macro.
+ * Use diag_text to update the text.
+ */
+
 #define DIAG_MAX_TEXT_LEN 100
 
 typedef struct

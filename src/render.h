@@ -2,7 +2,7 @@
 #define _SDL_RENDER_H_
 
 /**
- * Generic platform-agnostic rendering functions
+ * Generic platform-agnostic rendering and event loop functions.
  */
 
 #include "bitmap.h"

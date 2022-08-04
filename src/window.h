@@ -1,6 +1,15 @@
 #ifndef _WINDOW_H_
 #define _WINDOW_H_
 
+/**
+ * Window structure. Windows have a linked-list of children. When drawing
+ * inside a window's draw_fn, use the win_X(...) functions, which have
+ * coordinates referenced to the current window's top left corner.
+ *
+ * When children are docked (eg. win.dock = WIN_DOCK_BOTTOM | WIN_DOCK_RIGHT),
+ * reshaping the parent will also reshape the children to maintain the docking.
+ */
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -8,10 +17,13 @@
 #include "font.h"
 #include "util.h"
 
-#define WIN_DOCK_LEFT 1
-#define WIN_DOCK_RIGHT 2
-#define WIN_DOCK_TOP 4
-#define WIN_DOCK_BOTTOM 8
+typedef enum
+{
+  WIN_DOCK_LEFT = 1,
+  WIN_DOCK_RIGHT = 2,
+  WIN_DOCK_TOP = 4,
+  WIN_DOCK_BOTTOM = 8,
+} win_dock_side_t;
 
 struct win_s;
 
@@ -20,7 +32,10 @@ typedef void (*win_draw_fn_t)(struct win_s* self, bmp_t* target);
 typedef struct win_s
 {
   rect_t rect;
+  /** Bitfield of win_dock_side_t */
   uint8_t dock;
+
+  /** if !enabled, don't draw self and children */
   bool enabled;
 
   win_draw_fn_t draw_fn;
