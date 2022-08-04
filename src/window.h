@@ -14,7 +14,7 @@
 
 struct win_s;
 
-typedef void (*win_draw_fn_t)(struct win_s* self, bmp_t* dest);
+typedef void (*win_draw_fn_t)(struct win_s* self, bmp_t* target);
 
 typedef struct win_s
 {
@@ -42,6 +42,10 @@ void win_draw_recursive(win_t* self, bmp_t* dest);
  */
 void win_reshape(win_t* self, rect_t new_size, bool reshape_children);
 
+/**
+ * Add a child window. Also sets the child's graphics context to point to the
+ * same render bitmap.
+ */
 void win_add_child(win_t* parent, win_t* child);
 
 /**
@@ -49,5 +53,20 @@ void win_add_child(win_t* parent, win_t* child);
  * TODO untested
  */
 bool win_remove_child(win_t* parent, win_t* child);
+
+// Implemented in window_graphics.c
+void win_point(win_t* self, bmp_t* target, int x, int y, bmp_op_t op);
+void win_hline(win_t* self, bmp_t* target, int x1, int x2, int y, bmp_op_t op);
+void win_vline(win_t* self, bmp_t* target, int y1, int y2, int x, bmp_op_t op);
+void win_rect(win_t* self, bmp_t* target, rect_t rect, bmp_op_t op);
+void win_fill_rect(win_t* self, bmp_t* target, rect_t rect, bmp_op_t op);
+void win_sprite(
+    win_t* self,
+    bmp_t* target,
+    bmp_t* src,
+    rect_t* src_rect,
+    int x,
+    int y
+);
 
 #endif

@@ -108,7 +108,7 @@ void win_add_child(win_t* parent, win_t* child)
   }
 }
 
-bool wim_remove_child(win_t* parent, win_t* child)
+bool win_remove_child(win_t* parent, win_t* child)
 {
   win_t* cur_child = parent->children;
   while (cur_child)

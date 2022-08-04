@@ -24,9 +24,9 @@ static bmp_elem_t smile_sprite[] = {
 static bmp_t smile =
     {.width = 8, .height = 8, .width_elems = 1, .buffer = smile_sprite};
 
-static void draw_outline(win_t* self, bmp_t* dest)
+static void draw_outline(win_t* self, bmp_t* target)
 {
-  bmp_rect(dest, self->rect, BMP_PXL_SET);
+  win_rect(self, target, (rect_t){0, 0, self->rect.w, self->rect.h}, BMP_PXL_SET);
 }
 
 static win_t main_win = {
