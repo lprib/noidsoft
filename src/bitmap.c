@@ -111,13 +111,13 @@ void bmp_vline(bmp_t* bmp, int y1, int y2, int x, bmp_op_t op)
   }
 }
 
-void bmp_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_op_t op)
+void bmp_rect(bmp_t* bitmap, rect_t rect, bmp_op_t op)
 {
   // TODO overlapping lines break with op BMP_PXL_INVERT
-  bmp_hline(bmp, x, x + w - 1, y, op);
-  bmp_hline(bmp, x, x + w - 1, y + h - 1, op);
-  bmp_vline(bmp, y, y + h - 1, x, op);
-  bmp_vline(bmp, y, y + h - 1, x + w - 1, op);
+  bmp_hline(bitmap, rect.x, rect.x + rect.w - 1, rect.y, op);
+  bmp_hline(bitmap, rect.x, rect.x + rect.w - 1, rect.y + rect.h - 1, op);
+  bmp_vline(bitmap, rect.y, rect.y + rect.h - 1, rect.x, op);
+  bmp_vline(bitmap, rect.y, rect.y + rect.h - 1, rect.x + rect.w - 1, op);
 }
 
 /**
@@ -135,27 +135,28 @@ void bmp_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_op_t op)
  * If the rect is too small for this algo, it will fall back to a simple
  * foreach and bmp_point.
  */
-void bmp_fill_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_op_t op)
+void bmp_fill_rect(bmp_t* bitmap, rect_t rect, bmp_op_t op)
 {
-  ASSERT(x >= 0);
-  ASSERT(x < bmp->width);
-  ASSERT(y >= 0);
-  ASSERT(y < bmp->height);
-  ASSERT(x + w <= bmp->width);
-  ASSERT(y + h <= bmp->height);
+  ASSERT(rect.x >= 0);
+  ASSERT(rect.x < bitmap->width);
+  ASSERT(rect.y >= 0);
+  ASSERT(rect.y < bitmap->height);
+  ASSERT(rect.x + rect.w <= bitmap->width);
+  ASSERT(rect.y + rect.h <= bitmap->height);
 
   // full byte portion
-  int first_inside_elem_boundary = utl_divide_round_up(x, BMP_PIX_PER_ELEM);
-  int last_elem_boundary_exclusive = (x + w) / BMP_PIX_PER_ELEM;
+  int first_inside_elem_boundary =
+      utl_divide_round_up(rect.x, BMP_PIX_PER_ELEM);
+  int last_elem_boundary_exclusive = (rect.x + rect.w) / BMP_PIX_PER_ELEM;
 
   // start overhang bits
   int num_start_overhang_bits =
-      first_inside_elem_boundary * BMP_PIX_PER_ELEM - x;
+      first_inside_elem_boundary * BMP_PIX_PER_ELEM - rect.x;
   bmp_elem_t start_overhang_blit = N_END_BITS(num_start_overhang_bits);
 
   // end overhand bits
   int num_end_overhang_bits =
-      (x + w) - last_elem_boundary_exclusive * BMP_PIX_PER_ELEM;
+      (rect.x + rect.w) - last_elem_boundary_exclusive * BMP_PIX_PER_ELEM;
   bmp_elem_t end_overhang_blit = N_START_BITS(num_end_overhang_bits);
 
   // Handle the case where there is only a single elem stride of width.
@@ -165,7 +166,7 @@ void bmp_fill_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_op_t op)
       first_inside_elem_boundary > last_elem_boundary_exclusive;
   if (is_single_stride_blit)
   {
-    int num_to_erase = BMP_PIX_PER_ELEM - (x + w);
+    int num_to_erase = BMP_PIX_PER_ELEM - (rect.x + rect.w);
     start_overhang_blit &= ~N_END_BITS(num_to_erase);
   }
 
@@ -174,18 +175,18 @@ void bmp_fill_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_op_t op)
   ASSERT(num_end_overhang_bits >= 0);
   ASSERT(num_end_overhang_bits < BMP_PIX_PER_ELEM);
 
-  for (int y_iter = y; y_iter < y + h; y_iter++)
+  for (int y_iter = rect.y; y_iter < rect.y + rect.h; y_iter++)
   {
     // blit full bytes first
     for (int x_elem_iter = first_inside_elem_boundary;
          x_elem_iter < last_elem_boundary_exclusive;
          x_elem_iter++)
     {
-      blit_elem(get_elem(bmp, x_elem_iter, y_iter), BMP_FILLED_ELEM, op);
+      blit_elem(get_elem(bitmap, x_elem_iter, y_iter), BMP_FILLED_ELEM, op);
     }
 
     blit_elem(
-        get_elem(bmp, first_inside_elem_boundary - 1, y_iter),
+        get_elem(bitmap, first_inside_elem_boundary - 1, y_iter),
         start_overhang_blit,
         op
     );
@@ -193,7 +194,7 @@ void bmp_fill_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_op_t op)
     if (!is_single_stride_blit)
     {
       blit_elem(
-          get_elem(bmp, last_elem_boundary_exclusive, y_iter),
+          get_elem(bitmap, last_elem_boundary_exclusive, y_iter),
           end_overhang_blit,
           op
       );
@@ -206,7 +207,7 @@ void bmp_fill_rect(bmp_t* bmp, int x, int y, int w, int h, bmp_op_t op)
  * src_rect.w must always be less <= BMP_PIX_PER_ELEM
  * src_rect.x must be bmp_elem_t aligned
  */
-void bmp_sprite(bmp_t* dest, bmp_t* src, bmp_rect_t* src_rect, int x, int y)
+void bmp_sprite(bmp_t* dest, bmp_t* src, rect_t* src_rect, int x, int y)
 {
   ASSERT(src_rect->w <= BMP_PIX_PER_ELEM);
   ASSERT(src_rect->x % BMP_PIX_PER_ELEM == 0);
@@ -260,4 +261,9 @@ void bmp_sprite(bmp_t* dest, bmp_t* src, bmp_rect_t* src_rect, int x, int y)
       blit_elem_masked(target_elem + 1, src_2, src_mask_2);
     }
   }
+}
+
+rect_t bmp_get_rect(bmp_t* bitmap)
+{
+  return (rect_t){0, 0, bitmap->width, bitmap->height};
 }

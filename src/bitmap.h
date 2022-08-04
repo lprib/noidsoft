@@ -4,6 +4,8 @@
 #include <limits.h>
 #include <stdint.h>
 
+#include "util.h"
+
 /**
  * Generic bitmap drawing functions.
  *
@@ -33,14 +35,6 @@ typedef struct
 
 } bmp_t;
 
-typedef struct
-{
-  int x;
-  int y;
-  int w;
-  int h;
-} bmp_rect_t;
-
 /** bits (pixels) in each element of bmp_t.buffer */
 extern int const BMP_PIX_PER_ELEM;
 /** value of bmp_elem_t that is all 1s */
@@ -58,8 +52,8 @@ void bmp_clear(bmp_t* bitmap);
 void bmp_blit_clear(bmp_t* bitmap, bmp_op_t op);
 void bmp_hline(bmp_t* bitmap, int x1, int x2, int y, bmp_op_t op);
 void bmp_vline(bmp_t* bitmap, int y1, int y2, int x, bmp_op_t op);
-void bmp_rect(bmp_t* bitmap, int x, int y, int w, int h, bmp_op_t op);
-void bmp_fill_rect(bmp_t* bitmap, int x, int y, int w, int h, bmp_op_t op);
+void bmp_rect(bmp_t* bitmap, rect_t rect, bmp_op_t op);
+void bmp_fill_rect(bmp_t* bitmap, rect_t rect, bmp_op_t op);
 
 /**
  * Draws a sprite bitmap `src` onto `dest` at specified x, y top left coords.
@@ -69,6 +63,8 @@ void bmp_fill_rect(bmp_t* bitmap, int x, int y, int w, int h, bmp_op_t op);
  * src_rect.x must lie on a bitmap element boundary.
  * src_rect.w must be <= BMP_PIX_PER_ELEM
  */
-void bmp_sprite(bmp_t* dest, bmp_t* src, bmp_rect_t* src_rect, int x, int y);
+void bmp_sprite(bmp_t* dest, bmp_t* src, rect_t* src_rect, int x, int y);
+
+rect_t bmp_get_rect(bmp_t* bitmap);
 
 #endif
