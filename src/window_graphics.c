@@ -1,6 +1,13 @@
 #include "font.h"
 #include "window.h"
 
+/**
+ * These are all just thin wrappers over bitmap.h functions. They translate the
+ * coordinates into window-local fist.
+ *
+ * TODO enable clippping in source rect
+ */
+
 #define CHECK_ENABLE_ASSERTS
 #include "check.h"
 

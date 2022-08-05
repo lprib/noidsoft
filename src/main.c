@@ -2,6 +2,7 @@
 #include "font.h"
 #include "font_helv8.h"
 #include "font_micro.h"
+#include "key.h"
 #include "render.h"
 #include "sdl2_render_driver.h"
 #include "util.h"
@@ -119,6 +120,10 @@ static void event_handler(r_event_t event)
   {
     // printf("f");
     // fflush(stdout);
+  }
+  if (event.type == RENDER_EVENT_KEYDOWN)
+  {
+    printf("%c\n", key_to_char(event.key_event.key));
   }
 }
 

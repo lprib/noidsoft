@@ -6,12 +6,16 @@
  */
 
 #include "bitmap.h"
+#include "key.h"
+
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef enum
 {
   RENDER_EVENT_RESHAPE,
-  RENDER_EVENT_KEYPRESS,
+  RENDER_EVENT_KEYUP,
+  RENDER_EVENT_KEYDOWN,
   RENDER_EVENT_FRAME
 } r_event_type_t;
 
@@ -22,11 +26,11 @@ typedef struct
   {
     struct
     {
-      // TODO
-      char key;
-    } keypress;
+      r_key_t key;
+    } key_event;
   };
 } r_event_t;
+
 
 typedef void (*r_event_handler_t)(r_event_t event);
 

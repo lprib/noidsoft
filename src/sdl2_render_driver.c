@@ -35,6 +35,7 @@ static rect_size_t
 get_bitmap_size_for_window(int window_width, int window_height);
 static void update_diagnostic_text(bool first_time);
 static void render_diagnostic_text(void);
+static r_key_t sdl_keycode_to_key(SDL_Keycode keycode);
 
 r_event_handler_t event_handler = NULL;
 
@@ -199,6 +200,26 @@ void sdl_main_loop(void)
           diag_render_data.do_render = !diag_render_data.do_render;
         }
         break;
+      case SDL_KEYDOWN:
+        {
+          r_key_t key = sdl_keycode_to_key(event.key.keysym.sym);
+          if(key != KEY_INVALID)
+          {
+            r_event_t ev = {.type = RENDER_EVENT_KEYDOWN, .key_event = {.key = key}};
+            send_to_client(ev);
+          }
+        }
+        break;
+      case SDL_KEYUP:
+        {
+          r_key_t key = sdl_keycode_to_key(event.key.keysym.sym);
+          if(key != KEY_INVALID)
+          {
+            r_event_t ev = {.type = RENDER_EVENT_KEYUP, .key_event = {.key = key}};
+            send_to_client(ev);
+          }
+        }
+        break;
       }
     }
     send_to_client((r_event_t){.type = RENDER_EVENT_FRAME});
@@ -326,5 +347,96 @@ static void render_diagnostic_text(void)
     SDL_Rect dest_rect = {0, y, w, h};
     SDL_RenderCopy(renderer, tex, NULL, &dest_rect);
     y += h;
+  }
+}
+
+static r_key_t sdl_keycode_to_key(SDL_Keycode keycode)
+{
+  switch(keycode)
+  {
+    case SDLK_a:
+      return KEY_A;
+    case SDLK_b:
+      return KEY_B;
+    case SDLK_c:
+      return KEY_C;
+    case SDLK_d:
+      return KEY_D;
+    case SDLK_e:
+      return KEY_E;
+    case SDLK_f:
+      return KEY_F;
+    case SDLK_g:
+      return KEY_G;
+    case SDLK_h:
+      return KEY_H;
+    case SDLK_i:
+      return KEY_I;
+    case SDLK_j:
+      return KEY_J;
+    case SDLK_k:
+      return KEY_K;
+    case SDLK_l:
+      return KEY_L;
+    case SDLK_m:
+      return KEY_M;
+    case SDLK_n:
+      return KEY_N;
+    case SDLK_o:
+      return KEY_O;
+    case SDLK_p:
+      return KEY_P;
+    case SDLK_q:
+      return KEY_Q;
+    case SDLK_r:
+      return KEY_R;
+    case SDLK_s:
+      return KEY_S;
+    case SDLK_t:
+      return KEY_T;
+    case SDLK_u:
+      return KEY_U;
+    case SDLK_v:
+      return KEY_V;
+    case SDLK_w:
+      return KEY_W;
+    case SDLK_x:
+      return KEY_X;
+    case SDLK_y:
+      return KEY_Y;
+    case SDLK_z:
+      return KEY_Z;
+    case SDLK_SPACE:
+      return KEY_SPACE;
+    case SDLK_0:
+      return KEY_0;
+    case SDLK_1:
+      return KEY_1;
+    case SDLK_2:
+      return KEY_2;
+    case SDLK_3:
+      return KEY_3;
+    case SDLK_4:
+      return KEY_4;
+    case SDLK_5:
+      return KEY_5;
+    case SDLK_6:
+      return KEY_6;
+    case SDLK_7:
+      return KEY_7;
+    case SDLK_8:
+      return KEY_8;
+    case SDLK_9:
+      return KEY_9;
+    case SDLK_LEFT:
+      return KEY_LEFT;
+    case SDLK_RIGHT:
+      return KEY_RIGHT;
+    case SDLK_UP:
+      return KEY_UP;
+    case SDLK_DOWN:
+      return KEY_DOWN;
+    default:
+      return KEY_INVALID;
   }
 }
