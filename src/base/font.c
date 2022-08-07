@@ -2,19 +2,21 @@
 
 #include "bitmap.h"
 #include "util.h"
+#include <stdbool.h>
 
 /**
  * NOTE:
  * x, y here are referenced to the glyph's origin, which is the BOTTOM LEFT
  */
-static inline void draw_glyph(bmp_t* dest, font_glyph_t* glyph, int x, int y)
+static inline void
+draw_glyph(bmp_t* dest, font_glyph_t* glyph, int x, int y, bool invert)
 {
   int top_left_x = x + glyph->bb_off_x;
   int top_left_y = y - glyph->bb_off_y - glyph->bmp.height;
 
   // TODO bake rect into bmp?
   rect_t src_rect = bmp_get_rect(&glyph->bmp);
-  bmp_sprite(dest, &glyph->bmp, &src_rect, top_left_x, top_left_y);
+  bmp_sprite(dest, &glyph->bmp, &src_rect, top_left_x, top_left_y, invert);
 }
 
 static inline font_glyph_t* get_or_fallback(font_t* font, char c)
@@ -27,7 +29,14 @@ static inline font_glyph_t* get_or_fallback(font_t* font, char c)
   return glyph;
 }
 
-void font_string(bmp_t* dest, font_t* font, char* string, int x, int y)
+void font_string(
+    bmp_t* dest,
+    font_t* font,
+    char* string,
+    int x,
+    int y,
+    bool invert
+)
 {
   int x_acc = x;
   int y_acc = y + font->ascent;
@@ -35,7 +44,7 @@ void font_string(bmp_t* dest, font_t* font, char* string, int x, int y)
   while (*string)
   {
     font_glyph_t* glyph = get_or_fallback(font, *string);
-    draw_glyph(dest, glyph, x_acc, y_acc);
+    draw_glyph(dest, glyph, x_acc, y_acc, invert);
     x_acc += glyph->dw_x;
     y_acc += glyph->dw_y;
     string++;

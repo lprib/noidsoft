@@ -2,6 +2,7 @@
 #define _FONT_H_
 
 #include "bitmap.h"
+#include <stdbool.h>
 #include <stdint.h>
 
 // ASCII range
@@ -33,7 +34,14 @@ typedef struct
  * Draw string to dest bitmap at specified x, y topleft coords.
  * Any unspupported characters in string will be rendered as char0 glyph.
  */
-void font_string(bmp_t* dest, font_t* font, char* string, int x, int y);
+void font_string(
+    bmp_t* dest,
+    font_t* font,
+    char* string,
+    int x,
+    int y,
+    bool invert
+);
 
 /* Get width in px of string if drawn with specified font */
 int font_string_width(font_t* font, char* string);

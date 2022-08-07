@@ -1,16 +1,22 @@
 OUT_DIR = out
-SRC_DIR = src
 TARGET = main
 
-OTHER_SRC_FILES = $(filter-out $(SRC_DIR)/$(TARGET).c, $(wildcard $(SRC_DIR)/*.c))
+SRC_DIR = src
+SRC_SUBDIRS = $(SRC_DIR) $(SRC_DIR)/base $(SRC_DIR)/os
 
-CFLAGS=-Isrc -O3 -Wall -lSDL2_ttf
+TARGET_SRC_FILE = $(SRC_DIR)/$(TARGET).c
+SRC_FILES = $(foreach dir,$(SRC_SUBDIRS),$(wildcard $(dir)/*.c))
+SRC_FILES_NO_MAIN = $(filter-out $(TARGET_SRC_FILE), $(SRC_FILES))
+
+INC_SUBDIRS = $(foreach dir,$(SRC_SUBDIRS),-I$(dir))
+
+CFLAGS = -O3 -Wall -lSDL2_ttf $(INC_SUBDIRS)
 
 
 all: $(OUT_DIR)/$(TARGET)
 
 test:
-	@echo $(OTHER_SRC_FILES)
+	@echo $(SRC_FILES_NO_MAIN)
 
 clean:
 	rm -rf $(OUT_DIR)
@@ -25,7 +31,7 @@ $(OUT_DIR):
 $(OUT_DIR)/firacode.ttf: assets/firacode.ttf
 	ln -s $(realpath $<) $@
 
-$(OUT_DIR)/$(TARGET): $(SRC_DIR)/main.c $(OTHER_SRC_FILES) | $(OUT_DIR)
+$(OUT_DIR)/$(TARGET): $(TARGET_SRC_FILE) $(SRC_FILES_NO_MAIN) | $(OUT_DIR)
 	gcc -o $@ $^ `sdl2-config --cflags --libs` $(CFLAGS) 
 
 .PHONY: test clean format

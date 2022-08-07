@@ -37,8 +37,13 @@ static void draw_outline(win_t* self, bmp_t* target)
 
 static void draw_outline_text(win_t* self, bmp_t* target)
 {
-  draw_outline(self, target);
-  win_string(self, target, &micro, "abcdefghijklmnopqrstuvwxyz", 2, 2);
+  win_fill_rect(
+      self,
+      target,
+      (rect_t){0, 0, self->rect.w, self->rect.h},
+      BMP_PXL_SET
+  );
+  win_string(self, target, &micro, "abcdefghijklmnopqrstuvwxyz", 2, 2, true);
 }
 
 static win_t main_win = {

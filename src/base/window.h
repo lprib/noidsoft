@@ -101,7 +101,8 @@ void win_sprite(
     bmp_t* src,
     rect_t* src_rect,
     int x,
-    int y
+    int y,
+    bool invert
 );
 void win_string(
     win_t* self,
@@ -109,7 +110,8 @@ void win_string(
     font_t* font,
     char* string,
     int x,
-    int y
+    int y,
+    bool invert
 );
 
 #endif

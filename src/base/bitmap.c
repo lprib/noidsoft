@@ -39,11 +39,22 @@ static inline void blit_elem(bmp_elem_t* dest, bmp_elem_t pattern, bmp_op_t op)
   }
 }
 
-static inline void
-blit_elem_masked(bmp_elem_t* dest, bmp_elem_t pattern, bmp_elem_t mask)
+static inline void blit_elem_masked(
+    bmp_elem_t* dest,
+    bmp_elem_t pattern,
+    bmp_elem_t mask,
+    bool invert
+)
 {
   *dest &= ~mask;
-  *dest |= pattern & mask;
+  if (invert)
+  {
+    *dest |= ~pattern & mask;
+  }
+  else
+  {
+    *dest |= pattern & mask;
+  }
 }
 
 static inline void shift_with_overflow(
@@ -209,7 +220,14 @@ void bmp_fill_rect(bmp_t* bitmap, rect_t rect, bmp_op_t op)
  * src_rect.w must always be less <= BMP_PIX_PER_ELEM
  * src_rect.x must be bmp_elem_t aligned
  */
-void bmp_sprite(bmp_t* dest, bmp_t* src, rect_t* src_rect, int x, int y)
+void bmp_sprite(
+    bmp_t* dest,
+    bmp_t* src,
+    rect_t* src_rect,
+    int x,
+    int y,
+    bool invert
+)
 {
   ASSERT(src_rect->w <= BMP_PIX_PER_ELEM);
   ASSERT(src_rect->x % BMP_PIX_PER_ELEM == 0);
@@ -255,12 +273,12 @@ void bmp_sprite(bmp_t* dest, bmp_t* src, rect_t* src_rect, int x, int y)
         &src_2
     );
 
-    blit_elem_masked(target_elem, src_1, src_mask_1);
+    blit_elem_masked(target_elem, src_1, src_mask_1, invert);
     if (do_second_blit)
     {
       ASSERT((x / BMP_PIX_PER_ELEM + 1) < dest->width_elems);
       // move one over and draw the second blit
-      blit_elem_masked(target_elem + 1, src_2, src_mask_2);
+      blit_elem_masked(target_elem + 1, src_2, src_mask_2, invert);
     }
   }
 }

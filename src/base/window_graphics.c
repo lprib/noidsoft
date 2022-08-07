@@ -1,5 +1,6 @@
 #include "font.h"
 #include "window.h"
+#include <stdbool.h>
 
 /**
  * These are all just thin wrappers over bitmap.h functions. They translate the
@@ -57,13 +58,14 @@ void win_sprite(
     bmp_t* src,
     rect_t* src_rect,
     int x,
-    int y
+    int y,
+    bool invert
 )
 {
   ASSERT(x < self->rect.w);
   ASSERT(y < self->rect.h);
 
-  bmp_sprite(target, src, src_rect, self->rect.x + x, self->rect.y + y);
+  bmp_sprite(target, src, src_rect, self->rect.x + x, self->rect.y + y, invert);
 }
 
 void win_string(
@@ -72,7 +74,8 @@ void win_string(
     font_t* font,
     char* string,
     int x,
-    int y
+    int y,
+    bool invert
 )
 {
   ASSERT(x >= 0);
@@ -82,5 +85,5 @@ void win_string(
   int font_width = font_string_width(font, string);
   ASSERT(x + font_width < self->rect.w);
 
-  font_string(target, font, string, self->rect.x + x, self->rect.y + y);
+  font_string(target, font, string, self->rect.x + x, self->rect.y + y, invert);
 }

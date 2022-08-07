@@ -2,6 +2,7 @@
 #define _BITMAP_H_
 
 #include <limits.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "util.h"
@@ -63,7 +64,14 @@ void bmp_fill_rect(bmp_t* bitmap, rect_t rect, bmp_op_t op);
  * src_rect.x must lie on a bitmap element boundary.
  * src_rect.w must be <= BMP_PIX_PER_ELEM
  */
-void bmp_sprite(bmp_t* dest, bmp_t* src, rect_t* src_rect, int x, int y);
+void bmp_sprite(
+    bmp_t* dest,
+    bmp_t* src,
+    rect_t* src_rect,
+    int x,
+    int y,
+    bool invert
+);
 
 rect_t bmp_get_rect(bmp_t* bitmap);
 
