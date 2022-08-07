@@ -63,3 +63,8 @@ int font_string_width(font_t* font, char* string)
 
   return width - 1;
 }
+
+int font_height(font_t* font)
+{
+  return font->ascent + font->descent;
+}

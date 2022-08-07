@@ -46,4 +46,6 @@ void font_string(
 /* Get width in px of string if drawn with specified font */
 int font_string_width(font_t* font, char* string);
 
+int font_height(font_t* font);
+
 #endif
