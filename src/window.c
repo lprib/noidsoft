@@ -106,6 +106,8 @@ void win_add_child(win_t* parent, win_t* child)
   {
     parent->children = child;
   }
+
+  child->parent = parent;
 }
 
 bool win_remove_child(win_t* parent, win_t* child)
@@ -129,10 +131,25 @@ bool win_remove_child(win_t* parent, win_t* child)
 
       child->next_sibling = NULL;
       child->prev_sibling = NULL;
+      child->parent = NULL;
       return true;
     }
 
     cur_child = child->next_sibling;
   }
   return false;
+}
+
+void win_handle_event(win_t* self, r_event_t event)
+{
+  bool handled = false;
+  if (self->event_handler)
+  {
+    handled = self->event_handler(self, event);
+  }
+
+  if (!handled && self->parent)
+  {
+    win_handle_event(self->parent, event);
+  }
 }

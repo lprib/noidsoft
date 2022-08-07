@@ -38,7 +38,7 @@ static void draw_outline(win_t* self, bmp_t* target)
 static void draw_outline_text(win_t* self, bmp_t* target)
 {
   draw_outline(self, target);
-  win_string(self, target, &micro, "Some Text Here", 2, 2);
+  win_string(self, target, &micro, "abcdefghijklmnopqrstuvwxyz", 2, 2);
 }
 
 static win_t main_win = {
@@ -110,20 +110,20 @@ static void draw(void)
 
 static void event_handler(r_event_t event)
 {
-  if (event.type == RENDER_EVENT_RESHAPE)
+  switch (event.type)
   {
-    // printf("r\n");
+  case RENDER_EVENT_DRIVER_INITIALIZED:
+  case RENDER_EVENT_RESHAPE:
     draw();
     r_request_refresh();
-  }
-  if (event.type == RENDER_EVENT_FRAME)
-  {
-    // printf("f");
-    // fflush(stdout);
-  }
-  if (event.type == RENDER_EVENT_KEYDOWN)
-  {
+    break;
+  case RENDER_EVENT_FRAME:
+    break;
+  case RENDER_EVENT_KEYDOWN:
     printf("%c\n", key_to_char(event.key_event.key));
+    break;
+  case RENDER_EVENT_KEYUP:
+    break;
   }
 }
 

@@ -15,6 +15,7 @@
 
 #include "bitmap.h"
 #include "font.h"
+#include "render.h"
 #include "util.h"
 
 typedef enum
@@ -29,6 +30,12 @@ struct win_s;
 
 typedef void (*win_draw_fn_t)(struct win_s* self, bmp_t* target);
 
+/**
+ * Returns whether or not to consume the event.
+ * If not consumed, the event will be passed to children (if enabled).
+ */
+typedef bool (*win_event_handler_t)(struct win_s* self, r_event_t event);
+
 typedef struct win_s
 {
   rect_t rect;
@@ -38,7 +45,13 @@ typedef struct win_s
   /** if !enabled, don't draw self and children */
   bool enabled;
 
+  /** focused window receives events */
+  bool focused;
+
   win_draw_fn_t draw_fn;
+  win_event_handler_t event_handler;
+
+  struct win_s* parent;
 
   /** pointer to head of chilren linked list */
   struct win_s* children;
@@ -69,6 +82,12 @@ void win_add_child(win_t* parent, win_t* child);
  * TODO untested
  */
 bool win_remove_child(win_t* parent, win_t* child);
+
+/**
+ * Call windows event handler. If the window does not consume the event, it is
+ * passed to the parent window.
+ */
+void win_handle_event(win_t* self, r_event_t event);
 
 // Implemented in window_graphics.c
 void win_point(win_t* self, bmp_t* target, int x, int y, bmp_op_t op);

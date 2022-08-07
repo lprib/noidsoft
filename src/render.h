@@ -8,12 +8,13 @@
 #include "bitmap.h"
 #include "key.h"
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef enum
 {
   RENDER_EVENT_RESHAPE,
+  RENDER_EVENT_DRIVER_INITIALIZED,
   RENDER_EVENT_KEYUP,
   RENDER_EVENT_KEYDOWN,
   RENDER_EVENT_FRAME
@@ -30,7 +31,6 @@ typedef struct
     } key_event;
   };
 } r_event_t;
-
 
 typedef void (*r_event_handler_t)(r_event_t event);
 

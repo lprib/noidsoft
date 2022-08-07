@@ -563,10 +563,10 @@ static font_glyph_t micro_glyph_Z = {
 
 static bmp_elem_t micro_bitmap_a[] = {
   0x0000,
-  0xe000,
+  0xc000,
   0x6000,
   0xa000,
-  0xe000,
+  0x6000,
 };
 static font_glyph_t micro_glyph_a = {
   .bb_off_x = 0,
@@ -583,10 +583,10 @@ static font_glyph_t micro_glyph_a = {
 
 static bmp_elem_t micro_bitmap_b[] = {
   0x8000,
-  0xe000,
+  0xc000,
   0xa000,
   0xa000,
-  0xe000,
+  0xc000,
 };
 static font_glyph_t micro_glyph_b = {
   .bb_off_x = 0,
@@ -603,10 +603,10 @@ static font_glyph_t micro_glyph_b = {
 
 static bmp_elem_t micro_bitmap_c[] = {
   0x0000,
-  0xe000,
+  0x6000,
   0x8000,
   0x8000,
-  0xe000,
+  0x6000,
 };
 static font_glyph_t micro_glyph_c = {
   .bb_off_x = 0,
@@ -623,10 +623,10 @@ static font_glyph_t micro_glyph_c = {
 
 static bmp_elem_t micro_bitmap_d[] = {
   0x2000,
-  0xe000,
+  0x6000,
   0xa000,
   0xa000,
-  0xe000,
+  0x6000,
 };
 static font_glyph_t micro_glyph_d = {
   .bb_off_x = 0,
@@ -643,10 +643,10 @@ static font_glyph_t micro_glyph_d = {
 
 static bmp_elem_t micro_bitmap_e[] = {
   0x0000,
-  0xe000,
+  0x6000,
   0xa000,
   0xc000,
-  0xe000,
+  0x6000,
 };
 static font_glyph_t micro_glyph_e = {
   .bb_off_x = 0,
@@ -683,10 +683,10 @@ static font_glyph_t micro_glyph_f = {
 
 static bmp_elem_t micro_bitmap_g[] = {
   0x0000,
-  0xe000,
+  0xc000,
   0xa000,
   0x6000,
-  0xe000,
+  0xc000,
 };
 static font_glyph_t micro_glyph_g = {
   .bb_off_x = 0,
@@ -703,7 +703,7 @@ static font_glyph_t micro_glyph_g = {
 
 static bmp_elem_t micro_bitmap_h[] = {
   0x8000,
-  0xe000,
+  0xc000,
   0xa000,
   0xa000,
   0xa000,
@@ -722,16 +722,16 @@ static font_glyph_t micro_glyph_h = {
 };
 
 static bmp_elem_t micro_bitmap_i[] = {
+  0x8000,
   0x0000,
-  0x4000,
-  0x4000,
-  0x4000,
-  0x4000,
+  0x8000,
+  0x8000,
+  0x8000,
 };
 static font_glyph_t micro_glyph_i = {
   .bb_off_x = 0,
   .bb_off_y = 0,
-  .dw_x = 4,
+  .dw_x = 2,
   .dw_y = 0,
   .bmp = {
     .width = 4,
@@ -746,7 +746,7 @@ static bmp_elem_t micro_bitmap_j[] = {
   0x2000,
   0x2000,
   0xa000,
-  0xe000,
+  0x4000,
 };
 static font_glyph_t micro_glyph_j = {
   .bb_off_x = 0,
@@ -803,7 +803,7 @@ static font_glyph_t micro_glyph_l = {
 
 static bmp_elem_t micro_bitmap_m[] = {
   0x0000,
-  0xa000,
+  0xe000,
   0xe000,
   0xa000,
   0xa000,
@@ -823,7 +823,7 @@ static font_glyph_t micro_glyph_m = {
 
 static bmp_elem_t micro_bitmap_n[] = {
   0x0000,
-  0xe000,
+  0xc000,
   0xa000,
   0xa000,
   0xa000,
@@ -843,10 +843,10 @@ static font_glyph_t micro_glyph_n = {
 
 static bmp_elem_t micro_bitmap_o[] = {
   0x0000,
-  0xe000,
+  0x4000,
   0xa000,
   0xa000,
-  0xe000,
+  0x4000,
 };
 static font_glyph_t micro_glyph_o = {
   .bb_off_x = 0,
@@ -863,9 +863,9 @@ static font_glyph_t micro_glyph_o = {
 
 static bmp_elem_t micro_bitmap_p[] = {
   0x0000,
-  0xe000,
+  0xc000,
   0xa000,
-  0xe000,
+  0xc000,
   0x8000,
 };
 static font_glyph_t micro_glyph_p = {
@@ -883,9 +883,9 @@ static font_glyph_t micro_glyph_p = {
 
 static bmp_elem_t micro_bitmap_q[] = {
   0x0000,
-  0xe000,
+  0x6000,
   0xa000,
-  0xe000,
+  0x6000,
   0x2000,
 };
 static font_glyph_t micro_glyph_q = {
@@ -903,7 +903,7 @@ static font_glyph_t micro_glyph_q = {
 
 static bmp_elem_t micro_bitmap_r[] = {
   0x0000,
-  0xe000,
+  0xc000,
   0xa000,
   0x8000,
   0x8000,
@@ -923,10 +923,10 @@ static font_glyph_t micro_glyph_r = {
 
 static bmp_elem_t micro_bitmap_s[] = {
   0x0000,
-  0xe000,
+  0x6000,
   0xc000,
   0x6000,
-  0xe000,
+  0xc000,
 };
 static font_glyph_t micro_glyph_s = {
   .bb_off_x = 0,
@@ -946,7 +946,7 @@ static bmp_elem_t micro_bitmap_t[] = {
   0xe000,
   0x4000,
   0x4000,
-  0x6000,
+  0x2000,
 };
 static font_glyph_t micro_glyph_t = {
   .bb_off_x = 0,
@@ -966,7 +966,7 @@ static bmp_elem_t micro_bitmap_u[] = {
   0xa000,
   0xa000,
   0xa000,
-  0xe000,
+  0x6000,
 };
 static font_glyph_t micro_glyph_u = {
   .bb_off_x = 0,
@@ -1006,7 +1006,7 @@ static bmp_elem_t micro_bitmap_w[] = {
   0xa000,
   0xa000,
   0xe000,
-  0xa000,
+  0xe000,
 };
 static font_glyph_t micro_glyph_w = {
   .bb_off_x = 0,
