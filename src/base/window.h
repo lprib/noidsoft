@@ -95,6 +95,7 @@ void win_hline(win_t* self, bmp_t* target, int x1, int x2, int y, bmp_op_t op);
 void win_vline(win_t* self, bmp_t* target, int y1, int y2, int x, bmp_op_t op);
 void win_rect(win_t* self, bmp_t* target, rect_t rect, bmp_op_t op);
 void win_fill_rect(win_t* self, bmp_t* target, rect_t rect, bmp_op_t op);
+void win_clear_op(win_t* self, bmp_t* target, bmp_op_t op);
 void win_sprite(
     win_t* self,
     bmp_t* target,

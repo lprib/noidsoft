@@ -10,7 +10,7 @@ SRC_FILES_NO_MAIN = $(filter-out $(TARGET_SRC_FILE), $(SRC_FILES))
 
 INC_SUBDIRS = $(foreach dir,$(SRC_SUBDIRS),-I$(dir))
 
-CFLAGS = -O3 -Wall -lSDL2_ttf $(INC_SUBDIRS)
+CFLAGS = -O3 -Wall -lSDL2_ttf $(INC_SUBDIRS) -g -rdynamic
 
 
 all: $(OUT_DIR)/$(TARGET)

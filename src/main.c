@@ -3,143 +3,95 @@
 #include "font_helv8.h"
 #include "font_micro.h"
 #include "key.h"
+#include "menu.h"
 #include "render.h"
 #include "sdl2_render_driver.h"
 #include "util.h"
 #include "window.h"
+#include "window_manager.h"
 
+#include <execinfo.h>
+#include <signal.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 static void event_handler(r_event_t event);
+static void menu_selected(int idx);
+static void segfault_handler(int sig);
 
-static bmp_elem_t smile_sprite[] = {
-    (bmp_elem_t)0b00111100 << 8,
-    (bmp_elem_t)0b01000010 << 8,
-    (bmp_elem_t)0b10100101 << 8,
-    (bmp_elem_t)0b10000001 << 8,
-    (bmp_elem_t)0b10100101 << 8,
-    (bmp_elem_t)0b10011001 << 8,
-    (bmp_elem_t)0b01000010 << 8,
-    (bmp_elem_t)0b00111100 << 8};
+char* menu_items[] = {"test", "else", "thing"};
 
-static bmp_t smile =
-    {.width = 8, .height = 8, .width_elems = 1, .buffer = smile_sprite};
+menu_params_t params = {
+    .item_list = menu_items,
+    .num_items = 3,
+    .win_rect = {10, 10, 30, 30},
+    .selection_callback = &menu_selected,
+    .draw_border = true};
 
-static void draw_outline(win_t* self, bmp_t* target)
+menu_t menu;
+
+static void menu_selected(int idx)
 {
-  win_rect(
-      self,
-      target,
-      (rect_t){0, 0, self->rect.w, self->rect.h},
-      BMP_PXL_SET
-  );
+  printf("selected %d\n", idx);
 }
-
-static void draw_outline_text(win_t* self, bmp_t* target)
-{
-  win_fill_rect(
-      self,
-      target,
-      (rect_t){0, 0, self->rect.w, self->rect.h},
-      BMP_PXL_SET
-  );
-  win_string(self, target, &micro, "abcdefghijklmnopqrstuvwxyz", 2, 2, true);
-}
-
-static win_t main_win = {
-    .rect = {0, 0, 128, 64},
-    .dock = 0,
-    .enabled = true,
-    .draw_fn = &draw_outline,
-    .next_sibling = NULL};
-
-static win_t child1 = {
-    .rect = {8, 8, 10, 10},
-    .dock = WIN_DOCK_TOP | WIN_DOCK_LEFT,
-    .enabled = true,
-    .draw_fn = &draw_outline,
-    .next_sibling = NULL};
-
-static win_t child2 = {
-    .rect = {112, 48, 8, 8},
-    .dock = WIN_DOCK_BOTTOM | WIN_DOCK_RIGHT,
-    .enabled = true,
-    .draw_fn = &draw_outline,
-    .next_sibling = NULL};
-
-static win_t child3 = {
-    .rect = {8, 38, 112, 9},
-    .dock = WIN_DOCK_LEFT | WIN_DOCK_BOTTOM | WIN_DOCK_RIGHT,
-    .enabled = true,
-    .draw_fn = &draw_outline_text,
-    .next_sibling = NULL};
-
-static win_t child4 = {
-    .rect = {4, 4, 120, 56},
-    .dock = WIN_DOCK_TOP | WIN_DOCK_LEFT | WIN_DOCK_BOTTOM | WIN_DOCK_RIGHT,
-    .enabled = true,
-    .draw_fn = &draw_outline,
-    .next_sibling = NULL};
 
 static void draw(void)
 {
-  bmp_t* pix = r_get_buffer();
-  bmp_clear(pix);
-  for (int i = 0; i < pix->width; i++)
-  {
-    if (!(i % BMP_PIX_PER_ELEM))
-    {
-      bmp_point(pix, i, 0, BMP_PXL_SET);
-    }
-  }
-  win_reshape(&main_win, bmp_get_rect(pix), true);
-  win_draw_recursive(&main_win, pix);
-  // bmp_fill_rect(pix, 2, 2, pix->width - 4, pix->height - 4, BMP_PXL_SET);
-  // font_string(pix, &helv8, "Abcdefg Quick Brown Fox", 0, 10);
-  // font_string(pix, &micro, "Abcdefg", 0, 23);
-  // bmp_rect_t r = {0, 0, 16, 8};
-  // bmp_sprite(pix, &helv08_glyph_A.bmp, &r, 20, 20);
-
-  // bmp_point(pix, 0, 0, POINT_SET);
-  // bmp_hline(pix, 0, pix->width - 1, 0, POINT_SET);
-  // bmp_fill_rect(pix, pix->width - 9, pix->height - 9, 9, 9, BMP_PXL_INVERT);
-
-  // rect_t r = bmp_get_rect(&smile);
-  // bmp_sprite(pix, &smile, &r, 30, 30);
-  // for (int i = 0; i < 4; i++)
-  // {
-  // bmp_rect(pix, i * 2, i * 2, pix->width - i * 4, pix->height - i * 4,
-  // BMP_PXL_SET);
-  // }
+  bmp_t* target = r_get_buffer();
+  bmp_clear(target);
+  win_draw_recursive(menu_get_win(menu), target);
+  bmp_point(target, 0, 0, BMP_PXL_SET);
 }
 
 static void event_handler(r_event_t event)
 {
+  winmanager_send_event(event);
+
   switch (event.type)
   {
   case RENDER_EVENT_DRIVER_INITIALIZED:
   case RENDER_EVENT_RESHAPE:
-    draw();
-    r_request_refresh();
+    winmanager_vote_redraw();
     break;
   case RENDER_EVENT_FRAME:
     break;
   case RENDER_EVENT_KEYDOWN:
-    printf("%c\n", key_to_char(event.key_event.key));
     break;
   case RENDER_EVENT_KEYUP:
     break;
   }
+
+  if (winmanager_get_and_clear_redraw())
+  {
+    draw();
+    r_request_refresh();
+  }
+}
+
+static void segfault_handler(int sig)
+{
+  void* array[10];
+  size_t size;
+
+  size = backtrace(array, 10);
+  fprintf(stderr, "Segfault %d", sig);
+  backtrace_symbols_fd(array, size, STDERR_FILENO);
+  exit(1);
 }
 
 int main(int argc, char* argv[])
 {
-  r_register_event_handler(event_handler);
+  signal(SIGSEGV, &segfault_handler);
 
-  win_add_child(&main_win, &child1);
-  win_add_child(&main_win, &child2);
-  win_add_child(&main_win, &child3);
-  win_add_child(&main_win, &child4);
+  r_register_event_handler(event_handler);
+  menu = menu_create(&params);
+  menu_fit_height(menu);
+  menu_get_win(menu)->enabled = true;
+
+  winmanager_set_focused(menu_get_win(menu));
+
   sdl_init();
   sdl_main_loop();
   sdl_cleanup();

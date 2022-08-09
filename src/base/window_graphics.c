@@ -52,6 +52,11 @@ void win_fill_rect(win_t* self, bmp_t* target, rect_t rect, bmp_op_t op)
   bmp_fill_rect(target, rect, op);
 }
 
+void win_clear_op(win_t* self, bmp_t* target, bmp_op_t op)
+{
+  bmp_fill_rect(target, self->rect, op);
+}
+
 void win_sprite(
     win_t* self,
     bmp_t* target,
