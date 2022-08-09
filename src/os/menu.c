@@ -186,7 +186,8 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
   for (int i = 0; i < self->page_len; i++)
   {
     int index = screen_to_array_item_index(self, i);
-    bool selected = index == self->selected_index;
+    // If this is not focused, don't draw the selected item as highlighted
+    bool selected = win->focused && (index == self->selected_index);
     int row_y = i * row_height(self) + (border ? outer_padding + 1 : 0);
     int row_x = border ? outer_padding + 1 : 0;
     int highlight_w =
