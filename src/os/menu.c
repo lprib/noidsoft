@@ -80,19 +80,19 @@ static inline void decrement_wrap(int* n, int size)
   }
 }
 
-T menu_create(menu_params_t* params)
+T menu_create(menu_config_t* config)
 {
   T menu = malloc(sizeof(*menu));
-  menu->items = params->items;
-  menu->items_len = params->items_len;
-  menu->do_border = params->do_border;
-  menu->font = params->font;
-  menu->selection_callback = params->selection_callback;
+  menu->items = config->items;
+  menu->items_len = config->items_len;
+  menu->do_border = config->do_border;
+  menu->font = config->font;
+  menu->selection_callback = config->selection_callback;
 
   menu->page_start_index = 0;
   menu->selected_index = 0;
   menu->win = (win_t
-  ){.rect = params->win_rect,
+  ){.rect = config->win_rect,
     .dock = 0,
     .enabled = false,
     .focused = false,

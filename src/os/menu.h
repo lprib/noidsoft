@@ -19,16 +19,16 @@ typedef struct menu_item_t
   font_t* font;
   rect_t win_rect;
   menu_selection_callback_t selection_callback;
-} menu_params_t;
+} menu_config_t;
 
-typedef struct menu_t* menu_t;
+typedef struct T* T;
 
 /**
  * Creates a menu from the parameters.
  * A menu contains it's own window, see menu_get_win.
  * The menu's window is initially disabled.
  */
-T menu_create(menu_params_t* params);
+T menu_create(menu_config_t* params);
 
 /**
  * Get the window owned by this menu.
