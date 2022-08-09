@@ -68,8 +68,10 @@ typedef struct win_s
  * Draw the window if marked dirty.
  * Else, iterate over children and draw them if dirty.
  * If the child is not dirty, iterate over it's children, etc.
+ *
+ * Returns whether any windows were redrawn.
  */
-void win_draw_recursive_if_dirty(win_t* self, bmp_t* dest);
+bool win_draw_recursive_if_dirty(win_t* self, bmp_t* dest);
 
 /**
  * If enabled, draw the window and children recursively.

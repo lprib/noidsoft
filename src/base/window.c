@@ -57,13 +57,15 @@ resize_child(win_t* child, rect_t parent_old_size, rect_t parent_new_size)
   }
 }
 
-void win_draw_recursive_if_dirty(win_t* self, bmp_t* dest)
+bool win_draw_recursive_if_dirty(win_t* self, bmp_t* dest)
 {
+  bool any_dirty = false;
   if (self->enabled)
   {
     if (self->dirty)
     {
       win_draw_recursive_unconditional(self, dest);
+      any_dirty = true;
     }
     else
     {
@@ -72,12 +74,14 @@ void win_draw_recursive_if_dirty(win_t* self, bmp_t* dest)
       {
         if (child->dirty)
         {
-          win_draw_recursive_if_dirty(child, dest);
+          bool child_dirty = win_draw_recursive_if_dirty(child, dest);
+          any_dirty = any_dirty || child_dirty;
         }
         child = child->next_sibling;
       }
     }
   }
+  return any_dirty;
 }
 
 void win_draw_recursive_unconditional(win_t* self, bmp_t* dest)
