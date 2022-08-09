@@ -19,6 +19,7 @@
 
 static void event_handler(r_event_t event);
 static void menu_selected(int idx);
+static bool main_win_event_handler(win_t* self, r_event_t event);
 static void segfault_handler(int sig);
 static void main_win_draw(win_t* self, bmp_t* target);
 
@@ -31,7 +32,8 @@ win_t main_win = {
     .enabled = true,
     .focused = false,
     .dirty = false,
-    .draw_fn = &main_win_draw};
+    .draw_fn = &main_win_draw,
+    .event_handler = &main_win_event_handler};
 
 menu_params_t params = {
     .items = menu_items,
@@ -51,6 +53,15 @@ static void main_win_draw(win_t* self, bmp_t* target)
 static void menu_selected(int idx)
 {
   printf("selected %s\n", params.items[idx]);
+}
+
+static bool main_win_event_handler(win_t* self, r_event_t event)
+{
+  if (event.type == RENDER_EVENT_KEYDOWN)
+  {
+    printf("parent %c\n", key_to_char(event.key_event.key));
+  }
+  return true;
 }
 
 static void event_handler(r_event_t event)

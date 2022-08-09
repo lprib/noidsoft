@@ -7,6 +7,8 @@
 
 #include <stdbool.h>
 
+#define T menu_t
+
 typedef void (*menu_selection_callback_t)(int index);
 
 typedef struct menu_item_t
@@ -26,33 +28,35 @@ typedef struct menu_t* menu_t;
  * A menu contains it's own window, see menu_get_win.
  * The menu's window is initially disabled.
  */
-menu_t menu_create(menu_params_t* params);
+T menu_create(menu_params_t* params);
 
 /**
  * Get the window owned by this menu.
  */
-win_t* menu_get_win(menu_t self);
+win_t* menu_get_win(T self);
 
 /**
  * Highlight the next item of the menu.
  * This is also done automatically by menu's window's event handler.
  */
-void menu_next(menu_t self);
+void menu_next(T self);
 
 /**
  * Highlight the previous item of the menu.
  * This is also done automatically by menu's window's event handler.
  */
-void menu_prev(menu_t self);
+void menu_prev(T self);
 
 /**
  * Shrink or grow the menu's height to hold all of the menu's items on screen.
  */
-void menu_fit_height(menu_t self);
+void menu_fit_height(T self);
 
 /**
  * Shrink or grow the menu's width to hold the maximum width of any one menu
  * item.
  */
-void menu_fit_width(menu_t self);
+void menu_fit_width(T self);
+
+#undef T
 #endif

@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define T menu_t
+
 // padding below text
 static int const between_row_padding = 1;
 // padding between menu selection and outer border
@@ -15,7 +17,7 @@ static int const inner_padding_x = 1;
 static void menu_draw_fn(win_t* self, bmp_t* target);
 static bool menu_event_handler(win_t* self, r_event_t event);
 
-struct menu_t
+struct T
 {
   // Client defined items
   char** items;
@@ -31,13 +33,13 @@ struct menu_t
   win_t win;
 };
 
-static inline int row_height(menu_t menu)
+static inline int row_height(T menu)
 {
   // between_row_padding on top and bottom
   return font_height(menu->font) + between_row_padding * 2;
 }
 
-static inline int get_items_per_page(menu_t self)
+static inline int get_items_per_page(T self)
 {
   if (self->do_border)
   {
@@ -49,7 +51,7 @@ static inline int get_items_per_page(menu_t self)
   }
 }
 
-static inline int screen_to_array_item_index(menu_t self, int idx)
+static inline int screen_to_array_item_index(T self, int idx)
 {
   return (self->page_start_index + idx) % self->items_len;
 }
@@ -78,9 +80,9 @@ static inline void decrement_wrap(int* n, int size)
   }
 }
 
-menu_t menu_create(menu_params_t* params)
+T menu_create(menu_params_t* params)
 {
-  menu_t menu = malloc(sizeof(*menu));
+  T menu = malloc(sizeof(*menu));
   menu->items = params->items;
   menu->items_len = params->items_len;
   menu->do_border = params->do_border;
@@ -102,12 +104,12 @@ menu_t menu_create(menu_params_t* params)
   return menu;
 }
 
-win_t* menu_get_win(menu_t self)
+win_t* menu_get_win(T self)
 {
   return &self->win;
 }
 
-void menu_next(menu_t self)
+void menu_next(T self)
 {
   int page_end_index =
       (self->page_start_index + self->page_len - 1) % self->items_len;
@@ -122,7 +124,7 @@ void menu_next(menu_t self)
   self->win.dirty = true;
 }
 
-void menu_prev(menu_t self)
+void menu_prev(T self)
 {
   if (self->selected_index == self->page_start_index)
   {
@@ -133,14 +135,14 @@ void menu_prev(menu_t self)
   self->win.dirty = true;
 }
 
-void menu_fit_height(menu_t self)
+void menu_fit_height(T self)
 {
   self->win.rect.h = self->items_len * row_height(self) + outer_padding * 2 + 2;
   self->page_len = self->items_len;
   self->win.dirty = true;
 }
 
-void menu_fit_width(menu_t self)
+void menu_fit_width(T self)
 {
   int max_string_width = 0;
   for (int i = 0; i < self->items_len; i++)
@@ -166,7 +168,7 @@ void menu_fit_width(menu_t self)
 
 static void menu_draw_fn(win_t* win, bmp_t* target)
 {
-  menu_t self = util_container_of(win, struct menu_t, win);
+  T self = util_container_of(win, struct T, win);
   bool border = self->do_border;
 
   win_clear_op(win, target, BMP_PXL_CLEAR);
@@ -180,7 +182,7 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
     );
   }
 
-  // TODO use containerof here to get the menu_t out
+  // TODO use containerof here to get the T out
   for (int i = 0; i < self->page_len; i++)
   {
     int index = screen_to_array_item_index(self, i);
@@ -214,7 +216,7 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
 
 static bool menu_event_handler(win_t* win, r_event_t event)
 {
-  menu_t self = util_container_of(win, struct menu_t, win);
+  T self = util_container_of(win, struct T, win);
 
   if (event.type == RENDER_EVENT_KEYDOWN)
   {
@@ -234,3 +236,5 @@ static bool menu_event_handler(win_t* win, r_event_t event)
   }
   return false;
 }
+
+#undef T
