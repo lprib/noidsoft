@@ -21,7 +21,7 @@ static void event_handler(r_event_t event);
 static void menu_selected(int idx);
 static void segfault_handler(int sig);
 
-char* menu_items[] = {"test", "else", "thing"};
+char* menu_items[] = {"zero", "one", "two"};
 
 menu_params_t params = {
     .item_list = menu_items,
@@ -37,14 +37,6 @@ static void menu_selected(int idx)
   printf("selected %d\n", idx);
 }
 
-static void draw(void)
-{
-  bmp_t* target = r_get_buffer();
-  bmp_clear(target);
-  win_draw_recursive(menu_get_win(menu), target);
-  bmp_point(target, 0, 0, BMP_PXL_SET);
-}
-
 static void event_handler(r_event_t event)
 {
   winmanager_send_event(event);
@@ -53,7 +45,7 @@ static void event_handler(r_event_t event)
   {
   case RENDER_EVENT_DRIVER_INITIALIZED:
   case RENDER_EVENT_RESHAPE:
-    winmanager_vote_redraw();
+    menu_get_win(menu)->dirty = true;
     break;
   case RENDER_EVENT_FRAME:
     break;
@@ -62,10 +54,12 @@ static void event_handler(r_event_t event)
   case RENDER_EVENT_KEYUP:
     break;
   }
+  bmp_t* target = r_get_buffer();
+  bool redraw = menu_get_win(menu)->dirty;
 
-  if (winmanager_get_and_clear_redraw())
+  win_draw_recursive_if_dirty(menu_get_win(menu), target);
+  if (redraw)
   {
-    draw();
     r_request_refresh();
   }
 }

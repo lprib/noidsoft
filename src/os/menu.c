@@ -3,8 +3,6 @@
 #include "font_micro.h"
 #include "window.h"
 
-#include "window_manager.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -40,6 +38,35 @@ static inline int get_items_per_page(menu_t self)
   }
 }
 
+static inline int screen_to_array_item_index(menu_t self, int idx)
+{
+  return (self->page_start_index + idx) % self->params->num_items;
+}
+
+static inline void increment_wrap(int* n, int size)
+{
+  if (*n >= size - 1)
+  {
+    *n = 0;
+  }
+  else
+  {
+    (*n)++;
+  }
+}
+
+static inline void decrement_wrap(int* n, int size)
+{
+  if (*n <= 0)
+  {
+    *n = size - 1;
+  }
+  else
+  {
+    (*n)--;
+  }
+}
+
 menu_t menu_create(menu_params_t* params)
 {
   menu_t menu = malloc(sizeof(*menu));
@@ -54,7 +81,7 @@ menu_t menu_create(menu_params_t* params)
     .draw_fn = &menu_draw_fn,
     .event_handler = &menu_event_handler};
 
-  menu->items_per_page = get_items_per_page(menu);
+  menu->items_per_page = util_min(params->num_items, get_items_per_page(menu));
 
   return menu;
 }
@@ -66,14 +93,30 @@ win_t* menu_get_win(menu_t self)
 
 void menu_next(menu_t self)
 {
-  self->selected_index++;
-  winmanager_vote_redraw();
+  int page_end_index = (self->page_start_index + self->items_per_page - 1) %
+                       self->params->num_items;
+
+  if (self->selected_index == page_end_index)
+  {
+    // at the end of a page, scroll the page down
+    increment_wrap(&self->page_start_index, self->params->num_items);
+  }
+  increment_wrap(&self->selected_index, self->params->num_items);
+
+  printf("page %d, idx %d\n", self->page_start_index, self->selected_index);
+  self->window.dirty = true;
 }
 
 void menu_prev(menu_t self)
 {
-  self->selected_index--;
-  winmanager_vote_redraw();
+  if (self->selected_index == self->page_start_index)
+  {
+    // at the start of a page, scroll the page up
+    decrement_wrap(&self->page_start_index, self->params->num_items);
+  }
+  decrement_wrap(&self->selected_index, self->params->num_items);
+  printf("page %d, idx %d\n", self->page_start_index, self->selected_index);
+  self->window.dirty = true;
 }
 
 void menu_fit_height(menu_t self)
@@ -85,7 +128,8 @@ void menu_fit_height(menu_t self)
 
 static void menu_draw_fn(win_t* win, bmp_t* target)
 {
-  menu_t menu = container_of(win, struct menu_t, window);
+  printf("redraw\n");
+  menu_t menu = util_container_of(win, struct menu_t, window);
   bool border = menu->params->draw_border;
 
   win_clear_op(win, target, BMP_PXL_CLEAR);
@@ -102,7 +146,7 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
   // TODO use containerof here to get the menu_t out
   for (int i = 0; i < menu->items_per_page; i++)
   {
-    int index = (menu->page_start_index + i) % menu->params->num_items;
+    int index = screen_to_array_item_index(menu, i);
     bool selected = index == menu->selected_index;
     int row_y = i * row_height() + (border ? outer_padding + 1 : 0);
     int row_x = border ? outer_padding + 1 : 0;
@@ -133,7 +177,7 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
 
 static bool menu_event_handler(win_t* self, r_event_t event)
 {
-  menu_t menu = container_of(self, struct menu_t, window);
+  menu_t menu = util_container_of(self, struct menu_t, window);
 
   if (event.type == RENDER_EVENT_KEYDOWN)
   {

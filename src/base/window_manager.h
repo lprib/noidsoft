@@ -22,7 +22,4 @@ void winmanager_set_focused(win_t* win);
  */
 void winmanager_send_event(r_event_t event);
 
-void winmanager_vote_redraw(void);
-bool winmanager_get_and_clear_redraw(void);
-
 #endif

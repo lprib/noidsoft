@@ -48,6 +48,9 @@ typedef struct win_s
   /** focused window receives events */
   bool focused;
 
+  /** If dirty, should redraw this window next opportunity */
+  bool dirty;
+
   win_draw_fn_t draw_fn;
   win_event_handler_t event_handler;
 
@@ -62,9 +65,16 @@ typedef struct win_s
 } win_t;
 
 /**
+ * Draw the window if marked dirty.
+ * Else, iterate over children and draw them if dirty.
+ * If the child is not dirty, iterate over it's children, etc.
+ */
+void win_draw_recursive_if_dirty(win_t* self, bmp_t* dest);
+
+/**
  * If enabled, draw the window and children recursively.
  */
-void win_draw_recursive(win_t* self, bmp_t* dest);
+void win_draw_recursive_unconditional(win_t* self, bmp_t* dest);
 
 /**
  * Resize the window, and reshape docked children if specified

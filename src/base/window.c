@@ -57,16 +57,40 @@ resize_child(win_t* child, rect_t parent_old_size, rect_t parent_new_size)
   }
 }
 
-void win_draw_recursive(win_t* self, bmp_t* dest)
+void win_draw_recursive_if_dirty(win_t* self, bmp_t* dest)
+{
+  if (self->enabled)
+  {
+    if (self->dirty)
+    {
+      win_draw_recursive_unconditional(self, dest);
+    }
+    else
+    {
+      win_t* child = self->children;
+      while (child)
+      {
+        if (child->dirty)
+        {
+          win_draw_recursive_if_dirty(child, dest);
+        }
+        child = child->next_sibling;
+      }
+    }
+  }
+}
+
+void win_draw_recursive_unconditional(win_t* self, bmp_t* dest)
 {
   if (self->enabled)
   {
     self->draw_fn(self, dest);
+    self->dirty = false;
 
     win_t* child = self->children;
     while (child)
     {
-      win_draw_recursive(child, dest);
+      win_draw_recursive_unconditional(child, dest);
       child = child->next_sibling;
     }
   }
