@@ -24,7 +24,7 @@ static void segfault_handler(int sig);
 static void main_win_draw(win_t* self, bmp_t* target);
 
 char* menu_items[] =
-    {"gyno whore", "lkjasdlfkj", "Broyo flexidyne", "pimp juice"};
+    {"Test Text", "More .....", "AbCdEfGhIjK", "1234567890"};
 
 win_t main_win = {
     .rect = {0, 0, 200, 200},
@@ -38,10 +38,10 @@ win_t main_win = {
 menu_config_t params = {
     .items = menu_items,
     .items_len = sizeof(menu_items) / sizeof(menu_items[0]),
-    .win_rect = {20, 20, 160, 160},
+    .win_rect = {1, 1, 198, 198},
     .selection_callback = &menu_selected,
     .font = &helv8,
-    .do_border = true};
+    .do_border = false};
 
 menu_t menu;
 
@@ -55,11 +55,26 @@ static void menu_selected(int idx)
   printf("selected %s\n", params.items[idx]);
 }
 
+bool menu_focused = false;
+
 static bool main_win_event_handler(win_t* self, r_event_t event)
 {
   if (event.type == RENDER_EVENT_KEYDOWN)
   {
     printf("parent %c\n", key_to_char(event.key_event.key));
+    if(event.key_event.key == KEY_SPACE)
+    {
+      menu_focused = !menu_focused;
+      if(menu_focused)
+      {
+        winmanager_set_focused(menu_get_win(menu));
+      }
+      else
+      {
+        winmanager_set_focused(&main_win);
+      }
+      menu_get_win(menu)->dirty = true;
+    }
   }
   return true;
 }

@@ -188,7 +188,7 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
   {
     int index = screen_to_array_item_index(self, i);
     // If this is not focused, don't draw the selected item as highlighted
-    bool selected = win->focused && (index == self->selected_index);
+    bool selected = index == self->selected_index;
     int row_y = i * row_height(self) + (border ? outer_padding + 1 : 0);
     int row_x = border ? outer_padding + 1 : 0;
     int highlight_w =
@@ -196,12 +196,15 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
 
     if (selected)
     {
-      win_fill_rect(
-          win,
-          target,
-          (rect_t){row_x, row_y, highlight_w, row_height(self)},
-          BMP_PXL_SET
-      );
+      rect_t highlight_rect = {row_x, row_y, highlight_w, row_height(self)};
+      if(self->win.focused)
+      {
+        win_fill_rect( win, target, highlight_rect, BMP_PXL_SET);
+      }
+      else
+      {
+        win_rect(win, target, highlight_rect, BMP_PXL_SET);
+      }
     }
 
     win_string(
@@ -211,7 +214,7 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
         self->items[index],
         row_x + inner_padding_x,
         row_y + between_row_padding,
-        selected
+        self->win.focused && selected
     );
   }
 }
@@ -232,6 +235,7 @@ static bool menu_event_handler(win_t* win, r_event_t event)
       return true;
     case KEY_L:
       self->selection_callback(self->selected_index);
+      return true;
     default:
       return false;
     }
