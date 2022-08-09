@@ -1,6 +1,7 @@
 #ifndef _MENU_H_
 #define _MENU_H_
 
+#include "font.h"
 #include "util.h"
 #include "window.h"
 
@@ -13,6 +14,7 @@ typedef struct menu_item_t
   char** items;
   int items_len;
   bool do_border;
+  font_t* font;
   rect_t win_rect;
   menu_selection_callback_t selection_callback;
 } menu_params_t;

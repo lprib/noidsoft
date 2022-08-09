@@ -1,6 +1,5 @@
 #include "menu.h"
 #include "font.h"
-#include "font_micro.h"
 #include "window.h"
 
 #include <stdio.h>
@@ -22,6 +21,7 @@ struct menu_t
   char** items;
   int items_len;
   bool do_border;
+  font_t* font;
   menu_selection_callback_t selection_callback;
 
   // Internally defined items
@@ -31,20 +31,21 @@ struct menu_t
   win_t win;
 };
 
-static inline int row_height(void)
+static inline int row_height(menu_t menu)
 {
-  return font_height(&micro) + between_row_padding;
+  // between_row_padding on top and bottom
+  return font_height(menu->font) + between_row_padding * 2;
 }
 
 static inline int get_items_per_page(menu_t self)
 {
   if (self->do_border)
   {
-    return (self->win.rect.h - outer_padding * 2 - 2) / row_height();
+    return (self->win.rect.h - outer_padding * 2 - 2) / row_height(self);
   }
   else
   {
-    return self->win.rect.h / row_height();
+    return self->win.rect.h / row_height(self);
   }
 }
 
@@ -83,6 +84,7 @@ menu_t menu_create(menu_params_t* params)
   menu->items = params->items;
   menu->items_len = params->items_len;
   menu->do_border = params->do_border;
+  menu->font = params->font;
   menu->selection_callback = params->selection_callback;
 
   menu->page_start_index = 0;
@@ -117,7 +119,6 @@ void menu_next(menu_t self)
   }
   increment_wrap(&self->selected_index, self->items_len);
 
-  printf("page %d, idx %d\n", self->page_start_index, self->selected_index);
   self->win.dirty = true;
 }
 
@@ -129,13 +130,12 @@ void menu_prev(menu_t self)
     decrement_wrap(&self->page_start_index, self->items_len);
   }
   decrement_wrap(&self->selected_index, self->items_len);
-  printf("page %d, idx %d\n", self->page_start_index, self->selected_index);
   self->win.dirty = true;
 }
 
 void menu_fit_height(menu_t self)
 {
-  self->win.rect.h = self->items_len * row_height() + outer_padding * 2 + 2;
+  self->win.rect.h = self->items_len * row_height(self) + outer_padding * 2 + 2;
   self->page_len = self->items_len;
   self->win.dirty = true;
 }
@@ -145,7 +145,7 @@ void menu_fit_width(menu_t self)
   int max_string_width = 0;
   for (int i = 0; i < self->items_len; i++)
   {
-    int item_width = font_string_width(&micro, self->items[i]);
+    int item_width = font_string_width(self->font, self->items[i]);
     if (item_width > max_string_width)
     {
       max_string_width = item_width;
@@ -161,13 +161,11 @@ void menu_fit_width(menu_t self)
   {
     self->win.rect.w = max_string_width + inner_padding_x * 2;
   }
-  printf("neww = %d\n", self->win.rect.w);
   self->win.dirty = true;
 }
 
 static void menu_draw_fn(win_t* win, bmp_t* target)
 {
-  printf("redraw\n");
   menu_t self = util_container_of(win, struct menu_t, win);
   bool border = self->do_border;
 
@@ -187,7 +185,7 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
   {
     int index = screen_to_array_item_index(self, i);
     bool selected = index == self->selected_index;
-    int row_y = i * row_height() + (border ? outer_padding + 1 : 0);
+    int row_y = i * row_height(self) + (border ? outer_padding + 1 : 0);
     int row_x = border ? outer_padding + 1 : 0;
     int highlight_w =
         border ? win->rect.w - outer_padding * 2 - 2 : win->rect.w;
@@ -197,7 +195,7 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
       win_fill_rect(
           win,
           target,
-          (rect_t){row_x, row_y, highlight_w, row_height()},
+          (rect_t){row_x, row_y, highlight_w, row_height(self)},
           BMP_PXL_SET
       );
     }
@@ -205,10 +203,10 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
     win_string(
         win,
         target,
-        &micro,
+        self->font,
         self->items[index],
         row_x + inner_padding_x,
-        row_y,
+        row_y + between_row_padding,
         selected
     );
   }

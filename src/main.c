@@ -22,10 +22,11 @@ static void menu_selected(int idx);
 static void segfault_handler(int sig);
 static void main_win_draw(win_t* self, bmp_t* target);
 
-char* menu_items[] = {"zero", "one", "two"};
+char* menu_items[] =
+    {"gyno whore", "lkjasdlfkj", "Broyo flexidyne", "pimp juice"};
 
 win_t main_win = {
-    .rect = {0, 0, 128, 64},
+    .rect = {0, 0, 200, 200},
     .dock = WIN_DOCK_TOP | WIN_DOCK_LEFT | WIN_DOCK_BOTTOM | WIN_DOCK_RIGHT,
     .enabled = true,
     .focused = false,
@@ -34,9 +35,10 @@ win_t main_win = {
 
 menu_params_t params = {
     .items = menu_items,
-    .items_len = 3,
-    .win_rect = {10, 10, 30, 30},
+    .items_len = sizeof(menu_items) / sizeof(menu_items[0]),
+    .win_rect = {20, 20, 160, 160},
     .selection_callback = &menu_selected,
+    .font = &helv8,
     .do_border = true};
 
 menu_t menu;
@@ -48,7 +50,7 @@ static void main_win_draw(win_t* self, bmp_t* target)
 
 static void menu_selected(int idx)
 {
-  printf("selected %d\n", idx);
+  printf("selected %s\n", params.items[idx]);
 }
 
 static void event_handler(r_event_t event)
@@ -64,7 +66,8 @@ static void event_handler(r_event_t event)
     r_request_refresh();
     break;
   case RENDER_EVENT_RESHAPE:
-    menu_get_win(menu)->dirty = true;
+    win_reshape(&main_win, bmp_get_rect(target), true);
+    main_win.dirty = true;
     break;
   case RENDER_EVENT_FRAME:
     break;
@@ -97,9 +100,11 @@ int main(int argc, char* argv[])
 
   r_register_event_handler(event_handler);
   menu = menu_create(&params);
-  menu_fit_height(menu);
-  menu_fit_width(menu);
+  /* menu_fit_height(menu); */
+  /* menu_fit_width(menu); */
   menu_get_win(menu)->enabled = true;
+  menu_get_win(menu)->dock =
+      WIN_DOCK_TOP | WIN_DOCK_LEFT | WIN_DOCK_RIGHT | WIN_DOCK_BOTTOM;
 
   win_add_child(&main_win, menu_get_win(menu));
 

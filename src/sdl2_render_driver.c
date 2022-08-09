@@ -41,10 +41,10 @@ r_event_handler_t event_handler = NULL;
 
 bmp_t back_buffer;
 
-static int const INITIAL_PIX_WIDTH = 128;
-static int const INITIAL_PIX_HEIGHT = 64;
+static int const INITIAL_PIX_WIDTH = 200;
+static int const INITIAL_PIX_HEIGHT = 200;
 
-static int const SCREEN_PIX_PER_VIRTUAL_PIX = 6;
+static int const SCREEN_PIX_PER_VIRTUAL_PIX = 4;
 
 #define BACK_COLOR 36, 27, 23, 255
 #define FORE_COLOR 219, 200, 175, 255
@@ -79,8 +79,7 @@ void sdl_init(void)
       0,
       INITIAL_PIX_WIDTH * SCREEN_PIX_PER_VIRTUAL_PIX,
       INITIAL_PIX_HEIGHT * SCREEN_PIX_PER_VIRTUAL_PIX,
-      SDL_WINDOW_HIDDEN
-      // | SDL_WINDOW_RESIZABLE
+      SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE
   );
   SDL_SetWindowMaximumSize(
       window,

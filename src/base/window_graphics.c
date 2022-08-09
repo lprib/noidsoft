@@ -88,7 +88,8 @@ void win_string(
   ASSERT(y >= 0);
   ASSERT(y < self->rect.h);
   int font_width = font_string_width(font, string);
-  ASSERT(x + font_width < self->rect.w);
+  ASSERT(x + font_width <= self->rect.w);
+  ASSERT(y + font_height(font) <= self->rect.h);
 
   font_string(target, font, string, self->rect.x + x, self->rect.y + y, invert);
 }
