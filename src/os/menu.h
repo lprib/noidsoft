@@ -8,6 +8,7 @@
 #include <stdbool.h>
 
 #define T menu_t
+typedef struct T* T;
 
 typedef void (*menu_selection_callback_t)(int index);
 
@@ -20,8 +21,6 @@ typedef struct menu_item_t
   rect_t win_rect;
   menu_selection_callback_t selection_callback;
 } menu_config_t;
-
-typedef struct T* T;
 
 /**
  * Creates a menu from the parameters.

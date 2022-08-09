@@ -35,7 +35,7 @@ win_t main_win = {
     .draw_fn = &main_win_draw,
     .event_handler = &main_win_event_handler};
 
-menu_params_t params = {
+menu_config_t params = {
     .items = menu_items,
     .items_len = sizeof(menu_items) / sizeof(menu_items[0]),
     .win_rect = {20, 20, 160, 160},
