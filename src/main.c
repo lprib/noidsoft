@@ -6,6 +6,7 @@
 #include "menu.h"
 #include "render.h"
 #include "sdl2_render_driver.h"
+#include "str.h"
 #include "util.h"
 #include "window.h"
 #include "window_manager.h"
@@ -17,14 +18,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+static void create_menu(void);
 static void event_handler(r_event_t event);
 static void menu_selected(int idx);
 static bool main_win_event_handler(win_t* self, r_event_t event);
 static void segfault_handler(int sig);
 static void main_win_draw(win_t* self, bmp_t* target);
-
-char* menu_items[] =
-    {"Test Text", "More .....", "AbCdEfGhIjK", "1234567890"};
 
 win_t main_win = {
     .rect = {0, 0, 200, 200},
@@ -35,15 +34,26 @@ win_t main_win = {
     .draw_fn = &main_win_draw,
     .event_handler = &main_win_event_handler};
 
-menu_config_t params = {
-    .items = menu_items,
-    .items_len = sizeof(menu_items) / sizeof(menu_items[0]),
-    .win_rect = {1, 1, 198, 198},
-    .selection_callback = &menu_selected,
-    .font = &helv8,
-    .do_border = false};
-
 menu_t menu;
+
+static void create_menu(void)
+{
+  str_t menu_items[] = {
+      str_new("Test Text"),
+      str_new("More ....."),
+      str_new("AbCdEfGhIjK"),
+      str_new("1234567890")};
+
+  menu_config_t params = {
+      .items = menu_items,
+      .items_len = sizeof(menu_items) / sizeof(menu_items[0]),
+      .win_rect = {1, 1, 198, 198},
+      .selection_callback = &menu_selected,
+      .font = &helv8,
+      .do_border = false};
+
+  menu = menu_create(&params);
+}
 
 static void main_win_draw(win_t* self, bmp_t* target)
 {
@@ -52,7 +62,7 @@ static void main_win_draw(win_t* self, bmp_t* target)
 
 static void menu_selected(int idx)
 {
-  printf("selected %s\n", params.items[idx]);
+  printf("selected %d\n", idx);
 }
 
 bool menu_focused = false;
@@ -62,10 +72,10 @@ static bool main_win_event_handler(win_t* self, r_event_t event)
   if (event.type == RENDER_EVENT_KEYDOWN)
   {
     printf("parent %c\n", key_to_char(event.key_event.key));
-    if(event.key_event.key == KEY_SPACE)
+    if (event.key_event.key == KEY_SPACE)
     {
       menu_focused = !menu_focused;
-      if(menu_focused)
+      if (menu_focused)
       {
         winmanager_set_focused(menu_get_win(menu));
       }
@@ -125,9 +135,9 @@ int main(int argc, char* argv[])
   signal(SIGSEGV, &segfault_handler);
 
   r_register_event_handler(event_handler);
-  menu = menu_create(&params);
   /* menu_fit_height(menu); */
   /* menu_fit_width(menu); */
+  create_menu();
   menu_get_win(menu)->enabled = true;
   menu_get_win(menu)->dock =
       WIN_DOCK_TOP | WIN_DOCK_LEFT | WIN_DOCK_RIGHT | WIN_DOCK_BOTTOM;

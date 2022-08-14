@@ -121,7 +121,7 @@ void win_string(
     win_t* self,
     bmp_t* target,
     font_t* font,
-    char* string,
+    str_t str,
     int x,
     int y,
     bool invert

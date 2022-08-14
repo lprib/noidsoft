@@ -1,16 +1,10 @@
 #ifndef _CHECK_H_
 #define _CHECK_H_
 
-/**
- * Per-file assertion enable/disable.
- *
- * To enable assertions for file:
- *
- * #define CHECK_ENABLE_ASSERTS
- * #include "check.h"
- */
+/** enable/disable asserts for whole project: */
+#define CHECK_ENABLE_ASSERTS 1
 
-#ifdef CHECK_ENABLE_ASSERTS
+#if CHECK_ENABLE_ASSERTS
 #include <assert.h>
 #define ASSERT(x) assert(x)
 #else

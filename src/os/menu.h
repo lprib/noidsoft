@@ -14,7 +14,7 @@ typedef void (*menu_selection_callback_t)(int index);
 
 typedef struct menu_item_t
 {
-  char** items;
+  str_t* items;
   int items_len;
   bool do_border;
   font_t* font;

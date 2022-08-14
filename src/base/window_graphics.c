@@ -9,7 +9,6 @@
  * TODO enable clippping in source rect
  */
 
-#define CHECK_ENABLE_ASSERTS
 #include "check.h"
 
 void win_point(win_t* self, bmp_t* target, int x, int y, bmp_op_t op)
@@ -77,7 +76,7 @@ void win_string(
     win_t* self,
     bmp_t* target,
     font_t* font,
-    char* string,
+    str_t str,
     int x,
     int y,
     bool invert
@@ -87,9 +86,9 @@ void win_string(
   ASSERT(x < self->rect.w);
   ASSERT(y >= 0);
   ASSERT(y < self->rect.h);
-  int font_width = font_string_width(font, string);
+  int font_width = font_string_width(font, str);
   ASSERT(x + font_width <= self->rect.w);
   ASSERT(y + font_height(font) <= self->rect.h);
 
-  font_string(target, font, string, self->rect.x + x, self->rect.y + y, invert);
+  font_string(target, font, str, self->rect.x + x, self->rect.y + y, invert);
 }

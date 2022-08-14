@@ -32,7 +32,7 @@ static inline font_glyph_t* get_or_fallback(font_t* font, char c)
 void font_string(
     bmp_t* dest,
     font_t* font,
-    char* string,
+    str_t str,
     int x,
     int y,
     bool invert
@@ -41,24 +41,22 @@ void font_string(
   int x_acc = x;
   int y_acc = y + font->ascent;
 
-  while (*string)
+  for (int i = 0; i < str.len; i++)
   {
-    font_glyph_t* glyph = get_or_fallback(font, *string);
+    font_glyph_t* glyph = get_or_fallback(font, str.ptr[i]);
     draw_glyph(dest, glyph, x_acc, y_acc, invert);
     x_acc += glyph->dw_x;
     y_acc += glyph->dw_y;
-    string++;
   }
 }
 
-int font_string_width(font_t* font, char* string)
+int font_string_width(font_t* font, str_t str)
 {
   int width = 0;
-  while (*string)
+  for (int i = 0; i < str.len; i++)
   {
-    font_glyph_t* glyph = get_or_fallback(font, *string);
+    font_glyph_t* glyph = get_or_fallback(font, str.ptr[i]);
     width += glyph->dw_x;
-    string++;
   }
 
   return width - 1;

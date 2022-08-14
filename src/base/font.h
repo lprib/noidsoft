@@ -2,6 +2,8 @@
 #define _FONT_H_
 
 #include "bitmap.h"
+#include "str.h"
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -37,14 +39,14 @@ typedef struct
 void font_string(
     bmp_t* dest,
     font_t* font,
-    char* string,
+    str_t str,
     int x,
     int y,
     bool invert
 );
 
 /* Get width in px of string if drawn with specified font */
-int font_string_width(font_t* font, char* string);
+int font_string_width(font_t* font, str_t str);
 
 int font_height(font_t* font);
 

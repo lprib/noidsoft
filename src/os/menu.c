@@ -21,7 +21,7 @@ static bool menu_event_handler(win_t* self, r_event_t event);
 struct T
 {
   // Client defined items
-  char** items;
+  str_t* items;
   int items_len;
   bool do_border;
   font_t* font;
@@ -197,9 +197,9 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
     if (selected)
     {
       rect_t highlight_rect = {row_x, row_y, highlight_w, row_height(self)};
-      if(self->win.focused)
+      if (self->win.focused)
       {
-        win_fill_rect( win, target, highlight_rect, BMP_PXL_SET);
+        win_fill_rect(win, target, highlight_rect, BMP_PXL_SET);
       }
       else
       {

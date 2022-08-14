@@ -2,7 +2,6 @@
 
 #include "util.h"
 
-#define CHECK_ENABLE_ASSERTS
 #include "check.h"
 
 #include <assert.h>
