@@ -33,4 +33,6 @@ int utl_divide_round_up(int numerator, int denominator);
     _a < _b ? _a : _b; \
   })
 
+#define util_bit(x) (1 << x)
+
 #endif
