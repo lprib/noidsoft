@@ -1,8 +1,7 @@
 #include "bitmap.h"
 
-#include "util.h"
-
-#include "check.h"
+#include <base/check.h>
+#include <base/util.h>
 
 #include <assert.h>
 #include <stdbool.h>
@@ -72,9 +71,9 @@ static inline void shift_with_overflow(
 void bmp_point(bmp_t* bmp, int x, int y, bmp_op_t mode)
 {
   ASSERT(x >= 0);
-  ASSERT(x < bmp->width);
+  ASSERT(x < bmp->w);
   ASSERT(y >= 0);
-  ASSERT(y < bmp->height);
+  ASSERT(y < bmp->h);
 
   bmp_elem_t bitmask = BMP_ONE_ELEM >> (x % BMP_PIX_PER_ELEM);
   bmp_elem_t* dest = get_elem(bmp, x / BMP_PIX_PER_ELEM, y);
@@ -95,12 +94,12 @@ void bmp_point(bmp_t* bmp, int x, int y, bmp_op_t mode)
 
 void bmp_clear(bmp_t* bmp)
 {
-  memset(bmp->buffer, 0, bmp->width_elems * bmp->height * sizeof(bmp_elem_t));
+  memset(bmp->buffer, 0, bmp->width_elems * bmp->h * sizeof(bmp_elem_t));
 }
 
 void bmp_clear_op(bmp_t* bmp, bmp_op_t op)
 {
-  for (int i = 0; i < (bmp->width_elems * bmp->height); i++)
+  for (int i = 0; i < (bmp->width_elems * bmp->h); i++)
   {
     blit_elem(&bmp->buffer[i], BMP_FILLED_ELEM, op);
   }
@@ -150,11 +149,11 @@ void bmp_rect(bmp_t* bitmap, rect_t rect, bmp_op_t op)
 void bmp_fill_rect(bmp_t* bitmap, rect_t rect, bmp_op_t op)
 {
   ASSERT(rect.x >= 0);
-  ASSERT(rect.x < bitmap->width);
+  ASSERT(rect.x < bitmap->w);
   ASSERT(rect.y >= 0);
-  ASSERT(rect.y < bitmap->height);
-  ASSERT(rect.x + rect.w <= bitmap->width);
-  ASSERT(rect.y + rect.h <= bitmap->height);
+  ASSERT(rect.y < bitmap->h);
+  ASSERT(rect.x + rect.w <= bitmap->w);
+  ASSERT(rect.y + rect.h <= bitmap->h);
 
   // full byte portion
   int first_inside_elem_boundary =
@@ -231,8 +230,8 @@ void bmp_sprite(
   ASSERT(src_rect->w <= BMP_PIX_PER_ELEM);
   ASSERT(src_rect->x % BMP_PIX_PER_ELEM == 0);
 
-  ASSERT(x < dest->width);
-  ASSERT(y < dest->height);
+  ASSERT(x < dest->w);
+  ASSERT(y < dest->h);
 
   // assumption: src_rect.x will always be byte aligned, so will always have
   // offset 0 into a bmp_elem_t
@@ -258,8 +257,8 @@ void bmp_sprite(
     int src_y = src_rect->y + y_iter;
     int dest_y = y + y_iter;
 
-    ASSERT(src_y < src->height);
-    ASSERT(dest_y < dest->height);
+    ASSERT(src_y < src->h);
+    ASSERT(dest_y < dest->h);
 
     bmp_elem_t* target_elem = get_elem(dest, x / BMP_PIX_PER_ELEM, dest_y);
     bmp_elem_t src_1;
@@ -284,5 +283,5 @@ void bmp_sprite(
 
 rect_t bmp_get_rect(bmp_t* bitmap)
 {
-  return (rect_t){0, 0, bitmap->width, bitmap->height};
+  return (rect_t){0, 0, bitmap->w, bitmap->h};
 }

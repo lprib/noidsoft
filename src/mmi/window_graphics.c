@@ -1,15 +1,19 @@
-#include "font.h"
 #include "window.h"
+
+#include "font.h"
+
+#include <base/check.h>
+
 #include <stdbool.h>
 
 /**
  * These are all just thin wrappers over bitmap.h functions. They translate the
  * coordinates into window-local fist.
  *
- * TODO enable clippping in source rect
+ * TODO enable clippping in source rect.
+ *
+ * This source implements the drawing functionality of mmi/window.h
  */
-
-#include "check.h"
 
 void win_point(win_t* self, bmp_t* target, int x, int y, bmp_op_t op)
 {

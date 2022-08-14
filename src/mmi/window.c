@@ -168,7 +168,7 @@ bool win_remove_child(win_t* parent, win_t* child)
   return false;
 }
 
-void win_handle_event(win_t* self, r_event_t event)
+void win_handle_event(win_t* self, mmi_event_t event)
 {
   bool handled = false;
   if (self->event_handler)

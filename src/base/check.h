@@ -1,5 +1,5 @@
-#ifndef _CHECK_H_
-#define _CHECK_H_
+#ifndef _BASE_CHECK_H_
+#define _BASE_CHECK_H_
 
 /** enable/disable asserts for whole project: */
 #define CHECK_ENABLE_ASSERTS 1

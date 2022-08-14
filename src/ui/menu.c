@@ -1,7 +1,7 @@
 #include "menu.h"
 
-#include "font.h"
-#include "window.h"
+#include <mmi/font.h>
+#include <mmi/window.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +16,7 @@ static int const outer_padding = 1;
 static int const inner_padding_x = 1;
 
 static void menu_draw_fn(win_t* self, bmp_t* target);
-static bool menu_event_handler(win_t* self, r_event_t event);
+static bool menu_event_handler(win_t* self, mmi_event_t event);
 
 struct T
 {
@@ -183,7 +183,6 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
     );
   }
 
-  // TODO use containerof here to get the T out
   for (int i = 0; i < self->page_len; i++)
   {
     int index = screen_to_array_item_index(self, i);
@@ -219,7 +218,7 @@ static void menu_draw_fn(win_t* win, bmp_t* target)
   }
 }
 
-static bool menu_event_handler(win_t* win, r_event_t event)
+static bool menu_event_handler(win_t* win, mmi_event_t event)
 {
   T self = util_container_of(win, struct T, win);
 

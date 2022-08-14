@@ -1,9 +1,9 @@
-#ifndef _MENU_H_
-#define _MENU_H_
+#ifndef _UI_MENU_H_
+#define _UI_MENU_H_
 
-#include "font.h"
-#include "util.h"
-#include "window.h"
+#include <base/util.h>
+#include <mmi/font.h>
+#include <mmi/window.h>
 
 #include <stdbool.h>
 

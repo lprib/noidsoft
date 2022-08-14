@@ -1,5 +1,5 @@
-#ifndef _WINDOW_H_
-#define _WINDOW_H_
+#ifndef _MMI_WINDOW_H_
+#define _MMI_WINDOW_H_
 
 /**
  * Window structure. Windows have a linked-list of children. When drawing
@@ -9,14 +9,14 @@
  * When children are docked (eg. win.dock = WIN_DOCK_BOTTOM | WIN_DOCK_RIGHT),
  * reshaping the parent will also reshape the children to maintain the docking.
  */
+#include "bitmap.h"
+#include "font.h"
+#include "mmi.h"
+
+#include <base/util.h>
 
 #include <stdbool.h>
 #include <stdint.h>
-
-#include "bitmap.h"
-#include "font.h"
-#include "render.h"
-#include "util.h"
 
 typedef enum
 {
@@ -34,7 +34,7 @@ typedef void (*win_draw_fn_t)(struct win_s* self, bmp_t* target);
  * Returns whether or not to consume the event.
  * If not consumed, the event will be passed to children (if enabled).
  */
-typedef bool (*win_event_handler_t)(struct win_s* self, r_event_t event);
+typedef bool (*win_event_handler_t)(struct win_s* self, mmi_event_t event);
 
 typedef struct win_s
 {
@@ -99,7 +99,7 @@ bool win_remove_child(win_t* parent, win_t* child);
  * Call windows event handler. If the window does not consume the event, it is
  * passed to the parent window.
  */
-void win_handle_event(win_t* self, r_event_t event);
+void win_handle_event(win_t* self, mmi_event_t event);
 
 // Implemented in window_graphics.c
 void win_point(win_t* self, bmp_t* target, int x, int y, bmp_op_t op);

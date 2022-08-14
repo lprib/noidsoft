@@ -1,15 +1,16 @@
-#include "bitmap.h"
-#include "font.h"
-#include "font_helv8.h"
-#include "font_micro.h"
-#include "key.h"
-#include "menu.h"
-#include "render.h"
 #include "sdl2_render_driver.h"
-#include "str.h"
-#include "util.h"
-#include "window.h"
-#include "window_manager.h"
+
+#include <base/str.h>
+#include <base/util.h>
+#include <mmi/bitmap.h>
+#include <mmi/font.h>
+#include <mmi/font_helv8.h>
+#include <mmi/font_micro.h>
+#include <mmi/key.h>
+#include <mmi/mmi.h>
+#include <mmi/window.h>
+#include <ui/menu.h>
+#include <ui/window_manager.h>
 
 #include <execinfo.h>
 #include <signal.h>
@@ -19,9 +20,9 @@
 #include <unistd.h>
 
 static void create_menu(void);
-static void event_handler(r_event_t event);
+static void event_handler(mmi_event_t event);
 static void menu_selected(int idx);
-static bool main_win_event_handler(win_t* self, r_event_t event);
+static bool main_win_event_handler(win_t* self, mmi_event_t event);
 static void segfault_handler(int sig);
 static void main_win_draw(win_t* self, bmp_t* target);
 
@@ -67,7 +68,7 @@ static void menu_selected(int idx)
 
 bool menu_focused = false;
 
-static bool main_win_event_handler(win_t* self, r_event_t event)
+static bool main_win_event_handler(win_t* self, mmi_event_t event)
 {
   if (event.type == RENDER_EVENT_KEYDOWN)
   {
@@ -89,17 +90,17 @@ static bool main_win_event_handler(win_t* self, r_event_t event)
   return true;
 }
 
-static void event_handler(r_event_t event)
+static void event_handler(mmi_event_t event)
 {
   winmanager_send_event(event);
 
-  bmp_t* target = r_get_buffer();
+  bmp_t* target = mmi_get_render_target();
 
   switch (event.type)
   {
   case RENDER_EVENT_DRIVER_INITIALIZED:
     win_draw_recursive_unconditional(&main_win, target);
-    r_request_refresh();
+    mmi_display_refresh();
     break;
   case RENDER_EVENT_RESHAPE:
     win_reshape(&main_win, bmp_get_rect(target), true);
@@ -115,7 +116,7 @@ static void event_handler(r_event_t event)
 
   if (win_draw_recursive_if_dirty(&main_win, target))
   {
-    r_request_refresh();
+    mmi_display_refresh();
   }
 }
 
@@ -134,7 +135,7 @@ int main(int argc, char* argv[])
 {
   signal(SIGSEGV, &segfault_handler);
 
-  r_register_event_handler(event_handler);
+  mmi_register_event_handler(event_handler);
   /* menu_fit_height(menu); */
   /* menu_fit_width(menu); */
   create_menu();

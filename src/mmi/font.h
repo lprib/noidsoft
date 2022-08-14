@@ -1,8 +1,13 @@
-#ifndef _FONT_H_
-#define _FONT_H_
+#ifndef _MMI_FONT_H_
+#define _MMI_FONT_H_
+
+/**
+ * Utilities for drawing strings with a bitmap font.
+ */
 
 #include "bitmap.h"
-#include "str.h"
+
+#include <base/str.h>
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -45,9 +50,10 @@ void font_string(
     bool invert
 );
 
-/* Get width in px of string if drawn with specified font */
+/** Get width in px of string if drawn with specified font */
 int font_string_width(font_t* font, str_t str);
 
+/** Total height of font (ascent + descent) */
 int font_height(font_t* font);
 
 #endif

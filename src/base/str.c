@@ -1,5 +1,4 @@
 #include "str.h"
-
 #include "check.h"
 
 #include <stdio.h>

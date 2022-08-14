@@ -1,8 +1,8 @@
-#ifndef _SDL_RENDER_H_
-#define _SDL_RENDER_H_
+#ifndef _MMI_MMI_H_
+#define _MMI_MMI_H_
 
 /**
- * Generic platform-agnostic rendering and event loop functions.
+ * Low level mmi (rendering output and event input).
  */
 
 #include "bitmap.h"
@@ -18,28 +18,28 @@ typedef enum
   RENDER_EVENT_KEYUP,
   RENDER_EVENT_KEYDOWN,
   RENDER_EVENT_FRAME
-} r_event_type_t;
+} mmi_event_type_t;
 
 typedef struct
 {
-  r_event_type_t type;
+  mmi_event_type_t type;
   union
   {
     struct
     {
-      r_key_t key;
+      mmi_key_t key;
     } key_event;
   };
-} r_event_t;
+} mmi_event_t;
 
-typedef void (*r_event_handler_t)(r_event_t event);
+typedef void (*mmi_event_handler_t)(mmi_event_t event);
 
 /** Get render buffer. */
-bmp_t* r_get_buffer(void);
+bmp_t* mmi_get_render_target(void);
 
 /** Make renderer push updates to screen */
-void r_request_refresh(void);
+void mmi_display_refresh(void);
 
-void r_register_event_handler(r_event_handler_t handler);
+void mmi_register_event_handler(mmi_event_handler_t handler);
 
 #endif

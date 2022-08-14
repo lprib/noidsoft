@@ -1,17 +1,18 @@
-#ifndef _BITMAP_H_
-#define _BITMAP_H_
+#ifndef _MMI_BITMAP_H_
+#define _MMI_BITMAP_H_
+
+/**
+ * Generic bitmap drawing functions. Bitmaps are a bit-packed array of
+ * bmp_elem_t.
+ *
+ * Operations are bounds checked within the target bitmaps width and height.
+ */
+
+#include <base/util.h>
 
 #include <limits.h>
 #include <stdbool.h>
 #include <stdint.h>
-
-#include "util.h"
-
-/**
- * Generic bitmap drawing functions.
- *
- * Note all operations are bounds unchecked.
- */
 
 /** A single element of the bitmap buffer. */
 typedef uint16_t bmp_elem_t;
@@ -19,10 +20,10 @@ typedef uint16_t bmp_elem_t;
 typedef struct
 {
   /** width in pixels */
-  int width;
+  int w;
 
   /** height in pixels */
-  int height;
+  int h;
 
   /**
    * Width of buffer in units of bmp_elem_t. Total buffer size is

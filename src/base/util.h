@@ -1,5 +1,5 @@
-#ifndef _UTIL_H_
-#define _UTIL_H_
+#ifndef _BASE_UTIL_H_
+#define _BASE_UTIL_H_
 
 #include <stddef.h>
 

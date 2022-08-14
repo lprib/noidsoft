@@ -1,11 +1,11 @@
 // provided interfaces
 #include "sdl2_render_driver.h"
-#include "render.h"
+#include <mmi/mmi.h>
 
 // dependencies
-#include "bitmap.h"
-#include "diagnostics.h"
-#include "util.h"
+#include <base/util.h>
+#include <mmi/bitmap.h>
+#include <mmi/diagnostics.h>
 
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char const* FONT_PATH = "assets/firacode.ttf";
+char const* DIAGNOSTIC_FONT_TTF_PATH = "assets/firacode.ttf";
 
 typedef struct
 {
@@ -28,16 +28,16 @@ typedef struct
   bool do_render;
 } diag_text_render_data_t;
 
-static void send_to_client(r_event_t event);
+static void send_to_client(mmi_event_t event);
 static void create_virtual_render_texture(void);
 static void resize_bitmap(rect_size_t new_size);
 static rect_size_t
 get_bitmap_size_for_window(int window_width, int window_height);
 static void update_diagnostic_text(bool first_time);
 static void render_diagnostic_text(void);
-static r_key_t sdl_keycode_to_key(SDL_Keycode keycode);
+static mmi_key_t sdl_keycode_to_key(SDL_Keycode keycode);
 
-r_event_handler_t event_handler = NULL;
+mmi_event_handler_t event_handler = NULL;
 
 bmp_t back_buffer;
 
@@ -95,7 +95,7 @@ void sdl_init(void)
 
   // set up diag text
   TTF_Init();
-  diag_render_data.font = TTF_OpenFont(FONT_PATH, 12);
+  diag_render_data.font = TTF_OpenFont(DIAGNOSTIC_FONT_TTF_PATH, 12);
   if (diag_render_data.font == NULL)
   {
     fprintf(stderr, "font not found\n");
@@ -106,13 +106,12 @@ void sdl_init(void)
   diag_render_data.do_render = true;
 
   // set up virtual bitmap
-  back_buffer.width = INITIAL_PIX_WIDTH;
-  back_buffer.height = INITIAL_PIX_HEIGHT;
+  back_buffer.w = INITIAL_PIX_WIDTH;
+  back_buffer.h = INITIAL_PIX_HEIGHT;
   back_buffer.width_elems =
       utl_divide_round_up(INITIAL_PIX_WIDTH, BMP_PIX_PER_ELEM);
-  back_buffer.buffer = malloc(
-      (back_buffer.width_elems * back_buffer.height) * sizeof(bmp_elem_t)
-  );
+  back_buffer.buffer =
+      malloc((back_buffer.width_elems * back_buffer.h) * sizeof(bmp_elem_t));
 
   // Set previous so event loop knows when to resize
   previous_tex_size.w = INITIAL_PIX_WIDTH;
@@ -120,7 +119,7 @@ void sdl_init(void)
 
   create_virtual_render_texture();
 
-  r_event_t ev = {.type = RENDER_EVENT_DRIVER_INITIALIZED};
+  mmi_event_t ev = {.type = RENDER_EVENT_DRIVER_INITIALIZED};
   send_to_client(ev);
 }
 
@@ -131,11 +130,11 @@ static void create_virtual_render_texture(void)
       renderer,
       SDL_PIXELFORMAT_RGB888,
       SDL_TEXTUREACCESS_TARGET,
-      back_buffer.width,
-      back_buffer.height
+      back_buffer.w,
+      back_buffer.h
   );
-  virtual_tex_screen_size.w = back_buffer.width * SCREEN_PIX_PER_VIRTUAL_PIX;
-  virtual_tex_screen_size.h = back_buffer.height * SCREEN_PIX_PER_VIRTUAL_PIX;
+  virtual_tex_screen_size.w = back_buffer.w * SCREEN_PIX_PER_VIRTUAL_PIX;
+  virtual_tex_screen_size.h = back_buffer.h * SCREEN_PIX_PER_VIRTUAL_PIX;
 }
 
 void sdl_main_loop(void)
@@ -182,7 +181,7 @@ void sdl_main_loop(void)
             SDL_DestroyTexture(virtual_tex);
             create_virtual_render_texture();
 
-            r_event_t ev = {.type = RENDER_EVENT_RESHAPE};
+            mmi_event_t ev = {.type = RENDER_EVENT_RESHAPE};
             send_to_client(ev);
 
             previous_tex_size = new_size;
@@ -205,10 +204,10 @@ void sdl_main_loop(void)
         break;
       case SDL_KEYDOWN:
       {
-        r_key_t key = sdl_keycode_to_key(event.key.keysym.sym);
+        mmi_key_t key = sdl_keycode_to_key(event.key.keysym.sym);
         if (key != KEY_INVALID)
         {
-          r_event_t ev = {
+          mmi_event_t ev = {
               .type = RENDER_EVENT_KEYDOWN,
               .key_event = {.key = key}};
           send_to_client(ev);
@@ -217,10 +216,10 @@ void sdl_main_loop(void)
       break;
       case SDL_KEYUP:
       {
-        r_key_t key = sdl_keycode_to_key(event.key.keysym.sym);
+        mmi_key_t key = sdl_keycode_to_key(event.key.keysym.sym);
         if (key != KEY_INVALID)
         {
-          r_event_t ev = {
+          mmi_event_t ev = {
               .type = RENDER_EVENT_KEYUP,
               .key_event = {.key = key}};
           send_to_client(ev);
@@ -229,7 +228,7 @@ void sdl_main_loop(void)
       break;
       }
     }
-    send_to_client((r_event_t){.type = RENDER_EVENT_FRAME});
+    send_to_client((mmi_event_t){.type = RENDER_EVENT_FRAME});
 
     SDL_SetRenderTarget(renderer, NULL);
 
@@ -255,12 +254,12 @@ void sdl_cleanup(void)
   SDL_DestroyWindow(window);
 }
 
-bmp_t* r_get_buffer(void)
+bmp_t* mmi_get_render_target(void)
 {
   return &back_buffer;
 }
 
-void r_request_refresh(void)
+void mmi_display_refresh(void)
 {
   SDL_SetRenderTarget(renderer, virtual_tex);
   SDL_SetRenderDrawColor(renderer, BACK_COLOR);
@@ -268,11 +267,10 @@ void r_request_refresh(void)
 
   SDL_SetRenderDrawColor(renderer, FORE_COLOR);
 
-  for (int y = 0; y < back_buffer.height; y++)
+  for (int y = 0; y < back_buffer.h; y++)
   {
-    for (int x = 0; x < back_buffer.width; x++)
+    for (int x = 0; x < back_buffer.w; x++)
     {
-      // TODO need to check if out of bounds?
       bmp_elem_t elem =
           back_buffer
               .buffer[y * back_buffer.width_elems + x / BMP_PIX_PER_ELEM];
@@ -286,12 +284,12 @@ void r_request_refresh(void)
   }
 }
 
-void r_register_event_handler(r_event_handler_t handler)
+void mmi_register_event_handler(mmi_event_handler_t handler)
 {
   event_handler = handler;
 }
 
-static void send_to_client(r_event_t event)
+static void send_to_client(mmi_event_t event)
 {
   if (event_handler != NULL)
   {
@@ -309,15 +307,15 @@ get_bitmap_size_for_window(int window_width, int window_height)
 
 static void resize_bitmap(rect_size_t new_size)
 {
-  back_buffer.width = new_size.w;
-  back_buffer.height = new_size.h;
+  back_buffer.w = new_size.w;
+  back_buffer.h = new_size.h;
 
   back_buffer.width_elems =
-      utl_divide_round_up(back_buffer.width, BMP_PIX_PER_ELEM);
+      utl_divide_round_up(back_buffer.w, BMP_PIX_PER_ELEM);
 
   back_buffer.buffer = realloc(
       back_buffer.buffer,
-      (back_buffer.width_elems * back_buffer.height) * sizeof(bmp_elem_t)
+      (back_buffer.width_elems * back_buffer.h) * sizeof(bmp_elem_t)
   );
 }
 
@@ -357,7 +355,7 @@ static void render_diagnostic_text(void)
   }
 }
 
-static r_key_t sdl_keycode_to_key(SDL_Keycode keycode)
+static mmi_key_t sdl_keycode_to_key(SDL_Keycode keycode)
 {
   switch (keycode)
   {

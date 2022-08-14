@@ -1,7 +1,8 @@
 #include "font.h"
-
 #include "bitmap.h"
-#include "util.h"
+
+#include <base/util.h>
+
 #include <stdbool.h>
 
 /**
@@ -12,9 +13,8 @@ static inline void
 draw_glyph(bmp_t* dest, font_glyph_t* glyph, int x, int y, bool invert)
 {
   int top_left_x = x + glyph->bb_off_x;
-  int top_left_y = y - glyph->bb_off_y - glyph->bmp.height;
+  int top_left_y = y - glyph->bb_off_y - glyph->bmp.h;
 
-  // TODO bake rect into bmp?
   rect_t src_rect = bmp_get_rect(&glyph->bmp);
   bmp_sprite(dest, &glyph->bmp, &src_rect, top_left_x, top_left_y, invert);
 }

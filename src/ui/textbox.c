@@ -1,8 +1,9 @@
 #include "textbox.h"
 
-#include "font.h"
-#include "menu.h"
-#include "window.h"
+#include <mmi/font.h>
+#include <mmi/window.h>
+
+#define T textbox_t
 
 struct T
 {

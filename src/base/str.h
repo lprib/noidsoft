@@ -1,5 +1,5 @@
-#ifndef _STR_H_
-#define _STR_H_
+#ifndef _BASE_STR_H_
+#define _BASE_STR_H_
 
 #include <stdlib.h>
 

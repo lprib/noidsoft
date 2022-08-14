@@ -1,9 +1,14 @@
-#ifndef _KEY_H_
-#define _KEY_H_
+#ifndef _MMI_KEY_H_
+#define _MMI_KEY_H_
+
+/**
+ * Keys which are produced by the MMI.
+ */
 
 #include <stdbool.h>
 
-/** Before chaning ordering, check if any functions in key.c rely on this ordering. */
+/** Before changing ordering, check if any functions in key.c rely on this
+ * ordering. */
 typedef enum
 {
   KEY_INVALID,
@@ -48,10 +53,10 @@ typedef enum
   KEY_RIGHT,
   KEY_UP,
   KEY_DOWN
-} r_key_t;
+} mmi_key_t;
 
 /* Returns ascii of key if printable, else 0 */
-char key_to_char(r_key_t key);
-bool key_is_printable(r_key_t key);
+char key_to_char(mmi_key_t key);
+bool key_is_printable(mmi_key_t key);
 
 #endif

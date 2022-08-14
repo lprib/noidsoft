@@ -1,4 +1,4 @@
-#include "window.h"
+#include <mmi/window.h>
 
 #include <stdbool.h>
 
@@ -15,7 +15,7 @@ void winmanager_set_focused(win_t* win)
   win->focused = true;
 }
 
-void winmanager_send_event(r_event_t event)
+void winmanager_send_event(mmi_event_t event)
 {
   if (currently_focused)
   {
