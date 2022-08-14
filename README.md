@@ -3,7 +3,9 @@
 ## File Structure
 - **`bdf_to_c`** - Script to convert BDF font files to C source that defines the font. See `src/mmi/font.h` for internal font format.
 - **`Makefile`** - Builds the project. Supported targets are default (`make`) and clean (`make clean`).
-- **`src/`** C sources and headers. In the top-level dir there are entry points (`main.c`) and the platform-specific interface implementation. (`sdl2_render_driver.{c,h}`).
+- **`src/`** C sources and headers.
+  - **`src/linux`** - Linux specific mmi drivers.
+  - **`src/avr`** - AVR specific mmi drivers.
   - **`src/base/`** - Base utilities.
   - **`src/mmi/`** - Mostly generic drawing utilities (windows, bitmaps, fonts, etc).
   - **`src/ui/`** - High-level UI components.
