@@ -41,8 +41,8 @@ mmi_event_handler_t event_handler = NULL;
 
 bmp_t back_buffer;
 
-static int const INITIAL_PIX_WIDTH = 200;
-static int const INITIAL_PIX_HEIGHT = 200;
+static int const INITIAL_PIX_WIDTH = 128;
+static int const INITIAL_PIX_HEIGHT = 64;
 
 static int const SCREEN_PIX_PER_VIRTUAL_PIX = 4;
 
@@ -79,7 +79,8 @@ void sdl_init(void)
       0,
       INITIAL_PIX_WIDTH * SCREEN_PIX_PER_VIRTUAL_PIX,
       INITIAL_PIX_HEIGHT * SCREEN_PIX_PER_VIRTUAL_PIX,
-      SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE
+      SDL_WINDOW_HIDDEN
+      // | SDL_WINDOW_RESIZABLE
   );
   SDL_SetWindowMaximumSize(
       window,
@@ -118,9 +119,6 @@ void sdl_init(void)
   previous_tex_size.h = INITIAL_PIX_HEIGHT;
 
   create_virtual_render_texture();
-
-  mmi_event_t ev = {.type = RENDER_EVENT_DRIVER_INITIALIZED};
-  send_to_client(ev);
 }
 
 /** Must destroy the texture first before calling if it already exists */
@@ -140,6 +138,10 @@ static void create_virtual_render_texture(void)
 void sdl_main_loop(void)
 {
   SDL_ShowWindow(window);
+
+  mmi_event_t ev = {.type = RENDER_EVENT_DRIVER_INITIALIZED};
+  send_to_client(ev);
+
   while (1)
   {
     SDL_Event event;

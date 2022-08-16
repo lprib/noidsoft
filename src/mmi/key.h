@@ -57,6 +57,7 @@ typedef enum
 
 /* Returns ascii of key if printable, else 0 */
 char key_to_char(mmi_key_t key);
+mmi_key_t key_from_char(char c);
 bool key_is_printable(mmi_key_t key);
 
 #endif

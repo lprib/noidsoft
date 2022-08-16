@@ -5,6 +5,8 @@
 
 #include <stdbool.h>
 
+#include <stdio.h>
+
 /**
  * NOTE:
  * x, y here are referenced to the glyph's origin, which is the BOTTOM LEFT
