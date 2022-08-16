@@ -26,23 +26,14 @@ typedef enum
 typedef enum
 {
   DIO_BANK_A, DIO_BANK_B, DIO_BANK_C, DIO_BANK_D, DIO_BANK_E, DIO_BANK_F,
-  DIO_BANK_G, DIO_BANK_H, DIO_BANK_J, DIO_BANK_K, DIO_BANK_L,
+  DIO_BANK_G, DIO_BANK_H, DIO_BANK_J, DIO_BANK_K, DIO_BANK_L, DIO_NUM_BANKS
 } dio_bank_t;
 
-
-register_t const dio_ddr_regs[] =
-{
-  &DDRA, &DDRB, &DDRC, &DDRD, &DDRE, &DDRF, &DDRG, &DDRH, &DDRJ, &DDRK, &DDRL,
-};
-
-register_t const dio_port_regs[] = {
-  &PORTA, &PORTB, &PORTC, &PORTD, &PORTE, &PORTF, &PORTG, &PORTH, &PORTJ, &PORTK, &PORTL,
-};
-
-register_t const dio_pin_regs[] = {
-  &PINA, &PINB, &PINC, &PIND, &PINE, &PINF, &PING, &PINH, &PINJ, &PINK, &PINL,
-};
 /* clang-format on */
+
+extern register_t const dio_ddr_regs[DIO_NUM_BANKS];
+extern register_t const dio_port_regs[DIO_NUM_BANKS];
+extern register_t const dio_pin_regs[DIO_NUM_BANKS];
 
 static inline register_t dio_ddr(dio_pin_t pin)
 {
