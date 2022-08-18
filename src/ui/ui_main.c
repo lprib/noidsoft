@@ -45,7 +45,7 @@ static void create_menu(void)
   menu_config_t params = {
       .items = menu_items,
       .items_len = sizeof(internal_menu_items) / sizeof(internal_menu_items[0]),
-      .win_rect = {1, 1, 126, 62},
+      .win_rect = {10, 10, 108, 44},
       .selection_callback = &menu_selected,
       .font = &helv8,
       .do_border = true};

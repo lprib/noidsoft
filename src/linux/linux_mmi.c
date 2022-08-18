@@ -1,11 +1,12 @@
 // provided interfaces
-#include "sdl2_render_driver.h"
+#include "linux_mmi.h"
 #include <mmi/mmi.h>
 
 // dependencies
+#include "diagnostics.h"
+
 #include <base/util.h>
 #include <mmi/bitmap.h>
-#include <mmi/diagnostics.h>
 
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -67,7 +68,7 @@ diag_text_render_data_t diag_render_data;
 
 #define GET_BIT(integer, n) ((integer) >> (n)) & 0b1
 
-void sdl_init(void)
+void linuxmmi_init(void)
 {
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
   {
@@ -136,7 +137,7 @@ static void create_virtual_render_texture(void)
   virtual_tex_screen_size.h = back_buffer.h * SCREEN_PIX_PER_VIRTUAL_PIX;
 }
 
-void sdl_main_loop(void)
+void linuxmmi_main_loop(void)
 {
   SDL_ShowWindow(window);
 
@@ -250,7 +251,7 @@ void sdl_main_loop(void)
   }
 }
 
-void sdl_cleanup(void)
+void linuxmmi_cleanup(void)
 {
   SDL_DestroyTexture(virtual_tex);
   SDL_DestroyRenderer(renderer);

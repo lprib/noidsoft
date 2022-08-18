@@ -1,4 +1,4 @@
-#include "sdl2_render_driver.h"
+#include "linux_mmi.h"
 
 #include <ui/ui_main.h>
 
@@ -24,9 +24,9 @@ int main(int argc, char* argv[])
 {
   signal(SIGSEGV, &segfault_handler);
 
-  sdl_init();
+  linuxmmi_init();
   ui_init();
-  sdl_main_loop();
-  sdl_cleanup();
+  linuxmmi_main_loop();
+  linuxmmi_cleanup();
   return 0;
 }

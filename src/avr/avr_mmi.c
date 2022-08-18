@@ -2,7 +2,7 @@
  * Implements mmi/mmi.h for the ST7920 display and serial input
  */
 
-#include "mmi_manager.h"
+#include "avr_mmi.h"
 #include "dio.h"
 #include "st7920_display.h"
 #include "usart.h"
@@ -32,14 +32,14 @@ mmi_event_handler_t event_handler;
 
 usart_t serial_comms_usart;
 
-void mmimanager_init(void)
+void avrmmi_init(void)
 {
   st7920_init(&display);
   serial_comms_usart = usart_get_from_number(0);
   usart_init(serial_comms_usart, 16000000UL, 9600);
 }
 
-void mmimanager_run_loop(void)
+void avrmmi_main_loop(void)
 {
   if (event_handler)
   {

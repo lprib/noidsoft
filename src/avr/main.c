@@ -1,7 +1,7 @@
 #define F_CPU 16000000UL
 
+#include "avr_mmi.h"
 #include "dio.h"
-#include "mmi_manager.h"
 
 #include <ui/ui_main.h>
 
@@ -11,7 +11,7 @@
 
 int main(void)
 {
-  mmimanager_init();
+  avrmmi_init();
   ui_init();
-  mmimanager_run_loop();
+  avrmmi_main_loop();
 }

@@ -13,6 +13,11 @@
 - **`out/`** - Compilation output.
   - **`out/main`** - Main executable.
 
+## Architecture
+To implement a platform interface, you must implement the `src/mmi/mmi.h`
+header for the platform. All other UI and event handling is based upon this
+header.
+
 ## Header file template
 ```c
 #ifndef _MODULENAME_HEADERNAME_H_
