@@ -52,5 +52,5 @@ $(LINUX_TARGET): $(LINUX_TARGET_SRC_FILE) $(LINUX_SRC_FILES_NO_MAIN) | $(OUT_DIR
 $(AVR_TARGET): $(AVR_TARGET_SRC_FILE) $(AVR_SRC_FILES_NO_MAIN) | $(OUT_DIR)
 	avr-gcc -o$@ $^ $(AVR_CFLAGS)
 
-.PHONY: test clean format
+.PHONY: linux run avr program com clean
 
