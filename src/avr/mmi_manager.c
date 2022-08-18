@@ -30,10 +30,13 @@ bmp_t back_buffer = {
 
 mmi_event_handler_t event_handler;
 
+usart_t serial_comms_usart;
+
 void mmimanager_init(void)
 {
   st7920_init(&display);
-  usart_init(9600);
+  serial_comms_usart = usart_get_from_number(0);
+  usart_init(serial_comms_usart, 16000000UL, 9600);
 }
 
 void mmimanager_run_loop(void)
@@ -46,7 +49,7 @@ void mmimanager_run_loop(void)
 
   while (1)
   {
-    unsigned char input = usart_wait_read();
+    unsigned char input = usart_read_byte(serial_comms_usart);
     if (event_handler)
     {
       mmi_event_t ev = {
@@ -82,5 +85,5 @@ void mmi_printf(char* format, ...)
   vsnprintf(print_buf, PRINT_BUF_SIZ, format, args);
   va_end(args);
 
-  usart_write_string(print_buf);
+  usart_write_string(serial_comms_usart, print_buf);
 }
