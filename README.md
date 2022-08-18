@@ -4,19 +4,22 @@
 - **`bdf_to_c`** - Script to convert BDF font files to C source that defines the font. See `src/mmi/font.h` for internal font format.
 - **`Makefile`** - Builds the project. Supported targets are default (`make`) and clean (`make clean`).
 - **`src/`** C sources and headers.
-  - **`src/linux`** - Linux specific mmi drivers.
-  - **`src/avr`** - AVR specific mmi drivers.
+  - **`src/platform_interface`** - Interface that each platform must implement
+  - **`src/linux`** - platform\_interface implementation for linux
+  - **`src/avr`** - platform\_interface implementation for avr
   - **`src/base/`** - Base utilities.
-  - **`src/mmi/`** - Mostly generic drawing utilities (windows, bitmaps, fonts, etc).
+  - **`src/render/`** - Mostly generic drawing utilities (windows, bitmaps, fonts, etc), and some keyboard input handling.
   - **`src/ui/`** - High-level UI components.
 - **`assets/`** - Assets (only fonts for now).
 - **`out/`** - Compilation output.
   - **`out/main`** - Main executable.
 
 ## Architecture
-To implement a platform interface, you must implement the `src/mmi/mmi.h`
-header for the platform. All other UI and event handling is based upon this
-header.
+To implement a platform interface, you must implement all of the headers in
+`src/platform_interface`. All other modules only depend on this interface.
+
+There should never be any dependency on platform specific code outside of that
+platform's module.
 
 ## Header file template
 ```c

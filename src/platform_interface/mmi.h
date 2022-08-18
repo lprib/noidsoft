@@ -5,8 +5,10 @@
  * Low level mmi (rendering output and event input).
  */
 
-#include "bitmap.h"
-#include "key.h"
+// TODO cut dependency of platform interface on render module to enfore one way
+// deps
+#include <render/bitmap.h>
+#include <render/key.h>
 
 #include <stdbool.h>
 #include <stdint.h>

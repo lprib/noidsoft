@@ -1,13 +1,19 @@
 #ifndef _AVR_DIO_H_
 #define _AVR_DIO_H_
 
+/**
+ * Digital IO abstraction.
+ */
+
 #include <avr/io.h>
 #include <stdbool.h>
 #include <stdint.h>
 
+/** An IO control register */
 typedef uint8_t volatile* register_t;
 
 /* clang-format off */
+
 typedef enum
 {
   DIO_PIN_A0, DIO_PIN_A1, DIO_PIN_A2, DIO_PIN_A3, DIO_PIN_A4, DIO_PIN_A5, DIO_PIN_A6, DIO_PIN_A7,

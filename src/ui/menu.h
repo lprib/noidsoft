@@ -2,8 +2,8 @@
 #define _UI_MENU_H_
 
 #include <base/util.h>
-#include <mmi/font.h>
-#include <mmi/window.h>
+#include <render/font.h>
+#include <render/window.h>
 
 #include <stdbool.h>
 

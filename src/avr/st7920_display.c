@@ -77,31 +77,6 @@ void st7920_init(T self)
   setup_graphics_mode(self);
 }
 
-void st7920_test_mode(T self)
-{
-  write_data(self, 0, 0x01);
-  write_data(self, 0, 0x02);
-  write_data(self, 0, 0x0F);
-
-  char* string = "Hello world";
-  int row = 0;
-  int col = 0;
-  int ddram_addr = (row % 2) * 0x10 + (row >= 2) * 0x08 + col / 2;
-
-  write_data(self, false, (1 << 7) | ddram_addr);
-
-  if (col % 2)
-  {
-    write_data(self, true, ' ');
-  }
-
-  while (*string)
-  {
-    write_data(self, true, *string);
-    string++;
-  }
-}
-
 static int const HALF_HEIGHT = 32;
 
 void st7920_refresh(T self, uint16_t* buffer)

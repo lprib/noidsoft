@@ -1,6 +1,14 @@
 #ifndef _AVR_USART_H_
 #define _AVR_USART_H_
 
+/**
+ * Abstracted driver for USARTs. Get a usart object with usart_get_from_number,
+ * eg. for USART1:
+ *
+ * usart_t my_usart = usart_get_from_number(1);
+ * usart_write_string(my_usart, "hello");
+ */
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>

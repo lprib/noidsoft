@@ -1,5 +1,5 @@
-#ifndef _MMI_KEY_H_
-#define _MMI_KEY_H_
+#ifndef _RENDER_KEY_H_
+#define _RENDER_KEY_H_
 
 /**
  * Keys which are produced by the MMI.

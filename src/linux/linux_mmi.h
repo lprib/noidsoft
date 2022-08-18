@@ -2,7 +2,8 @@
 #define _LINUX_LINUX_MMI_H_
 
 /**
- * SDL2-specifc rendering control
+ * Controls the platform MMI interface implementation for linux and SDL2
+ * display.
  */
 
 void linuxmmi_init(void);

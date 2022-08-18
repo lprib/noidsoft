@@ -1,8 +1,8 @@
 #ifndef _UI_TEXTBOX_H_
 #define _UI_TEXTBOX_H_
 
-#include <mmi/font.h>
-#include <mmi/window.h>
+#include <render/font.h>
+#include <render/window.h>
 
 #include <stdbool.h>
 

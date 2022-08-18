@@ -1,5 +1,5 @@
-#ifndef _MMI_WINDOW_H_
-#define _MMI_WINDOW_H_
+#ifndef _RENDER_WINDOW_H_
+#define _RENDER_WINDOW_H_
 
 /**
  * Window structure. Windows have a linked-list of children. When drawing
@@ -11,9 +11,9 @@
  */
 #include "bitmap.h"
 #include "font.h"
-#include "mmi.h"
 
 #include <base/util.h>
+#include <platform_interface/mmi.h>
 
 #include <stdbool.h>
 #include <stdint.h>

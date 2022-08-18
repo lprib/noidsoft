@@ -1,7 +1,7 @@
 #include "textbox.h"
 
-#include <mmi/font.h>
-#include <mmi/window.h>
+#include <render/font.h>
+#include <render/window.h>
 
 #define T textbox_t
 

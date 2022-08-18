@@ -1,12 +1,12 @@
-// provided interfaces
+// provided implementations
 #include "linux_mmi.h"
-#include <mmi/mmi.h>
+#include <platform_interface/mmi.h>
 
 // dependencies
 #include "diagnostics.h"
 
 #include <base/util.h>
-#include <mmi/bitmap.h>
+#include <render/bitmap.h>
 
 #include <SDL.h>
 #include <SDL_ttf.h>

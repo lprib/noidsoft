@@ -1,5 +1,5 @@
-#ifndef _MMI_BITMAP_H_
-#define _MMI_BITMAP_H_
+#ifndef _RENDER_BITMAP_H_
+#define _RENDER_BITMAP_H_
 
 /**
  * Generic bitmap drawing functions. Bitmaps are a bit-packed array of

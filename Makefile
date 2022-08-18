@@ -1,7 +1,7 @@
 OUT_DIR = out
 
 SRC_DIR = src
-GENERIC_SUBDIRS = $(SRC_DIR)/base $(SRC_DIR)/mmi $(SRC_DIR)/ui
+GENERIC_SUBDIRS = $(SRC_DIR)/base $(SRC_DIR)/render $(SRC_DIR)/ui
 
 LINUX_TARGET = $(OUT_DIR)/main_linux
 LINUX_TARGET_SRC_FILE = $(SRC_DIR)/linux/main.c

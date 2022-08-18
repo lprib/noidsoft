@@ -1,5 +1,5 @@
-#ifndef _MMI_FONT_H_
-#define _MMI_FONT_H_
+#ifndef _RENDER_FONT_H_
+#define _RENDER_FONT_H_
 
 /**
  * Utilities for drawing strings with a bitmap font.

@@ -1,14 +1,13 @@
-/**
- * Implements mmi/mmi.h for the ST7920 display and serial input
- */
-
+// provided implementations
 #include "avr_mmi.h"
+#include <platform_interface/mmi.h>
+
+// dependencies
 #include "dio.h"
 #include "st7920_display.h"
 #include "usart.h"
 
-#include <mmi/bitmap.h>
-#include <mmi/mmi.h>
+#include <render/bitmap.h>
 
 #include <stdarg.h>
 #include <stdbool.h>

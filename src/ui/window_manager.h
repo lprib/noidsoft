@@ -7,8 +7,8 @@
  * This module is a singleton.
  */
 
-#include <mmi/mmi.h>
-#include <mmi/window.h>
+#include <platform_interface/mmi.h>
+#include <render/window.h>
 
 #include <stdbool.h>
 

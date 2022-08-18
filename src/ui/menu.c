@@ -1,7 +1,7 @@
 #include "menu.h"
 
-#include <mmi/font.h>
-#include <mmi/window.h>
+#include <render/font.h>
+#include <render/window.h>
 
 #include <stdio.h>
 #include <stdlib.h>

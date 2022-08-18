@@ -2,13 +2,13 @@
 
 #include <base/str.h>
 #include <base/util.h>
-#include <mmi/bitmap.h>
-#include <mmi/font.h>
-#include <mmi/font_helv8.h>
-#include <mmi/font_micro.h>
-#include <mmi/key.h>
-#include <mmi/mmi.h>
-#include <mmi/window.h>
+#include <platform_interface/mmi.h>
+#include <render/bitmap.h>
+#include <render/font.h>
+#include <render/font_helv8.h>
+#include <render/font_micro.h>
+#include <render/key.h>
+#include <render/window.h>
 #include <ui/menu.h>
 #include <ui/window_manager.h>
 
