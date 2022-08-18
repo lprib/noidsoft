@@ -11,7 +11,6 @@
 
 int main(void)
 {
-  dio_set_direction(DIO_PIN_B7, true);
   mmimanager_init();
   ui_init();
   mmimanager_run_loop();

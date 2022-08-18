@@ -13,8 +13,6 @@
 #include <ui/window_manager.h>
 
 #include <stdbool.h>
-
-#include <stdio.h>
 #include <string.h>
 
 static void create_menu(void);
@@ -68,7 +66,7 @@ static void main_win_draw(win_t* self, bmp_t* target)
 
 static void menu_selected(int idx)
 {
-  /* printf("selected %d\n", idx); */
+  mmi_printf("selected %d\n", idx);
 }
 
 bool menu_focused = false;

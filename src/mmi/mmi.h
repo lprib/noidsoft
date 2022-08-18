@@ -42,4 +42,6 @@ void mmi_display_refresh(void);
 
 void mmi_register_event_handler(mmi_event_handler_t handler);
 
+void mmi_printf(char* format, ...);
+
 #endif

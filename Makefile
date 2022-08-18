@@ -27,13 +27,17 @@ COMMON_CFLAGS = -Isrc -Wall
 AVR_CFLAGS = $(COMMON_CFLAGS) -O3 -mmcu=$(AVR_MCU) -Wno-array-bounds
 LINUX_CFLAGS = $(COMMON_CFLAGS) -O3 -lSDL2_ttf -g -rdynamic `sdl2-config --cflags --libs`
 
-linux: $(LINUX_TARGET)
-avr: $(AVR_TARGET)
 
+linux: $(LINUX_TARGET)
 run: linux
 	./$(LINUX_TARGET)
+
+
+avr: $(AVR_TARGET)
 program: avr
 	avrdude -p$(AVR_MCU) -c$(AVR_PROGRAMMER) -P$(AVR_TTY) -b$(AVR_BAUD) -D -Uflash:w:$(AVR_TARGET)
+com:
+	picocom -b9600 --imap lfcrlf $(AVR_TTY)
 
 clean:
 	rm -rf $(OUT_DIR)

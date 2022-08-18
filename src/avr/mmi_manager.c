@@ -10,7 +10,11 @@
 #include <mmi/bitmap.h>
 #include <mmi/mmi.h>
 
+#include <stdarg.h>
 #include <stdbool.h>
+#include <stdio.h>
+
+#define PRINT_BUF_SIZ 50
 
 struct st7920_t display =
     {.rs = DIO_PIN_E5, .rw = DIO_PIN_G5, .e = DIO_PIN_E3, DIO_BANK_F};
@@ -68,4 +72,15 @@ void mmi_display_refresh(void)
 void mmi_register_event_handler(mmi_event_handler_t handler)
 {
   event_handler = handler;
+}
+
+void mmi_printf(char* format, ...)
+{
+  static char print_buf[PRINT_BUF_SIZ];
+  va_list args;
+  va_start(args, format);
+  vsnprintf(print_buf, PRINT_BUF_SIZ, format, args);
+  va_end(args);
+
+  usart_write_string(print_buf);
 }

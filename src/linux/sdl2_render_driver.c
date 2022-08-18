@@ -9,6 +9,7 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -289,6 +290,14 @@ void mmi_display_refresh(void)
 void mmi_register_event_handler(mmi_event_handler_t handler)
 {
   event_handler = handler;
+}
+
+void mmi_printf(char* format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  vprintf(format, args);
+  va_end(args);
 }
 
 static void send_to_client(mmi_event_t event)
