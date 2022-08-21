@@ -1,5 +1,6 @@
 #include "str.h"
-#include "check.h"
+
+#include <platform_interface/error_check.h>
 
 #include <stdio.h>
 #include <string.h>

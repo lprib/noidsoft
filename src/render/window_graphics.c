@@ -2,7 +2,7 @@
 
 #include "font.h"
 
-#include <base/check.h>
+#include <platform_interface/error_check.h>
 
 #include <stdbool.h>
 
@@ -17,10 +17,10 @@
 
 void win_point(win_t* self, bmp_t* target, int x, int y, bmp_op_t op)
 {
-  ASSERT(x >= 0);
-  ASSERT(x < self->rect.w);
-  ASSERT(y >= 0);
-  ASSERT(y < self->rect.h);
+  CHECK(x >= 0);
+  CHECK(x < self->rect.w);
+  CHECK(y >= 0);
+  CHECK(y < self->rect.h);
   bmp_point(target, self->rect.x + x, self->rect.y, op);
 }
 
@@ -43,12 +43,12 @@ void win_rect(win_t* self, bmp_t* target, rect_t rect, bmp_op_t op)
 
 void win_fill_rect(win_t* self, bmp_t* target, rect_t rect, bmp_op_t op)
 {
-  ASSERT(rect.x >= 0);
-  ASSERT(rect.x < self->rect.w);
-  ASSERT(rect.y >= 0);
-  ASSERT(rect.y < self->rect.h);
-  ASSERT(rect.x + rect.w <= self->rect.w);
-  ASSERT(rect.y + rect.h <= self->rect.h);
+  CHECK(rect.x >= 0);
+  CHECK(rect.x < self->rect.w);
+  CHECK(rect.y >= 0);
+  CHECK(rect.y < self->rect.h);
+  CHECK(rect.x + rect.w <= self->rect.w);
+  CHECK(rect.y + rect.h <= self->rect.h);
 
   rect.x += self->rect.x;
   rect.y += self->rect.y;
@@ -70,8 +70,8 @@ void win_sprite(
     bool invert
 )
 {
-  ASSERT(x < self->rect.w);
-  ASSERT(y < self->rect.h);
+  CHECK(x < self->rect.w);
+  CHECK(y < self->rect.h);
 
   bmp_sprite(target, src, src_rect, self->rect.x + x, self->rect.y + y, invert);
 }
@@ -86,13 +86,13 @@ void win_string(
     bool invert
 )
 {
-  ASSERT(x >= 0);
-  ASSERT(x < self->rect.w);
-  ASSERT(y >= 0);
-  ASSERT(y < self->rect.h);
+  CHECK(x >= 0);
+  CHECK(x < self->rect.w);
+  CHECK(y >= 0);
+  CHECK(y < self->rect.h);
   int font_width = font_string_width(font, str);
-  ASSERT(x + font_width <= self->rect.w);
-  ASSERT(y + font_height(font) <= self->rect.h);
+  CHECK(x + font_width <= self->rect.w);
+  CHECK(y + font_height(font) <= self->rect.h);
 
   font_string(target, font, str, self->rect.x + x, self->rect.y + y, invert);
 }

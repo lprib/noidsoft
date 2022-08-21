@@ -19,13 +19,14 @@ struct st7920_t display =
     {.rs = DIO_PIN_E5, .rw = DIO_PIN_G5, .e = DIO_PIN_E3, DIO_BANK_F};
 
 // ASSUMPTION: bmp_elem_t is always uint16_t
-bmp_elem_t buffer[ST7920_DISPLAY_WIDTH_UINT16 * ST7920_DISPLAY_HEIGHT] = {0};
+bmp_elem_t raw_buffer[ST7920_DISPLAY_WIDTH_UINT16 * ST7920_DISPLAY_HEIGHT] = {
+    0};
 
-bmp_t back_buffer = {
+bmp_t back_buffer_bmp = {
     .w = ST7920_DISPLAY_HEIGHT,
     .h = ST7920_DISPLAY_HEIGHT,
     .width_elems = ST7920_DISPLAY_WIDTH_UINT16,
-    .buffer = buffer};
+    .buffer = raw_buffer};
 
 mmi_event_handler_t event_handler;
 
@@ -63,12 +64,12 @@ void avrmmi_main_loop(void)
 
 bmp_t* mmi_get_render_target(void)
 {
-  return &back_buffer;
+  return &back_buffer_bmp;
 }
 
 void mmi_display_refresh(void)
 {
-  st7920_refresh(&display, back_buffer.buffer);
+  st7920_refresh(&display, back_buffer_bmp.buffer);
 }
 
 void mmi_register_event_handler(mmi_event_handler_t handler)

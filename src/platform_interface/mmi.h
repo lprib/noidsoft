@@ -1,5 +1,5 @@
-#ifndef _MMI_MMI_H_
-#define _MMI_MMI_H_
+#ifndef _PLATFORM_INTERFACE_MMI_H_
+#define _PLATFORM_INTERFACE_MMI_H_
 
 /**
  * Low level mmi (rendering output and event input).

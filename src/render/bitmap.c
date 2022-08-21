@@ -1,7 +1,7 @@
 #include "bitmap.h"
 
-#include <base/check.h>
 #include <base/util.h>
+#include <platform_interface/error_check.h>
 
 #include <assert.h>
 #include <stdbool.h>
@@ -62,7 +62,7 @@ static inline void shift_with_overflow(
     bmp_elem_t* out2
 )
 {
-  ASSERT(amount <= BMP_PIX_PER_ELEM);
+  CHECK(amount <= BMP_PIX_PER_ELEM);
 
   *out1 = in >> amount;
   *out2 = in << (BMP_PIX_PER_ELEM - amount);
@@ -70,10 +70,10 @@ static inline void shift_with_overflow(
 
 void bmp_point(bmp_t* bmp, int x, int y, bmp_op_t mode)
 {
-  ASSERT(x >= 0);
-  ASSERT(x < bmp->w);
-  ASSERT(y >= 0);
-  ASSERT(y < bmp->h);
+  CHECK(x >= 0);
+  CHECK(x < bmp->w);
+  CHECK(y >= 0);
+  CHECK(y < bmp->h);
 
   bmp_elem_t bitmask = BMP_ONE_ELEM >> (x % BMP_PIX_PER_ELEM);
   bmp_elem_t* dest = get_elem(bmp, x / BMP_PIX_PER_ELEM, y);
@@ -148,12 +148,12 @@ void bmp_rect(bmp_t* bitmap, rect_t rect, bmp_op_t op)
  */
 void bmp_fill_rect(bmp_t* bitmap, rect_t rect, bmp_op_t op)
 {
-  ASSERT(rect.x >= 0);
-  ASSERT(rect.x < bitmap->w);
-  ASSERT(rect.y >= 0);
-  ASSERT(rect.y < bitmap->h);
-  ASSERT(rect.x + rect.w <= bitmap->w);
-  ASSERT(rect.y + rect.h <= bitmap->h);
+  CHECK(rect.x >= 0);
+  CHECK(rect.x < bitmap->w);
+  CHECK(rect.y >= 0);
+  CHECK(rect.y < bitmap->h);
+  CHECK(rect.x + rect.w <= bitmap->w);
+  CHECK(rect.y + rect.h <= bitmap->h);
 
   // full byte portion
   int first_inside_elem_boundary =
@@ -181,10 +181,10 @@ void bmp_fill_rect(bmp_t* bitmap, rect_t rect, bmp_op_t op)
     start_overhang_blit &= ~N_END_BITS(num_to_erase);
   }
 
-  ASSERT(num_start_overhang_bits >= 0);
-  ASSERT(num_start_overhang_bits < BMP_PIX_PER_ELEM);
-  ASSERT(num_end_overhang_bits >= 0);
-  ASSERT(num_end_overhang_bits < BMP_PIX_PER_ELEM);
+  CHECK(num_start_overhang_bits >= 0);
+  CHECK(num_start_overhang_bits < BMP_PIX_PER_ELEM);
+  CHECK(num_end_overhang_bits >= 0);
+  CHECK(num_end_overhang_bits < BMP_PIX_PER_ELEM);
 
   for (int y_iter = rect.y; y_iter < rect.y + rect.h; y_iter++)
   {
@@ -227,11 +227,11 @@ void bmp_sprite(
     bool invert
 )
 {
-  ASSERT(src_rect->w <= BMP_PIX_PER_ELEM);
-  ASSERT(src_rect->x % BMP_PIX_PER_ELEM == 0);
+  CHECK(src_rect->w <= BMP_PIX_PER_ELEM);
+  CHECK(src_rect->x % BMP_PIX_PER_ELEM == 0);
 
-  ASSERT(x < dest->w);
-  ASSERT(y < dest->h);
+  CHECK(x < dest->w);
+  CHECK(y < dest->h);
 
   // assumption: src_rect.x will always be byte aligned, so will always have
   // offset 0 into a bmp_elem_t
@@ -252,13 +252,13 @@ void bmp_sprite(
 
   for (int y_iter = 0; y_iter < src_rect->h; y_iter++)
   {
-    ASSERT(x / BMP_PIX_PER_ELEM < dest->width_elems);
+    CHECK(x / BMP_PIX_PER_ELEM < dest->width_elems);
 
     int src_y = src_rect->y + y_iter;
     int dest_y = y + y_iter;
 
-    ASSERT(src_y < src->h);
-    ASSERT(dest_y < dest->h);
+    CHECK(src_y < src->h);
+    CHECK(dest_y < dest->h);
 
     bmp_elem_t* target_elem = get_elem(dest, x / BMP_PIX_PER_ELEM, dest_y);
     bmp_elem_t src_1;
@@ -274,7 +274,7 @@ void bmp_sprite(
     blit_elem_masked(target_elem, src_1, src_mask_1, invert);
     if (do_second_blit)
     {
-      ASSERT((x / BMP_PIX_PER_ELEM + 1) < dest->width_elems);
+      CHECK((x / BMP_PIX_PER_ELEM + 1) < dest->width_elems);
       // move one over and draw the second blit
       blit_elem_masked(target_elem + 1, src_2, src_mask_2, invert);
     }

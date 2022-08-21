@@ -8,6 +8,7 @@ LINUX_TARGET_SRC_FILE = $(SRC_DIR)/linux/main.c
 
 LINUX_SUBDIRS = $(GENERIC_SUBDIRS) $(SRC_DIR)/linux
 LINUX_SRC_FILES = $(foreach dir,$(LINUX_SUBDIRS),$(wildcard $(dir)/*.c))
+LINUX_HDR_FILES = $(foreach dir,$(LINUX_SUBDIRS),$(wildcard $(dir)/*.h))
 LINUX_SRC_FILES_NO_MAIN = $(filter-out $(LINUX_TARGET_SRC_FILE), $(LINUX_SRC_FILES))
 
 AVR_MCU = atmega2560
@@ -20,12 +21,13 @@ AVR_TARGET_SRC_FILE = $(SRC_DIR)/avr/main.c
 
 AVR_SUBDIRS = $(GENERIC_SUBDIRS) $(SRC_DIR)/avr
 AVR_SRC_FILES = $(foreach dir,$(AVR_SUBDIRS),$(wildcard $(dir)/*.c))
+AVR_HDR_FILES = $(foreach dir,$(AVR_SUBDIRS),$(wildcard $(dir)/*.h))
 AVR_SRC_FILES_NO_MAIN = $(filter-out $(AVR_TARGET_SRC_FILE), $(AVR_SRC_FILES))
 
 COMMON_CFLAGS = -Isrc -Wall
 # Need -Wno-array-bounds because gcc complains about volatile register read/writes
-AVR_CFLAGS = $(COMMON_CFLAGS) -O3 -mmcu=$(AVR_MCU) -Wno-array-bounds
-LINUX_CFLAGS = $(COMMON_CFLAGS) -O3 -lSDL2_ttf -g -rdynamic `sdl2-config --cflags --libs`
+AVR_CFLAGS = $(COMMON_CFLAGS) -O3 -mmcu=$(AVR_MCU) -Wno-array-bounds -DPLATFORM_AVR
+LINUX_CFLAGS = $(COMMON_CFLAGS) -O3 -lSDL2_ttf -g -rdynamic `sdl2-config --cflags --libs` -DPLATFORM_LINUX
 
 
 linux: $(LINUX_TARGET)

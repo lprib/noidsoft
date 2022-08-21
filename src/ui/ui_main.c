@@ -2,6 +2,7 @@
 
 #include <base/str.h>
 #include <base/util.h>
+#include <platform_interface/error_check.h>
 #include <platform_interface/mmi.h>
 #include <render/bitmap.h>
 #include <render/font.h>
@@ -123,6 +124,7 @@ static void event_handler(mmi_event_t event)
 
 void ui_init(void)
 {
+  CHECK(1 == 2);
   mmi_register_event_handler(event_handler);
   // menu_fit_height(menu);
   // menu_fit_width(menu);
